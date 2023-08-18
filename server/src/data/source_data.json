@@ -1,0 +1,118 @@
+[
+	{
+		"item_id": 300391,
+		"title": "User register",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To create a new Admin user you need to call the register endpoint with the admin user data. The response will be the user data created. \n Params: \n -name \n -password \n -email  \n  Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/admin/user/register' --header 'Content-Type: application/json' --form 'name=\"name\"' --form 'password=\"pass\"' --form 'email=\"email@cc.com\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'},'email':{'field_type': 'email'}}` \n\n #action"
+	},
+	{
+		"item_id": 30039,
+		"title": "User login",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To login into the Admin you need to call the login endpoint with the credentials of the admin user. The response will contain a token that you need to use in the Authorization header for all the subsequent requests. \n Params: \n -username \n -password  \n Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/admin/user/login' --header 'Content-Type: application/json' --form 'username=\"user\"' --form 'password=\"pass\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'}}` \n\n #action"
+
+	},
+	{
+		"item_id": 3003911,
+		"title": "User session update",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To update the user session you need to call the user/session endpoint. \n Params: \n - app_key  \n Example:  ```curl --location --request PUT 'http://localhost:8880/api/v1/admin/user/session' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'  --data-raw '{\n    \"app_key\": \"application key\"} ``` \n\n #action"
+
+	},
+	{
+		"item_id": 9204,
+		"title": "Create application",
+		"article_type": "api",
+		"application": "chat",
+		"text": "You can create a new application for the user. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request POST 'http://localhost:8880/api/v1/admin/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>' --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\", \"app_model\":\"model\", \"app_temperature\":\"temperature\"}` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' }, 'app_temperature':{ 'field_type':'input'},{'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
+
+	},
+	{
+		"item_id": 9214,
+		"title": "List applications",
+		"article_type": "api",
+		"application": "chat",
+		"text": "You can list all applications for your account by calling the list endpoint. Example:  `curl --location --request GET 'http://localhost:8880/api/v1/admin/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
+	},
+	{
+		"item_id": 90214,
+		"title": "Delete applications",
+		"article_type": "api",
+		"application": "chat",
+		"text": "You can delete an application by providing the key in the uri when calling delete endpoint. Example: `curl --location --request DELETE 'http://localhost:8880/api/v1/admin/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
+	},
+	{
+		"item_id": 90215,
+		"title": "Edit applications",
+		"article_type": "api",
+		"application": "chat",
+		"text": "You can edit an application by calling the edit endpoint. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request PUT 'http://localhost:8880/api/v1/admin/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN> --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\",  \"app_model\":\"model\", \"app_temperature\":\"temperature\"}'` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' },'app_temperature':{ 'field_type':'input'}, {'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
+	},
+	{
+		"item_id": 48123,
+		"title": "Add doc",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To add a new documentation a given application you can use the following request. \n Params: - title \n - text \n- app_key \n Example: `curl -L  -X POST  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/admin/user/docs  -d '{\"title\":\"my doc title\", \"text\":\"my doc text\", \"app_key\":\"application key\"}'` \n\n Request render: ` request_render:{'text':{'field_type': 'textarea'}}` \n\n #action"
+	},
+	{
+		"item_id": 4812344,
+		"title": "List docs",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To list all docs for a given application you can use the following request. \n Example: `curl -L  -X GET  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/admin/applications/{app_key}/docs` \n\n #action"
+	},
+	{
+		"item_id": 481,
+		"title": "Delete docs",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To delete docs for a given application you can use the following request. \n Example: `curl -L  -X DELETE  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs/{pk}` \n\n #action"
+	},
+	{
+		"item_id": 1481,
+		"title": "Js",
+		"article_type": "api",
+		"application": "chat",
+		"text": "To open the chatbot on the page you need to run the following javascript code. \n `function openChatbot(){ let script = document.createElement('script');\n script.src = \"https://apps.newaisolutions.com/assets/demos/new-bot.js\";\n    document.head.appendChild(script);}`\n This should be used the js_func command  \n\n #action"
+	},
+	{
+		"item_id": 904,
+		"title": "Add address",
+		"article_type": "browse_website",
+		"application": "demo",
+		"text": "You can add a new address in the Address section of your account. This is the link to add a new address https://www.amazon.co.uk/a/addresses/add . Curl Example:  ```  curl https://www.amazon.co.uk/a/addresses/add?countryCode=code&stateCode=code&postalCode=code&city=city&addressLine1=address&addressLine2=address&isDefault=true&name=name&phoneNumber=phone``` \n\n #action"
+	},
+	{
+		"item_id": 905,
+		"title": "List repo",
+		"article_type": "api",
+		"application": "demo",
+		"text": "Lists repositories that the authenticated user has explicit permission (:read, :write, or :admin) to access.\n\nThe authenticated user has explicit permission to access repositories they own, repositories where they are a collaborator, and repositories that they can access through an organization membership.\n\nParameters for \"List repositories for the authenticated user\"\nHeaders\nName, Type, Description\naccept string\nSetting to application/vnd.github+json is recommended.\n\nQuery parameters\nName, Type, Description\nvisibility string\nLimit results to repositories with the specified visibility.\n\nDefault: all\n\nCan be one of: all, public, private\n\naffiliation string\nComma-separated list of values. Can include:\n\nowner: Repositories that are owned by the authenticated user.\ncollaborator: Repositories that the user has been added to as a collaborator.\norganization_member: Repositories that the user has access to through being a member of an organization. This includes every repository on every team that the user is on.\nDefault: owner,collaborator,organization_member\n\ntype string\nLimit results to repositories of the specified type. Will cause a 422 error if used in the same request as visibility or affiliation.\n\nDefault: all\n\nCan be one of: all, owner, public, private, member\n\nsort string\nThe property to sort the results by.\n\nDefault: full_name\n\nCan be one of: created, updated, pushed, full_name\n\ndirection string\nThe order to sort by. Default: asc when using full_name, otherwise desc.\n\nCan be one of: asc, desc\n\nper_page integer\nThe number of results per page (max 100).\n\nDefault: 30\n\npage integer\nPage number of the results to fetch.\n\nDefault: 1\n\nsince string\nOnly show repositories updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.\n\nbefore string\nOnly show repositories updated before the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.\n\nHTTP response status codes for \"List repositories for the authenticated user\"\nStatus code\tDescription\n200\t\nOK\n\n304\t\nNot modified\n\n401\t\nRequires authentication\n\n403\t\nForbidden\n\n422\t\nValidation failed, or the endpoint has been spammed.\n\nCode samples for \"List repositories for the authenticated user\"\nGET\n/user/repos\ncURL\nJavaScript\nGitHub CLI\n\ncurl -L \n  -H \"Accept: application/vnd.github+json\" \n  -H \"Authorization: Bearer <YOUR-TOKEN>\"\n  -H \"X-GitHub-Api-Version: 2022-11-28\" \n  https://api.github.com/user/repos \n\n Request render example:   `request_render:{}` \n\n Response render example: \n ```response_render={ 'render_type': 'list', 'fields': ['<fields>']}``` \n\n #action"
+	}
+	,
+	{
+		"item_id": 9051,
+		"title": "Kids",
+		"article_type": "browse_website",
+		"application": "demo",
+		"text": "KIDS 4-8 \nThis is the very first course your children will start with, in this class our only main focus is to build self-esteem, a sense of respect for rules and on the technical point of view teaching drills and fun games to starts working on coordination and basics BJJ technique for further development.\n\nMonday and Wednesday at 4pm, and Saturday at 9:30 AM\n\nBOOK A FREE CLASS\n KIDS 8-10\nThis program is structured for the development of Brazilian Jiu Jitsu for kids from 8 to 10 years old, the aim is to build self-discipline and exploring overview of all positions and situation, building a solid foundation of basics technique. \n\nTuesday and Thursday at 4pm, and Saturday at 10.30 AM\n\nTEENS 11-15\nOur teens classes runs on Tuesday and Thursday at 5 PM, focused on building a strong BJJ foundation and implement with self-defense techniques. The students cover in more depth the BJJ scenarios and learn foundation techniques. \n to learn more about jiujitsu for kids visit https://www.jsbjj.ie/bjj-kids \n\nThis should use the browse_website"
+	},
+	{
+		"item_id": 90512,
+		"title": "Kids",
+		"article_type": "browse_website",
+		"application": "demo",
+		"text": "Welcome to your first BJJ class, there is no experience or skills required. Just bring comfortable clothes and water and complete this form prior to the class. \nClasses start at 7am. \n\nTo book a class for an adult visit https://calendly.com/info-jsbjj/jsbjj-free-class/<yyyy-mm-ddThh:00:00+01:00>?month=<yyyy-mm>&date=<yyyy-mm-dd>&email=<email>&name=<name>\n name and email are required \n\nFor kid's class trials please email info@jsbjj.ie \n\nThis should use the browse_website"
+	},
+	{
+		"item_id": 90,
+		"title": "Multi media",
+		"article_type": "text",
+		"application": "demo",
+		"text": "We have multiple products for you. Check the list below: \n\n **Product 1** \n This product is great! watch the video demo https://player.vimeo.com/video/850735603?h=92907fe9e5&amp;autoplay=1&amp;loop=1&amp;autopause=0&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=0 \n\n  **Product 2** \n This product is great for small companies. Product url https://geekflare.com/wp-content/uploads/2022/05/Robots.png \n\n  **Product 3** \n This product is great for big companies. Watch the video https://youtu.be/jULtLGHxaiM \n\n Chat bot instructions: Ensure the urls are returned in the response"
+	}
+]

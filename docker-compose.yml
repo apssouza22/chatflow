@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  redis-vector-db:
+    image: redis/redis-stack:latest
+    volumes:
+      - ./redis-data:/data/
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+
+  backend:
+    image: apssouza/chatux:latest
+    volumes:
+      - ./server/src:/app/src
+      - ./chat-ui/build:/app/frontend
+    environment:
+      REDIS_DB: 0
+      SERVER_HOST: "0.0.0.0"
+      REDIS_HOST: ${REDIS_HOST:-redis-vector-db}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-""}
+      OPENAI_API_KEY_GPT4: ${OPENAI_API_KEY_GPT4}
+      OPENAI_API_KEY_GPT3: ${OPENAI_API_KEY_GPT3}
+      PGSQL_HOST: ${PGSQL_HOST}
+      PGSQL_PORT: ${PGSQL_PORT}
+      PGSQL_PASS: ${PGSQL_PASS}
+      PGSQL_USER: ${PGSQL_USER}
+      PGSQL_DB: ${PGSQL_DB}
+    ports:
+      - "8880:8880"
+    working_dir: /app/src
+    command: ["sh", "/app/src/prepare-and-start.sh"]
+volumes:
+  redis-vector-db:

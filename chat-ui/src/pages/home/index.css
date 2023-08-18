@@ -1,0 +1,8 @@
+html,
+body,
+#chatbot-container {
+  height: 100%;
+}
+.chat-intro{
+  width: 100%;
+}

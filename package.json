@@ -1,0 +1,10 @@
+{
+  "name": "chat-commander",
+  "scripts": {
+    "start": "cd chat-ui && npm start",
+    "build": "cd chat-ui && npm run build",
+    "test": "cd chat-ui && npm test",
+    "deploy-front": "cd chat-ui && npm run deploy-front",
+    "deploy-back": "git push prod main"
+  }
+}

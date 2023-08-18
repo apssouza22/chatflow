@@ -1,0 +1,15 @@
+.prompt {
+    min-height: 50px;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.prompt:hover {
+    background: #cccccc;
+}
