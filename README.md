@@ -19,32 +19,31 @@ productivity.
 ## Running the App
 Before running the app, please install Docker first.
 
-### Local Development
+## React UI
+- `cd chat-ui`
+- `npm install`
+- `npm run build`
+- `npm start`
 
-- Ensure you set the following environment variables
+## Backend
+
+- Start the databases
     ```bash
-    OPENAI_API_KEY_GPT3=YOUR_API_KEY
-    OPENAI_API_KEY_GPT4=YOUR_API_KEY
+    $ docker-compose up -d redis postgres
     ```
 
-- Start the vector-db
+- Navigate to the backend src cod 
     ```bash
-    $ docker-compose up -d redis-vector-db
-    ```
-
-- Create python virtual env. If mac m1, run `arch -x86_64 zsh` before the following commands 
-    ```bash
-   $ python -m pip install --upgrade pip
-   $ python -m venv .venv
-   $ source .venv/bin/activate
-   $ pip install -r requirements-dev.txt
+    $ cd server/src
     ```
   
-- Start the backend service
+- Create a .env file and set all required variables
     ```bash
-   $ arch -x86_64 zsh
-   $ source venv/bin/activate
-   $ cd server/src
+    cp .env.template .env
+    ```
+  
+- Start the backend service locally
+    ```bash
    $ python load_data.py
    $ python server.py
     ```
@@ -53,11 +52,6 @@ Before running the app, please install Docker first.
 - Access the Redis Vector DB UI on http://localhost:8001/redis-stack/browser
 - Optional - For Github integration set the github token in the localStorage.setItem('github-token', 'your token')  
 
-
-## React UI
-- `cd chat-ui`
-- `npm install`
-- `npm start`
 
 
 ### Local Development with Docker

@@ -1,4 +1,5 @@
 import os
+from decouple import config
 
 PROJECT_NAME = "chatux_app"
 API_DOCS = "/api/docs"
@@ -13,14 +14,14 @@ REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
 REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
 REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
 
-OPENAI_API_KEY_GPT3 = os.environ["OPENAI_API_KEY_GPT3"]
-OPENAI_API_KEY_GPT4 = os.environ["OPENAI_API_KEY_GPT4"]
+OPENAI_API_KEY_GPT3 = config("OPENAI_API_KEY_GPT3")
+OPENAI_API_KEY_GPT4 = config("OPENAI_API_KEY_GPT4")
 
-PGSQL_HOST = os.environ["PGSQL_HOST"]
-PGSQL_PORT = os.environ["PGSQL_PORT"]
-PGSQL_PASS = os.environ["PGSQL_PASS"]
-PGSQL_USER = os.environ["PGSQL_USER"]
-PGSQL_DB = os.environ["PGSQL_DB"]
+PGSQL_HOST = config("PGSQL_HOST")
+PGSQL_PORT = config("PGSQL_PORT")
+PGSQL_PASS = config("PGSQL_PASS")
+PGSQL_USER = config("PGSQL_USER")
+PGSQL_DB = config("PGSQL_DB")
 
 REDIS_DB = os.environ.get("REDIS_DB", 0)
 if REDIS_PASSWORD:

@@ -2,10 +2,8 @@ import {createHashRouter} from "react-router-dom";
 import ErrorPage from "./pages/error/Error";
 import * as React from "react";
 import {Login} from "./pages/login/Login";
-import {Home} from "./pages/landingpage/Home";
 import {Auth} from "./layouts/Auth";
 import SignUp from "./pages/signup/SignUp";
-import {FrontChatbot} from "./pages/chatbot";
 import {ChatFlow} from "./pages/chatflow";
 import {Admin} from "./layouts/Admin";
 import {HomeFlow} from "./pages/home";
@@ -18,11 +16,11 @@ export const router = createHashRouter([
         children: [
             {
                 path: "",
-                element: <HomeFlow/>,
+                element: <SignUp/>,
             },
             {
-                path: "products/chatflow",
-                element: <Home/>,
+                path: "/homeflow",
+                element: <HomeFlow/>,
             },
             {
                 path: "login",
@@ -31,10 +29,6 @@ export const router = createHashRouter([
             {
                 path: "signup",
                 element: <SignUp/>
-            },
-            {
-                path: "chatbot",
-                element: <FrontChatbot/>
             }
         ],
     },

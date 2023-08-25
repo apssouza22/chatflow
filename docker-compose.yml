@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  redis-vector-db:
+  redis:
     image: redis/redis-stack:latest
     volumes:
       - ./redis-data:/data/
@@ -31,5 +31,19 @@ services:
       - "8880:8880"
     working_dir: /app/src
     command: ["sh", "/app/src/prepare-and-start.sh"]
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=chatux
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 volumes:
-  redis-vector-db:
+  redis:
+    driver: local
+  postgres:
+    driver: local
+

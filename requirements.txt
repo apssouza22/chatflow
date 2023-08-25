@@ -10,3 +10,4 @@ numpy
 pandas
 requests
 psycopg2-binary
+python-decouple
