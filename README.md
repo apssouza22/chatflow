@@ -1,6 +1,6 @@
 # Chatflow
 
-You can ask anything about our project or our github repo directly in our user interface: 
+You can ask anything about our project and our github repo directly in our user interface: 
 
 http://apps.newaisolutions.com/
 
