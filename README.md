@@ -1,5 +1,8 @@
 # Chatflow
 
+You can ask anything about our project or our github repo directly in our user interface: http://apps.newaisolutions.com/
+It will teach you how to run the app locally, answer any questions in relation to our codebase and guide you in contributing to the repo if you want.
+
 ChatUX is a tool to help the integration of natural language capabilities in any web systems,
 making them more accessible and user-friendly for everyone.
 
