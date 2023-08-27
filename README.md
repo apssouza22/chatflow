@@ -1,6 +1,9 @@
 # Chatflow
 
-You can ask anything about our project or our github repo directly in our user interface: http://apps.newaisolutions.com/
+You can ask anything about our project or our github repo directly in our user interface: 
+
+http://apps.newaisolutions.com/
+
 It will teach you how to run the app locally, answer any questions about our codebase and guide you in contributing to the repo. 
 It can be a great tool for onboarding new developers.
 
