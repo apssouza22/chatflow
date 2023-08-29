@@ -26,7 +26,7 @@ export function MuiMessage({
             ml={message.self ? 1 : 0}
             mr={message.self ? 0 : 1}
         >
-            <Avatar height={35} width={35} name={message.username} src={message.avatar}/>
+           
         </Box>
     );
 
@@ -77,10 +77,10 @@ export function MuiMessage({
                             maxWidth="100%"
                             py={1}
                             px={2}
-                            bg={message.self ? 'blue.400' : 'gray.100'}
+                            bg={message.self ? 'blue.400' : 'white'}
                             color={message.self ? 'white' : 'black'}
-                            borderRadius="md"
-                            shadow="md"
+                            borderRadius={message.self ? 'md' : '0pt'}
+                            shadow={message.self ? 'lg' : '0pt'}
                             fontSize="md"
                         >
                             {message.type === 'text' && (
