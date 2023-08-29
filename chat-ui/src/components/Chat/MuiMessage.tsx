@@ -77,6 +77,8 @@ export function MuiMessage({
                             maxWidth="100%"
                             py={1}
                             px={2}
+                            width={message.self ? '100vw' : '100vw'}
+                            textAlign={message.self ? 'center' : 'center'}
                             bg={message.self ? 'blue.400' : 'gray.100'}
                             color={message.self ? 'white' : 'black'}
                             borderRadius={message.self ? 'md' : '0pt'}
