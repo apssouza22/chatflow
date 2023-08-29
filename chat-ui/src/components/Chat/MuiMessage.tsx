@@ -71,7 +71,7 @@ export function MuiMessage({
                     style={{overflowWrap: 'break-word'}}
                 >
                     {message.avatar && !message.self && ChatAvator}
-                    <Box minWidth={0} display="flex" flexDirection="column" className={message.className}>
+                    <Box minWidth={0} bg='gray.100' display="flex" flexDirection="column" className={message.className}>
                         {message.username && ChatUsername}
                         <Box
                             maxWidth="100%"
