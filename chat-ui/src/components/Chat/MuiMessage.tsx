@@ -82,7 +82,7 @@ export function MuiMessage({
                             bg={message.self ? 'blue.400' : 'gray.100'}
                             color={message.self ? 'white' : 'black'}
                             borderRadius={message.self ? 'md' : '10pt'}
-                            shadow="md"
+                            shadow={message.self ? 'md' : 'sm'}
                             fontSize="md"
                         >
                             {message.type === 'text' && (
