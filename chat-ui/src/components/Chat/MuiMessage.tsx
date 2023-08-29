@@ -77,10 +77,10 @@ export function MuiMessage({
                             maxWidth="100%"
                             py={1}
                             px={2}
-                            bg={message.self ? 'blue.400' : 'white'}
+                            bg={message.self ? 'blue.400' : 'gray.100'}
                             color={message.self ? 'white' : 'black'}
                             borderRadius={message.self ? 'md' : '0pt'}
-                            shadow={message.self ? 'lg' : '0pt'}
+                            shadow={message.self ? 'md' : '0pt'}
                             fontSize="md"
                         >
                             {message.type === 'text' && (
