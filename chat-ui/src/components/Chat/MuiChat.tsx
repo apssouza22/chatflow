@@ -76,6 +76,7 @@ export function MuiChat({chatController}: PropsWithChildren<MuiChatParams>): Rea
 
     return (
         <Box
+            bg='gray.100
             height="100%"
             width="100%"
             p={1}
