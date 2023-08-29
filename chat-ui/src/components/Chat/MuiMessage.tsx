@@ -75,14 +75,13 @@ export function MuiMessage({
                         {message.username && ChatUsername}
                         <Box
                             maxWidth="100%"
+                            width={message.self ? '100%' : '100vw'}
                             py={1}
                             px={2}
-                            width={message.self ? '100vw' : '100vw'}
-                            textAlign={message.self ? 'center' : 'center'}
                             bg={message.self ? 'blue.400' : 'gray.100'}
                             color={message.self ? 'white' : 'black'}
-                            borderRadius={message.self ? 'md' : '0pt'}
-                            shadow={message.self ? 'md' : '0pt'}
+                            borderRadius={message.self ? 'md' : '10pt'}
+                            shadow={message.self ? 'md' : 'md'}
                             fontSize="md"
                         >
                             {message.type === 'text' && (
