@@ -93,12 +93,12 @@ export function MuiTextInput({
     );
 }
 function extractContentBetweenBraces(inputString) {
-    const regex = /{{(.*?)}}/g;
+    const regex = /{{{(.*?)}}}/g;
     const matches = [];
     let match;
 
     while ((match = regex.exec(inputString)) !== null) {
-        matches.push("{{" + match[1] + "}}");
+        matches.push("{{{" + match[1] + "}}}");
     }
 
     return matches.join(",");

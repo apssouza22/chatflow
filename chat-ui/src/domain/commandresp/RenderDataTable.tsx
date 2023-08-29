@@ -109,12 +109,12 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
                                             />
                                             <MenuList>
                                                 <MenuItem icon={<EditIcon/>} onClick={() => {
-                                                    setPrompt(`Edit {{RESOURCE_NAME_HERE}} with the following: \`${splitKey(value)}\``)
+                                                    setPrompt(`Edit {{{RESOURCE_NAME_HERE}}} with the following: \`${splitKey(value)}\``)
                                                 }}>
                                                     Edit
                                                 </MenuItem>
                                                 <MenuItem icon={<DeleteIcon/>} onClick={() => {
-                                                    setPrompt(`Delete {{RESOURCE_NAME_HERE}} ${key}. \`${splitKey(value)}\``)
+                                                    setPrompt(`Delete {{{RESOURCE_NAME_HERE}}} ${key}. \`${splitKey(value)}\``)
                                                 }}>
                                                     Delete
                                                 </MenuItem>

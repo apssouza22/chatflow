@@ -26,7 +26,7 @@ export function MuiMessage({
             ml={message.self ? 1 : 0}
             mr={message.self ? 0 : 1}
         >
-            <Avatar height={35} width={35} name={message.username} src={message.avatar}/>
+            {/*<Avatar height={35} width={35} name={message.username} src={message.avatar}/>*/}
         </Box>
     );
 
@@ -74,12 +74,14 @@ export function MuiMessage({
                     <Box minWidth={0} display="flex" flexDirection="column" className={message.className}>
                         {message.username && ChatUsername}
                         <Box
+                            className={"msg-item-box"}
                             maxWidth="100%"
+                            width={message.self ? '100%' : '100vw'}
                             py={1}
                             px={2}
                             bg={message.self ? 'blue.400' : 'gray.100'}
                             color={message.self ? 'white' : 'black'}
-                            borderRadius="md"
+                            borderRadius={message.self ? 'md' : '10pt'}
                             shadow="md"
                             fontSize="md"
                         >
