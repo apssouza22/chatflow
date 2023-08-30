@@ -68,7 +68,7 @@ export function HomeFlow(): ReactElement {
                         flexDirection="column"
                         height="100%"
                         mx="auto"
-                        pt={"90px"}
+                    //  pt={"90px"}
                         className={"chat-container"}
                     >
                         <Box flex="1 1 0%" minHeight="0" borderTop={"1px solid #ccc"}>
