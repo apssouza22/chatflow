@@ -60,7 +60,7 @@ export function HomeFlow(): ReactElement {
                 <GridItem
                     as="main"
                     colSpan={isExpanded ? {base: 6, lg: 6, xl: 6} : {base: 6, lg: 4, xl: 4}}
-                    bg="white"
+                    bg="gray.100"
                     height={"100vh"}
                 >
                     <Box
