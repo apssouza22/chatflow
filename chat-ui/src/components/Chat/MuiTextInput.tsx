@@ -78,14 +78,20 @@ export function MuiTextInput({
                 onKeyDown={handleKeyDown}
                 variant="outline"
                 maxH="10rem"
+                bg="gray.200"
+                color="black"
+                shadow="xl"
+                
             />
             <Button
                 type="button"
                 onClick={setResponse}
                 disabled={!value}
                 variant="solid"
-                color="primary"
+                color="gray.700"
                 leftIcon={<AiOutlineSend/>}
+                shadow="xl"
+                bg="gray.200"
             >
                 {sendButtonText}
             </Button>
@@ -93,12 +99,12 @@ export function MuiTextInput({
     );
 }
 function extractContentBetweenBraces(inputString) {
-    const regex = /{{{(.*?)}}}/g;
+    const regex = /{{(.*?)}}/g;
     const matches = [];
     let match;
 
     while ((match = regex.exec(inputString)) !== null) {
-        matches.push("{{{" + match[1] + "}}}");
+        matches.push("{{" + match[1] + "}}");
     }
 
     return matches.join(",");
