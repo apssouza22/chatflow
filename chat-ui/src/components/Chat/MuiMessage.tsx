@@ -1,5 +1,4 @@
 import {Box, Fade, Text} from '@chakra-ui/react';
-
 import {Message, MessageContent} from './index';
 
 export function MuiMessage({
@@ -67,11 +66,13 @@ export function MuiMessage({
                             width={message.self ? '100%' : '100vw'}
                             py={1}
                             px={2}
-                            bg={message.self ? 'blue.400' : 'gray.100'}
+                            bg={message.self ? 'blue.400' : 'gray.50'}
                             color={message.self ? 'white' : 'black'}
                             borderRadius="md"
-                            shadow={message.self ? 'md' : 'sm'}
+                            shadow="xl"
                             fontSize="md"
+                            
+
                         >
                             {message.type === 'text' && (
                                 <Text style={{whiteSpace: 'pre-wrap'}}>
