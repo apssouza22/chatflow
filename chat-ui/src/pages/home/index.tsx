@@ -117,7 +117,7 @@ export function HomeFlow(): ReactElement {
 
 
 async function start(chatCtl: ChatController): Promise<void> {
-    await login("apssouza22@gmail.com", "61866002")
+    await login("admin@gmail.com", "chat")
     await chatCtl.addMessage({
         type: 'jsx',
         content: getIntro(),
