@@ -16,8 +16,6 @@ import {HttpClient} from "../../domain/common/HttpClient";
 import {SessionManager} from "../../domain/session/SessionManager";
 
 
-
-
 export function HomeFlow(): ReactElement {
     const [isExpanded, setIsExpanded] = useState(false);
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -44,35 +42,15 @@ export function HomeFlow(): ReactElement {
             <IconBox {...iconProps} >
                 {isExpanded ? <GoSidebarCollapse/> : <GoSidebarExpand/>}
             </IconBox>
-            <Grid templateColumns="repeat(6, 1fr)" bg="gray.900" 
-             >
-                
+            <Grid templateColumns="repeat(6, 1fr)" bg="gray.50">
                 {/* sidebar */}
                 {!isExpanded && (
                     <GridItem
                         as="aside"
-                        colSpan={{base: 6, lg: 1, xl: 1}}
-                        bg="gray.900"
+                        colSpan={{base: 6, lg: 2, xl: 2}}
+                        bg="gray.50"
                         overflowY="scroll"
                         height={"100vh"}
-                        shadow="md"
-                        flexGrow={1}
-                        sx={{
-                            '&::-webkit-scrollbar': {
-                              width: '16px',
-                              borderRadius: '8px',
-                              backgroundColor: 'rgba(0, 0, 0, 0.1)', // Slightly darker background for better contrast
-                            },
-                            '&::-webkit-scrollbar-thumb': {
-                              backgroundColor: 'rgba(128, 128, 128, 0.2)',
-                              boxShadow: 'inset 0 0 6px rgba(0,0,0,0.5)', // Inner shadow for a more 3D look
-                              transition: 'background-color 0.2s ease-in-out', // Smooth transition for hover effect
-                              '&:hover': { // Hover effect
-                                backgroundColor: 'rgba(128, 128, 128, 0.5)',
-                              },
-                            },
-                          }}
-                          
                     >
                         <Sidebar chatController={chatCtl} isHome={true}/>
                     </GridItem>
@@ -81,23 +59,19 @@ export function HomeFlow(): ReactElement {
                 {/* main content & navbar */}
                 <GridItem
                     as="main"
-                    colSpan={isExpanded ? {base: 6, lg: 6, xl: 6} : {base: 6, lg: 5, xl: 5}}
-                    bg="gray.100"
+                    colSpan={isExpanded ? {base: 6, lg: 6, xl: 6} : {base: 6, lg: 4, xl: 4}}
+                    bg="white"
                     height={"100vh"}
-                    flexGrow={3}
-                    
                 >
                     <Box
-                       display="flex"
-                       flexDirection="column"
-                       height="100%"
-                       mx="auto"
-                       className={"chat-container"}
-                       
-                        
+                        display="flex"
+                        flexDirection="column"
+                        height="100%"
+                        mx="auto"
+                        pt={"90px"}
+                        className={"chat-container"}
                     >
-                        <Box flex="1 1 0%" minHeight="0" borderTop={"1px solid #ccc"}
-                        > 
+                        <Box flex="1 1 0%" minHeight="0" borderTop={"1px solid #ccc"}>
                             <MuiChat chatController={chatCtl}/>
                         </Box>
                     </Box>
@@ -162,13 +136,12 @@ function getIntro() {
                 color="blue.700"
                 fontSize={['2xl', '3xl', '4rem']}
                 m={"40px"}
-                
             >
                 <Text color={"teal.500"}>Watch how it works</Text>
             </Heading>
-            <Box pb={"5px"} pl={"0px"} pr={"0px"} > 
-                <iframe width={"100%"} height={"500px"} id="embed-iframe-7" 
-                        src="https://player.vimeo.com/video/858432033?h=94f08ece33&autoplay=1&loop=1&autopause=0&muted=1&title=0&byline=0&portrait=0&controls=0"
+            <Box pb={"50px"}>
+                <iframe width={"100%"} height={"400px"} id="embed-iframe-7"
+                        src="https://player.vimeo.com/video/850735603?h=92907fe9e5&amp;autoplay=1&amp;loop=1&amp;autopause=0&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=0"
                         allow="autoplay; fullscreen" loading="lazy"
                         data-aid="HEADER_VIDEO_EMBED"></iframe>
             </Box>
