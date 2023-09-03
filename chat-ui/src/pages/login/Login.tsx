@@ -42,6 +42,7 @@ export function Login() {
                 <VStack spacing={8}>
                     <Heading>Login</Heading>
                     <Box w="100%" p={4} borderWidth={1} borderRadius="lg">
+                        <p>Login: admin@gmail.com - 123</p>
                         <form onSubmit={handleSubmit}>
                             <VStack spacing={4}>
                                 <FormControl id="email" isRequired>
