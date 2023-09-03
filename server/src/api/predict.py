@@ -1,7 +1,9 @@
 import typing as t
 
 from fastapi import Depends, Request, APIRouter, HTTPException
-from api.factory import agent, apps, cost_service
+from fastapi.responses import StreamingResponse
+
+from api.factory import agent, apps, cost_service, llm_service
 from api.user import User, get_current_user
 from core.agent.agent_service import UserInputDto
 from core.app.app_dao import App
@@ -38,6 +40,23 @@ async def think(
     commands = agent.handle_user_input(user_input_req)
     print(commands)
     return commands
+
+
+@r.get('/chat/completions/stream')
+async def stream_completion():
+    return StreamingResponse(get_completion_stream(), media_type='application/activity+json')
+
+
+def get_completion_stream():
+    response = llm_service.get_completions_stream([{
+        "content": "What is the best way to create a new private repository on GitHub?",
+        "role": "user"
+
+    }])
+
+    for i in response:
+        print(i)
+        yield i
 
 
 async def get_user_ip(request):

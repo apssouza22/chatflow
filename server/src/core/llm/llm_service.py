@@ -5,8 +5,10 @@ from pydantic import BaseModel
 
 from core.app.app_dao import App
 from core.common.utils import filter_content
+from core.llm.openai_stream import OpenAIStream
 from core.llm.openapi_client import OpenAI
-from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
+from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, \
+    prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
 
 
 class Usage(BaseModel):
@@ -23,7 +25,8 @@ class LLMResponse(BaseModel):
 
 class LLMService:
 
-    def __init__(self, gpt3: OpenAI, gpt4: OpenAI):
+    def __init__(self, gpt3: OpenAI, gpt4: OpenAI, completion_stream: OpenAIStream):
+        self.completion_stream = completion_stream
         self.openai_api_gpt3 = gpt3
         self.openai_api_gpt4 = gpt4
 
@@ -46,6 +49,9 @@ class LLMService:
             usage=[Usage(**usage)],
             message=response["choices"][0]["message"]["content"]
         )
+
+    def get_completions_stream(self, prompts: List[dict], temperature=0.1):
+        return self.completion_stream.get_chat_completions(prompts, temperature=temperature)
 
     def get_task_command(self, history: List[MessageCompletion], app: App) -> LLMResponse:
         prompts = build_prompt_command(history)
@@ -102,4 +108,5 @@ def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
     return LLMService(
         OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
         OpenAI(app_key_gpt4, "gpt-4"),
+        OpenAIStream(app_key_gpt3, "gpt-3.5-turbo-0613"),
     )
