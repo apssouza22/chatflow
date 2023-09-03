@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>temp</title>
+</head>
+<body>
+<script>
+    var source = new EventSource('http://127.0.0.1:8880/api/v1/chat/completions/stream?prompt=11&context=dd');
+    source.onmessage = function (event) {
+        const item = JSON.parse(event.data);
+        console.log(item.choices[0]);
+        if (item.choices[0].finish_reason === "stop") {
+            console.log("close connection");
+            source.close();
+        }
+    };
+
+</script>
+
+</body>
+</html>

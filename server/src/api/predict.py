@@ -1,5 +1,6 @@
 import typing as t
 
+import sseclient
 from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
@@ -43,20 +44,21 @@ async def think(
 
 
 @r.get('/chat/completions/stream')
-async def stream_completion():
-    return StreamingResponse(get_completion_stream(), media_type='application/activity+json')
+async def stream_completion(prompt: str, context: str):
+    return StreamingResponse(get_completion_stream(prompt, context), media_type='text/event-stream')
 
 
-def get_completion_stream():
+def get_completion_stream(prompt, context):
     response = llm_service.get_completions_stream([{
-        "content": "What is the best way to create a new private repository on GitHub?",
+        "content": "Count to 10, with a comma between each number and no newlines. E.g., 1, 2, 3, ...",
         "role": "user"
 
     }])
-
-    for i in response:
-        print(i)
-        yield i
+    client = sseclient.SSEClient(response)
+    for event in client.events():
+        if event.data != '[DONE]':
+            yield 'event: message\n'
+            yield "data:" + event.data + '\n\n'
 
 
 async def get_user_ip(request):
