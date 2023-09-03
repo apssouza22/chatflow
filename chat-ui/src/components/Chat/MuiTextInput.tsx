@@ -78,14 +78,20 @@ export function MuiTextInput({
                 onKeyDown={handleKeyDown}
                 variant="outline"
                 maxH="10rem"
+                bg="gray.200"
+                color="black"
+                shadow="xl"
+                
             />
             <Button
                 type="button"
                 onClick={setResponse}
                 disabled={!value}
                 variant="solid"
-                color="primary"
+                color="gray.700"
                 leftIcon={<AiOutlineSend/>}
+                shadow="xl"
+                bg="gray.200"
             >
                 {sendButtonText}
             </Button>

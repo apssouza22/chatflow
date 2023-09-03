@@ -76,6 +76,7 @@ export function MuiChat({chatController}: PropsWithChildren<MuiChatParams>): Rea
 
     return (
         <Box
+        
             bg='gray.100'
             height="100%"
             width="100%"
@@ -98,6 +99,7 @@ export function MuiChat({chatController}: PropsWithChildren<MuiChatParams>): Rea
                 flexDirection="column"
                 css={{"& > *": {maxWidth: '100%'}}}
                 ref={msgRef}
+                
             >
                 {messages.map((msg): ReactElement => {
                     let showDate = false;
@@ -141,9 +143,11 @@ export function MuiChat({chatController}: PropsWithChildren<MuiChatParams>): Rea
                 })}
             </Box>
             <Box
+            
                 flex="0 1 auto"
                 display="flex"
                 alignContent="flex-end"
+                
             >
                 {actReq && actReq.type === 'text' && (
                     <MuiTextInput

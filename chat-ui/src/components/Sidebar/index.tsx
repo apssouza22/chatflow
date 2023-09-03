@@ -11,14 +11,14 @@ type MuiChatParams = {
 };
 
 const homePrompts = [
-    "Why make the interface so different?",
-    "What is the potential of natural language interfaces?",
-    "Can the chatbot help me automate complex tasks?",
-    "Do you only sell chatbots?",
-    "How much do the chatbots cost?",
-    "Open chatbot",
-    "Help me send an email",
-    "Add document",
+    "What Is A Natural Language Interface?",
+    "Teach Me How To Use This Interface",
+    "Can This Interface Carry out Tasks?",
+    "Can I Ask This Interface Anything?",
+    "How Much Do The Products Cost?",
+    "Open Chatbot",
+    "Help Me Send An Email",
+    "Add Document",
 ]
 
 const adminPrompts = [
@@ -63,9 +63,9 @@ export default function Sidebar({chatController, isHome}: PropsWithChildren<MuiC
               align="start"
               p={"100px 30px 30px 30px"}
         >
-            <List spacing={1} w={"100%"}>
+            <List spacing={1} w={"100%"} variant="ghost" height={"100%"} border={"0px solid #E2E8F0"} borderRadius="10pt" borderColor="blue.900" color="gray.50" >
                 {prompts.map((prompt, index) => (
-                    <ListItem className={"prompt"} key={index} onClick={() => {
+                    <ListItem className={"prompt"} shadow="sm" key={index} onClick={() => {
                         setPrompt(prompt)
                     }}>
                         <Text>{prompt}</Text>
@@ -79,9 +79,10 @@ export default function Sidebar({chatController, isHome}: PropsWithChildren<MuiC
                 size="md"
                 variant="ghost"
                 height={"50px"}
-                borderTop={"1px solid #E2E8F0"}
+                borderTop={"1px solid gray.500"}
                 width={"100%"}
                 marginTop={"auto"}
+                color="gray.500"
             >
                 Logout
             </Button>

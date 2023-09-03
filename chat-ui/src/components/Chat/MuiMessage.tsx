@@ -1,5 +1,4 @@
-import {Avatar, Box, Fade, Text} from '@chakra-ui/react';
-
+import {Box, Fade, Text} from '@chakra-ui/react';
 import {Message, MessageContent} from './index';
 
 export function MuiMessage({
@@ -18,18 +17,6 @@ export function MuiMessage({
     }
 
     const dispDate = message.updatedAt ? message.updatedAt : message.createdAt;
-
-    const ChatAvator = (
-        <Box
-            minWidth={0}
-            flexShrink={0}
-            ml={message.self ? 1 : 0}
-            mr={message.self ? 0 : 1}
-        >
-            {/*<Avatar height={35} width={35} name={message.username} src={message.avatar}/>*/}
-        </Box>
-    );
-
     const ChatUsername = (
         <Box maxWidth="100%" mx={1}>
             <Text isTruncated textAlign={message.self ? 'right' : 'left'} whiteSpace={"pre-wrap"}>
@@ -70,7 +57,7 @@ export function MuiMessage({
                     justifyContent={message.self ? 'flex-end' : 'flex-start'}
                     style={{overflowWrap: 'break-word'}}
                 >
-                    {message.avatar && !message.self && ChatAvator}
+                    {message.avatar && !message.self}
                     <Box minWidth={0} display="flex" flexDirection="column" className={message.className}>
                         {message.username && ChatUsername}
                         <Box
@@ -79,11 +66,13 @@ export function MuiMessage({
                             width={message.self ? '100%' : '100vw'}
                             py={1}
                             px={2}
-                            bg={message.self ? 'blue.400' : 'gray.100'}
+                            bg={message.self ? 'blue.400' : 'gray.50'}
                             color={message.self ? 'white' : 'black'}
-                            borderRadius={message.self ? 'md' : '10pt'}
-                            shadow="md"
+                            borderRadius="md"
+                            shadow="xl"
                             fontSize="md"
+                            
+
                         >
                             {message.type === 'text' && (
                                 <Text style={{whiteSpace: 'pre-wrap'}}>
@@ -94,7 +83,7 @@ export function MuiMessage({
                         </Box>
                         {showTime && ChatDate}
                     </Box>
-                    {message.avatar && message.self && ChatAvator}
+                    {message.avatar && message.self}
                 </Box>
             </Box>
         </Fade>
