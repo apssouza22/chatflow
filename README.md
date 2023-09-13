@@ -1,15 +1,5 @@
 # Chatflow
 
-You can ask anything about our project and our github repo directly in our user interface: 
-
-http://apps.newaisolutions.com/
-
-It will teach you how to run the app locally, answer any questions about our codebase and guide you in contributing to the repo. 
-It can be a great tool for onboarding new developers.
-
-Chatflow is a tool to help the integration of natural language capabilities in any web system,
-making them more accessible and user-friendly for everyone.
-
 Chatflow offers a chat interface for users to interact with any system using natural language.
 Our engine understands the user's intent and executes the required
 commands for the given task.
@@ -20,6 +10,10 @@ approach.
 
 This leads to decreased training expenses, enhanced user experience, and improved
 productivity.
+
+You can try it out [here](http://apps.newaisolutions.com/)
+
+Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn more.
 
 <img src="declarative-imperative.png">
 
