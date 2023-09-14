@@ -12,3 +12,4 @@ requests
 psycopg2-binary
 python-decouple
 sseclient-py
+openai

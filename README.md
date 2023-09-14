@@ -32,7 +32,10 @@ Before running the app, please install Docker first.
     ```bash
     $ docker-compose up -d redis postgres
     ```
-
+- Install the dependencies
+    ```bash
+    $ pip install -r requirements-dev.txt
+    ```
 - Navigate to the backend src cod 
     ```bash
     $ cd server/src
@@ -42,6 +45,7 @@ Before running the app, please install Docker first.
     ```bash
     cp .env.template .env
     ```
+- Replace the OpenAI API key with your own key in the .env file
   
 - Start the backend service locally
     ```bash
@@ -49,17 +53,15 @@ Before running the app, please install Docker first.
    $ python server.py
     ```
   
+- Log into the app http://localhost:3000/assets#/login with the following credentials
+    ```bash
+    username: http://localhost:3000/assets#/login
+    password: 123
+    ```
 - Visit http://localhost:8880/api/docs to see the API docs
 - Access the Redis Vector DB UI on http://localhost:8001/redis-stack/browser
-- Optional - For Github integration set the github token in the localStorage.setItem('github-token', 'your token')  
-
-
-
-### Local Development with Docker
-- Build the docker image `docker build -t apssouza/chatux:latest .`
-- Run `docker-compose up` to start the app or `docker run -p 8880:8880 apssouza/chatux:latest` to run the container
-- Visit http://localhost:8880/api/docs to see the API docs
-
 
 ## Backlog
 Please look at the issues for the backlog
+
+## Leave a star if you like the project
