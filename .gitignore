@@ -20,3 +20,4 @@ file_db/
 /chat-ui/.env.production
 /venv/
 /.mypy_cache/
+/postgres-data/

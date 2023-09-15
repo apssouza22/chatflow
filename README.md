@@ -55,11 +55,18 @@ Before running the app, please install Docker first.
   
 - Log into the app http://localhost:3000/assets#/login with the following credentials
     ```bash
-    username: http://localhost:3000/assets#/login
+    username: admin@gmail.com
     password: 123
     ```
 - Visit http://localhost:8880/api/docs to see the API docs
 - Access the Redis Vector DB UI on http://localhost:8001/redis-stack/browser
+
+### Local Development with Docker
+- Build the docker image `docker build -t apssouza/chatux:latest .`
+- Set OPENAI_API_KEY_GPT4 and OPENAI_API_KEY_GPT3 environment variables
+- Run `docker-compose up` to start the app
+- Visit http://localhost:8880/api/docs to see the API docs
+
 
 ## Backlog
 Please look at the issues for the backlog
