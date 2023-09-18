@@ -24,7 +24,7 @@ Before running the app, please install Docker first
 
 ### Automatic Setup:
 - `cd scripts`
-- `.\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
+- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
 
 ### Starting the App
 - `.\windows-utils.ps1 -action on`
