@@ -27,10 +27,10 @@ Before running the app, please install Docker first
 - `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
 
 ### Starting the App
-- `.\windows-utils.ps1 -action on`
+- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action on`
 
 ### Stopping the App
-- `.\windows-utils.ps1 -action off`
+- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action off`
 
 
 ## Manual setup:
