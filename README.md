@@ -18,7 +18,16 @@ Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn mor
 <img src="declarative-imperative.png">
 
 ## Running the App
-Before running the app, please install Docker first.
+Before running the app, please install Docker first & run the setup
+- `.\windows-utils.ps1 -action on`
+
+## Closing the App
+- `.\windows-utils.ps1 -action off`
+
+## Automatic Setup:
+- `.\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
+
+## Manual setup:
 
 ## React UI
 - `cd chat-ui`
