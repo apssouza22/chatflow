@@ -15,6 +15,8 @@ You can try it out [here](http://apps.newaisolutions.com/)
 
 Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn more.
 
+Join our Discord to know what's going on in development and to ask questions to the maintainers about the project and how to contribute: https://discord.gg/fJ5ecMmsSf
+
 <img src="declarative-imperative.png">
 
 ## Running the App
