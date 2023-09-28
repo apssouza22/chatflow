@@ -47,10 +47,14 @@ async def think(
 async def stream_completion(prompt: str, context: str):
     return StreamingResponse(get_completion_stream(prompt, context), media_type='text/event-stream')
 
+@r.post('/chat/completions/stream')
+async def stream_completion(question_request: CompletionRequest):
+    return StreamingResponse(get_completion_stream(question_request.question, question_request.context), media_type='text/event-stream')
+
 
 def get_completion_stream(prompt, context):
     response = llm_service.get_completions_stream([{
-        "content": "Count to 10, with a comma between each number and no newlines. E.g., 1, 2, 3, ...",
+        "content": prompt,
         "role": "user"
 
     }])

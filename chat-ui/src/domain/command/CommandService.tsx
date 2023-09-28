@@ -7,6 +7,11 @@ import {CommandExecution} from "./CommandExecution";
 import {CommandResponseHandler} from "../commandresp/CommandResponseHandler";
 import {SessionManager} from "../session/SessionManager";
 import {HttpClient} from "../common/HttpClient";
+import {StreamCompletionClient} from "../common/StreamCompletionClient";
+
+function isAction(textMessage: string) {
+    return false;
+}
 
 export class CommandService {
     private commandReq: CommandRequestHandler;
@@ -36,7 +41,11 @@ export class CommandService {
             await this.chatCtl.addMessage({...defaultMsgObj, content: docResp.textMessage});
             return
         }
-        const commandResp = await this.commandFinder.find(res.value, docResp.textMessage);
+        if (!isAction(docResp.textMessage)){
+            this.commandFinder.getAnswer(res.value, docResp.textMessage)
+            // return
+        }
+        const commandResp = await this.commandFinder.getCommand(res.value, docResp.textMessage);
         if (typeof commandResp == "string") {
             await this.handleQuestionResponse(commandResp);
             return
@@ -81,11 +90,12 @@ export function commandServiceFactory(
     chatCtl: ChatController,
     session: SessionManager,
     httpClient: HttpClient,
-    httpClientNoBaseUrl: HttpClient
+    httpClientNoBaseUrl: HttpClient,
+    sseClient: StreamCompletionClient
 ): CommandService {
     const cmdReqHandler = new CommandRequestHandler(chatCtl)
     const cmdRespHandler = new CommandResponseHandler(chatCtl)
-    const commandFinder = new CommandFinder(httpClient, session)
+    const commandFinder = new CommandFinder(httpClient, sseClient, session)
     const commandExec = new CommandExecution(httpClientNoBaseUrl, session)
     return new CommandService(cmdReqHandler, commandFinder, commandExec, cmdRespHandler, chatCtl)
 }
