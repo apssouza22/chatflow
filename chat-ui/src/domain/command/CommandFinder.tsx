@@ -76,12 +76,8 @@ export class CommandFinder {
         }
     }
 
-    getAnswer(input: string, docContext: string): void {
-        let answer = ""
-        let eventSource = this.sseClient.call(input, docContext, (data:any) =>{
-            answer += data.choices[0]?.delta?.content + ""
-            console.log(answer);
-        });
+    getAnswerStream(input: string, docContext: string, callback: (event,done: boolean)=> void): void {
+        this.sseClient.call(input, docContext,callback);
     }
 
     async getCommand(input, docContext): Promise<InputHandledResp> {
@@ -105,11 +101,6 @@ export class CommandFinder {
             }
         }
 
-        // @ts-ignore
-        let answer = resp.data?.thoughts?.answer;
-        if (!resp.data?.hasOwnProperty("command") || answer != undefined) {
-            return answer
-        }
         let taskCommand = parseCommandResponse(resp, input);
         taskCommand.dataUpdate = prepareDataUpdate(taskCommand.command, taskCommand.dataUpdate)
         setRenderInfo(taskCommand.command?.response_render)
@@ -136,11 +127,6 @@ function parseCommandResponse(resp: any, chat: string): TaskCommand {
         }
     }
     let dataUpdate = {}
-    Object.keys(command.request_render ?? {}).forEach(field => {
-        if (command.request_render[field]?.hasOwnProperty("field_type")) {
-            dataUpdate[field] = ""
-        }
-    })
 
     return {dataUpdate: dataUpdate, command, speak: answer ?? speak, chat};
 }
