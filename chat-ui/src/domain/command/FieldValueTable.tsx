@@ -17,6 +17,27 @@ export function FieldValueTable(props: FieldValueTableProps): JSX.Element {
     if (props.data.length === 0) {
         return (<div>No data</div>)
     }
+    function flatFields(data:any): {} {
+        const flatFields = {};
+        const stack = [{obj: data, parentKey: null}];
+        while (stack.length > 0) {
+            const {obj, parentKey} = stack.pop();
+
+            Object.keys(obj).forEach(key => {
+                const val = obj[key];
+
+                if (typeof val === "object") {
+                    stack.push({obj: val, parentKey: parentKey ? `${parentKey}.${key}` : key});
+                }
+
+                if (typeof val === "string") {
+                    flatFields[parentKey ? `${parentKey}.${key}` : key] = val;
+                }
+            });
+        }
+        return flatFields;
+    }
+
     const onBlurHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
         const {
             name,
@@ -24,40 +45,57 @@ export function FieldValueTable(props: FieldValueTableProps): JSX.Element {
         } = event.target
         // @ts-ignore
         setArgs(prevValues => {
-            return ({
-                ...prevValues!,
-                [name]: value
-            })
+            if (prevValues.hasOwnProperty(name)) {
+                return {
+                    ...prevValues!,
+                    [name]: value
+                }
+            }
+            let arr = {...prevValues}
+
+            name
+                .split(".")
+                .forEach(key => {
+                    if (arr.hasOwnProperty(key) && typeof arr[key] === "object") {
+                        arr = arr[key]
+                        return
+                    }
+                    arr[key] = value
+                })
+
+            return prevValues
         })
     }
 
-    function handleValueField(key: string): ReactJSXElement {
+
+    function handleValueField(key: string, fields): ReactJSXElement {
         if (!props.requestRender?.hasOwnProperty(key)) {
-            return (<Input name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+            return (<Input name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
         }
         if (props.requestRender[key]?.field_type == "password") {
-            return (<Input type={"password"} name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+            return (<Input type={"password"} name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
         }
         if (props.requestRender[key]?.field_type == "email") {
-            return (<Input type={"email"} name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+            return (<Input type={"email"} name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
         }
         if (props.requestRender[key]?.field_type == "checkbox") {
-            return (<Input name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+            return (<Input name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
         }
         if (props.requestRender[key]?.field_type == "textarea") {
-            return (<Textarea name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+            return (<Textarea name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
         }
         if (props.requestRender[key]?.field_type == "select") {
-            return (<Select placeholder='Select option' name={key} defaultValue={args[key]} onChange={onBlurHandler}>
+            return (<Select placeholder='Select option' name={key} defaultValue={fields[key]} onChange={onBlurHandler}>
                 {props.requestRender[key]?.field_options?.map(v => (
                         <option value={v}>{v}</option>
                     )
                 )}
             </Select>)
         }
-        return (<Input name={key} defaultValue={args[key]} onBlur={onBlurHandler}/>)
+        return (<Input name={key} defaultValue={fields[key]} onBlur={onBlurHandler}/>)
     }
 
+    let fields = flatFields(args);
     return (
         <>
             <TableContainer bg={"white"}>
@@ -69,11 +107,11 @@ export function FieldValueTable(props: FieldValueTableProps): JSX.Element {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {Object.keys(args).map(key => (
+                        {Object.keys(fields).map(key => (
                             <Tr key={Math.random()}>
                                 <Td>{key}</Td>
                                 <Td>
-                                    {handleValueField(key)}
+                                    {handleValueField(key, fields)}
                                 </Td>
                             </Tr>
                         ))}

@@ -22,16 +22,16 @@ Join our Discord to know what's going on in development and to ask questions to 
 ## Running the App
 Before running the app, please install Docker first
 
-## Set up the environment(Windows only)
+## Set up the environment
 
-### Automatic Setup:
+### Automatic Setup(Windows only):
 - `cd scripts`
 - `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
 
-### Starting the App
+#### Starting the App
 - `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action on`
 
-### Stopping the App
+#### Stopping the App
 - `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action off`
 
 

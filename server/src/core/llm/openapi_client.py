@@ -26,7 +26,7 @@ class OpenAI:
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def get_chat_completions(self, messages: List[dict], max_tokens=500, temperature=0.1):
+    def get_chat_completions(self, messages: List[dict], max_tokens=2000, temperature=0.1):
         """
         :param messages:
         :param max_tokens:
@@ -46,7 +46,8 @@ class OpenAI:
         response = requests.post(
             f"{self.base_url}/chat/completions",
             headers=self.headers,
-            data=json.dumps(completion_options, cls=EnumEncoder)
+            data=json.dumps(completion_options, cls=EnumEncoder),
+            timeout=60,
         )
         # if request is unsuccessful and `status_code = 429` then,
         # raise rate limiting error else the OpenAIError

@@ -73,7 +73,7 @@ export class CommandFinder {
         }
     }
 
-    async find(input, docContext): Promise<InputHandledResp> {
+    async find(input:string, docContext: string): Promise<InputHandledResp> {
         let data = {
             "question": input,
             "context": docContext,
@@ -123,11 +123,6 @@ function parseCommandResponse(resp: any, chat: string): TaskCommand {
         }
     }
     let dataUpdate = {}
-    Object.keys(command.request_render ?? {}).forEach(field => {
-        if (command.request_render[field]?.hasOwnProperty("field_type")) {
-            dataUpdate[field] = ""
-        }
-    })
 
     return {dataUpdate: dataUpdate, command, speak: answer ?? speak, chat};
 }
