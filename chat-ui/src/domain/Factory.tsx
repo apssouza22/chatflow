@@ -5,9 +5,11 @@ import {SessionManager} from "./session/SessionManager";
 import {defaultMsgObj} from "../components/Chat";
 import {commandServiceFactory} from "./command/CommandService";
 import {ThinkingMsg} from "./common/ThinkingMsg";
+import {StreamCompletionClient} from "./common/StreamCompletionClient";
 
 const session = SessionManager.getInstance()
 const httpClient = new HttpClient(process.env.REACT_APP_SERVER_URL);
+const sseClient = new StreamCompletionClient(process.env.REACT_APP_SERVER_URL);
 const flowCtl = new FlowController()
 export const chatCtl = new ChatController(flowCtl, {showDateTime: true});
 
@@ -36,7 +38,8 @@ export const commandService = commandServiceFactory(
     chatCtl,
     session,
     httpClient,
-    new HttpClient("")
+    new HttpClient(""),
+    sseClient,
 )
 
 chatCtl.addOnMessagesChanged(() => {

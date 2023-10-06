@@ -7,6 +7,14 @@ import {CommandExecution} from "./CommandExecution";
 import {CommandResponseHandler} from "../commandresp/CommandResponseHandler";
 import {SessionManager} from "../session/SessionManager";
 import {HttpClient} from "../common/HttpClient";
+import {StreamCompletionClient} from "../common/StreamCompletionClient";
+
+function isAction(doc: string, input: string) {
+    if (input.endsWith("?")) {
+        return false
+    }
+    return doc && doc.includes("#action");
+}
 
 export class CommandService {
     private commandReq: CommandRequestHandler;
@@ -30,17 +38,36 @@ export class CommandService {
         chatCtl.getFlowController().addOnCommandTriggered(this.handleCommandTriggered())
     }
 
+
+    async handleAnswerStream(input: string, docContext: string) {
+        let answer = ""
+
+        await this.chatCtl.addMessage({...defaultMsgObj, content: formatText(answer)})
+
+        this.commandFinder.getAnswerStream(input, docContext,
+            (data: any, done: boolean) => {
+                if (data.choices[0]?.delta?.content == null) {
+                    return
+                }
+                answer += data.choices[0]?.delta?.content + ""
+                const contAnswer = formatText(answer)
+                this.chatCtl.updateMessage(this.chatCtl.getMessages().length - 1, {...defaultMsgObj, content: contAnswer})
+            })
+    }
+
     async process(res: ActionResponse): Promise<void> {
         let docResp = await this.commandFinder.getDocumentation(res.value);
         if (!docResp.success) {
             await this.chatCtl.addMessage({...defaultMsgObj, content: docResp.textMessage});
             return
         }
-        const commandResp = await this.commandFinder.find(res.value, docResp.textMessage);
-        if (typeof commandResp == "string") {
-            await this.handleQuestionResponse(commandResp);
+
+        if (!isAction(docResp.textMessage, res.value)) {
+            await this.handleAnswerStream(res.value, docResp.textMessage)
             return
         }
+        const commandResp = await this.commandFinder.getCommand(res.value, docResp.textMessage);
+
         console.log("task", commandResp)
         // @ts-ignore
         if (commandResp.hasOwnProperty("errorCode") && commandResp.errorCode != null) {
@@ -50,13 +77,14 @@ export class CommandService {
         await this.commandReq.handleCommand(taskCommand)
         this.chatCtl.getFlowController().addCommand(taskCommand)
     }
+
     async handleCommand(command: TaskCommand) {
         await this.commandReq.handleCommand(command)
     }
 
     private handleCommandTriggered() {
         const self = this
-        return async(params: OnCommandTriggeredParams) =>{
+        return async (params: OnCommandTriggeredParams) => {
             const resp = await self.commandExec.executeCommand(params.command, params.args)
             await self.commandResp.handle(resp)
         }
@@ -81,11 +109,12 @@ export function commandServiceFactory(
     chatCtl: ChatController,
     session: SessionManager,
     httpClient: HttpClient,
-    httpClientNoBaseUrl: HttpClient
+    httpClientNoBaseUrl: HttpClient,
+    sseClient: StreamCompletionClient
 ): CommandService {
     const cmdReqHandler = new CommandRequestHandler(chatCtl)
     const cmdRespHandler = new CommandResponseHandler(chatCtl)
-    const commandFinder = new CommandFinder(httpClient, session)
+    const commandFinder = new CommandFinder(httpClient, sseClient, session)
     const commandExec = new CommandExecution(httpClientNoBaseUrl, session)
     return new CommandService(cmdReqHandler, commandFinder, commandExec, cmdRespHandler, chatCtl)
 }

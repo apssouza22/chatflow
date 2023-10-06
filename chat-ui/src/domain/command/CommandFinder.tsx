@@ -3,6 +3,7 @@ import {parseUrlParams} from "../common/utils";
 import {LOCALHOST_URL} from "../../constants";
 import {HttpClient} from "../common/HttpClient";
 import {SessionManager} from "../session/SessionManager";
+import {StreamCompletionClient} from "../common/StreamCompletionClient";
 
 type DocResp = {
     success: boolean,
@@ -15,9 +16,11 @@ type InputHandledResp = TaskCommand | CommandError | AnswerType;
 export class CommandFinder {
     private httpClient: HttpClient;
     private session: SessionManager;
+    private sseClient: StreamCompletionClient;
 
-    constructor(reactive: HttpClient, session: SessionManager) {
-        this.httpClient = reactive;
+    constructor(httpClient: HttpClient, sseClient: StreamCompletionClient, session: SessionManager) {
+        this.sseClient = sseClient;
+        this.httpClient = httpClient;
         this.session = session;
     }
 
@@ -73,17 +76,23 @@ export class CommandFinder {
         }
     }
 
-    async find(input:string, docContext: string): Promise<InputHandledResp> {
+    getAnswerStream(input: string, docContext: string, callback: (event,done: boolean)=> void): void {
+        this.sseClient.call(input, docContext,callback);
+    }
+
+    async getCommand(input, docContext): Promise<InputHandledResp> {
         let data = {
             "question": input,
             "context": docContext,
         };
+
 
         const resp = await this.httpClient.post<Command>(
             "/chat/completions",
             data,
             this.getHeaders()
         )
+
         console.log("command response", resp)
         if (resp.error != null) {
             return {
@@ -92,11 +101,6 @@ export class CommandFinder {
             }
         }
 
-        // @ts-ignore
-        let answer = resp.data?.thoughts?.answer;
-        if (!resp.data?.hasOwnProperty("command") || answer != undefined) {
-            return answer
-        }
         let taskCommand = parseCommandResponse(resp, input);
         taskCommand.dataUpdate = prepareDataUpdate(taskCommand.command, taskCommand.dataUpdate)
         setRenderInfo(taskCommand.command?.response_render)
