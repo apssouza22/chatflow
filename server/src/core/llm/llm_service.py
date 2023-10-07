@@ -5,10 +5,9 @@ from pydantic import BaseModel
 
 from core.app.app_dao import App
 from core.common.utils import filter_content
-from core.llm.openai_stream import OpenAIStream
 from core.llm.openapi_client import OpenAI
-from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, \
-    prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
+from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
+from core.llm.openai_stream import OpenAIStream
 
 
 class Usage(BaseModel):
@@ -33,6 +32,7 @@ class LLMService:
     def _gpt3(self, prompts, temperature=0.1) -> LLMResponse:
         print("gpt3 prompt", prompts)
         response = self.openai_api_gpt3.get_chat_completions(prompts, temperature=temperature)
+        print("gpt3 response successfuly")
         usage = response["usage"]
         usage["model"] = response["model"]
         return LLMResponse(
@@ -50,34 +50,37 @@ class LLMService:
             message=response["choices"][0]["message"]["content"]
         )
 
-    def get_completions_stream(self, prompts: List[dict], temperature=0.1):
-        return self.completion_stream.get_chat_completions(prompts, temperature=temperature)
+    def get_completions_stream(self, prompts: List[dict], model, temperature):
+        return self.completion_stream.get_chat_completions(prompts, model=model, temperature=temperature)
 
     def get_task_command(self, history: List[MessageCompletion], app: App) -> LLMResponse:
         prompts = build_prompt_command(history)
         return self._gpt3(prompts, app.app_temperature)
 
     def get_question_answer(self, user_input: str, app: App, history: List[MessageCompletion]) -> LLMResponse:
-        contents, msgs = get_prompt_objs_from_history(history)
-        usages = []
-        if len(contents) > 1:
-            option = self.pick_best_doc(contents, user_input)
-            contents = filter_content(contents, option.message)
-            usages.append(option.usage[0])
+        prompts, usages = self.get_question_prompts(app, history, user_input)
 
-        prompts = build_prompt_answer_questions(app, contents, msgs)
-
-        if app.app_model == "gpt3":
-            resp = self._gpt3(prompts, app.app_temperature)
-        else:
+        if app.app_model == "gpt4":
             resp = self._gpt4(prompts, app.app_temperature)
+        else:
+            resp = self._gpt3(prompts, app.app_temperature)
         usages.append(resp.usage[0])
         return LLMResponse(
             usage=usages,
             message=resp.message
         )
 
-    def pick_best_doc(self, contents, user_input) -> LLMResponse:
+    def get_question_prompts(self, app, history, user_input: str):
+        contents, msgs = get_prompt_objs_from_history(history)
+        usages = []
+        if len(contents) > 1:
+            option = self.pick_best_doc(contents, user_input)
+            contents = filter_content(contents, option.message)
+            usages.append(option.usage[0])
+        prompts = build_prompt_answer_questions(app, contents, msgs)
+        return prompts, usages
+
+    def pick_best_doc(self, contents, user_input: str) -> LLMResponse:
         pick_content_prompt = prompt_pick_content(contents, user_input)
         return self._gpt3(pick_content_prompt)
 
@@ -108,5 +111,5 @@ def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
     return LLMService(
         OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
         OpenAI(app_key_gpt4, "gpt-4"),
-        OpenAIStream(app_key_gpt3, "gpt-3.5-turbo-0613"),
+        OpenAIStream(app_key_gpt4),
     )

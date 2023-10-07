@@ -29,6 +29,7 @@ export class CommandFinder {
             "Authorization": "Bearer " + this.session.getSessionData().token,
             "AppKey": this.session.getSessionData().app,
             "PluginMode": this.session.getSessionData().isPluginMode.toString(),
+            "sessionId": this.session.getSessionData().sessionId,
         };
     }
 

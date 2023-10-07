@@ -80,11 +80,18 @@ class MessageRole(Enum):
     USER = "user"
     ASSISTANT = "assistant"
 
+    def __str__(self):
+        return self.value
+
 
 class MessageDict(TypedDict):
     role: MessageRole
     content: str
-
+    def __str__(self):
+        return {
+            "role": self.role.value,
+            "content": self.content
+        }
 
 @dataclass
 class MessageCompletion:
