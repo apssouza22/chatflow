@@ -21,43 +21,58 @@ async def think(
         request: Request,
         current_user: User = Depends(get_current_user),
 ) -> t.Dict:
-    await get_user_ip(request)
-    is_plugin_mode = request.headers.get("pluginmode") == "true"
-    app = apps.get_by_id(current_user.email, request.headers.get("appkey"))
-    if app is None:
-        app = App(app_name="chat", app_description="admin app", app_key="chat")
 
-    if cost_service.has_allowance_exceeded(current_user.email, app.app_key):
+    user_input_req = get_request_dto(current_user, question_request, request)
+
+    if cost_service.has_allowance_exceeded(current_user.email, user_input_req.app.app_key):
         raise HTTPException(status_code=402, detail="You have exceeded the free allowance for this app")
 
-    user_input_req = UserInputDto(**{
-        "question": question_request.question,
-        "context": question_request.context,
-        "user": current_user,
-        "app": app,
-        "is_plugin_mode": is_plugin_mode
-    })
     # return get_fake_command()
     commands = agent.handle_user_input(user_input_req)
     print(commands)
     return commands
 
 
-@r.get('/chat/completions/stream')
-async def stream_completion(prompt: str, context: str):
-    return StreamingResponse(get_completion_stream(prompt, context), media_type='text/event-stream')
-
 @r.post('/chat/completions/stream')
-async def stream_completion(question_request: CompletionRequest):
-    return StreamingResponse(get_completion_stream(question_request.question, question_request.context), media_type='text/event-stream')
+async def stream_completion(
+        question_request: CompletionRequest,
+        request: Request,
+        current_user: User = Depends(get_current_user),
+):
+    user_input_req = get_request_dto(current_user, question_request, request)
+
+    if cost_service.has_allowance_exceeded(current_user.email, user_input_req.app.app_key):
+        raise HTTPException(status_code=402, detail="You have exceeded the free allowance for this app")
+
+    user_history = agent.user_history_process(user_input_req)
+    prompts, _ = llm_service.get_question_prompts(user_input_req.app, user_history, user_input_req.question)
+    return StreamingResponse(
+        get_completion_stream(prompts, user_input_req.app.app_model, user_input_req.app.app_temperature),
+        media_type='text/event-stream'
+    )
 
 
-def get_completion_stream(prompt, context):
-    response = llm_service.get_completions_stream([{
-        "content": prompt,
-        "role": "user"
+def get_request_dto(current_user, question_request, request):
+    get_user_ip(request)
+    is_plugin_mode = request.headers.get("pluginmode") == "true"
+    session_id = request.headers.get("sessionid") or current_user.email
+    app = apps.get_by_id(current_user.email, request.headers.get("appkey"))
+    if app is None:
+        app = App(app_name="chat", app_description="admin app", app_key="chat")
 
-    }])
+    user_input_req = UserInputDto(**{
+        "question": question_request.question,
+        "context": question_request.context,
+        "user": current_user,
+        "app": app,
+        "is_plugin_mode": is_plugin_mode,
+        "session_id": session_id
+    })
+    return user_input_req
+
+
+def get_completion_stream(prompts, model, temperature):
+    response = llm_service.get_completions_stream(prompts, model, temperature)
     client = sseclient.SSEClient(response)
     for event in client.events():
         if event.data != '[DONE]':
@@ -65,14 +80,13 @@ def get_completion_stream(prompt, context):
             yield "data:" + event.data + '\n\n'
 
 
-async def get_user_ip(request):
+def get_user_ip(request):
     """Get the user's IP address from the request"""
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
         client_host = x_forwarded_for.split(',')[0]  # Take the first IP if there's a list
     else:
         client_host = request.client.host
-    print(client_host)
     return client_host
 
 

@@ -26,7 +26,7 @@ class OpenAI:
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def get_chat_completions(self, messages: List[dict], max_tokens=2000, temperature=0.1):
+    def get_chat_completions(self, messages: List[dict], max_tokens=1000, temperature=0.1):
         """
         :param messages:
         :param max_tokens:
