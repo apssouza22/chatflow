@@ -38,7 +38,7 @@ async def think(
         "is_plugin_mode": is_plugin_mode
     })
     # return get_fake_command()
-    commands = agent.handle_user_input(user_input_req)
+    commands = await agent.handle_user_input(user_input_req)
     print(commands)
     return commands
 

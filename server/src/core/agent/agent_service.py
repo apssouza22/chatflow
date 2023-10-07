@@ -46,7 +46,7 @@ class AgentService:
         self.update_cost(text_form.usage, req.user.email, req.app.app_key)
         return text_form.message.lower() == "form"
 
-    def handle_user_input(self, req: UserInputDto) -> dict:
+    async def handle_user_input(self, req: UserInputDto) -> dict:
         current_user = req.user
         self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
             role=MessageRole.USER,
@@ -55,12 +55,13 @@ class AgentService:
         ))
         is_action = self.is_action(req)
 
-        if self.cache.exists(req.question):
-            message = self.cache.get(req.question)
+        # TODO: Eliminate `cache.exists` call:
+        if await self.cache.exists(req.question):
+            message = await self.cache.get(req.question)
         else:
             llm_resp = self._get_llm_response(req, is_action)
             self.update_cost(llm_resp.usage, current_user.email, req.app.app_key)
-            self.cache.put(req.question, llm_resp.message)
+            await self.cache.put(req.question, llm_resp.message)
             message = llm_resp.message
 
         self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
