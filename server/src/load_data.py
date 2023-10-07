@@ -25,6 +25,7 @@ from data.prepare_data import prepare_data
 redis_conn = redis.from_url(config.REDIS_URL)
 
 
+# TODO: This function is never used.
 async def create_index(
         redis_conn: Redis,
         prefix: str,
@@ -110,7 +111,7 @@ async def create_hnsw_index(
 
     application_field = TagField("application")
 
-    # Create index
+    # Create index (TODO: Compare the function `create_index()` above).
     await redis_conn.ft(INDEX_NAME).create_index(
         fields=[openai_text_field, application_field],
         definition=IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
