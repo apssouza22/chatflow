@@ -17,19 +17,21 @@ services:
     volumes:
       - ./server/src:/app/src
       - ./chat-ui/build:/app/frontend
+    env_file:
+      - server/src/.env
     environment:
       REDIS_DB: 0
-      SERVER_HOST: "0.0.0.0"
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      OPENAI_API_KEY_GPT4: ${OPENAI_API_KEY_GPT4}
-      OPENAI_API_KEY_GPT3: ${OPENAI_API_KEY_GPT3}
-      PGSQL_HOST: ${PGSQL_HOST:-postgres}
-      PGSQL_PORT: ${PGSQL_PORT:-5432}
-      PGSQL_PASS: ${PGSQL_PASS:-postgres}
-      PGSQL_USER: ${PGSQL_USER:-chatux}
-      PGSQL_DB: ${PGSQL_DB:-postgres}
+#      SERVER_HOST: "0.0.0.0"
+#      REDIS_HOST: ${REDIS_HOST:-redis}
+#      REDIS_PORT: ${REDIS_PORT:-6379}
+#      REDIS_PASSWORD: ${REDIS_PASSWORD}
+#      OPENAI_API_KEY_GPT4: ${OPENAI_API_KEY_GPT4}
+#      OPENAI_API_KEY_GPT3: ${OPENAI_API_KEY_GPT3}
+#      PGSQL_HOST: ${PGSQL_HOST:-postgres}
+#      PGSQL_PORT: ${PGSQL_PORT:-5432}
+#      PGSQL_PASS: ${PGSQL_PASS:-postgres}
+#      PGSQL_USER: ${PGSQL_USER:-chatux}
+#      PGSQL_DB: ${PGSQL_DB:-postgres}
     ports:
       - "8880:8880"
     working_dir: /app/src
