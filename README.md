@@ -49,6 +49,8 @@ Before running the app, please install Docker first
     ```bash
     cp server/src/.env.template server/src/.env
     ```
+- Replace the OpenAI API key with your own key in the .env file
+  
 - Start the databases
     ```bash
     $ docker-compose up -d redis postgres
@@ -61,8 +63,6 @@ Before running the app, please install Docker first
     ```bash
     $ cd server/src
     ```
-  
-- Replace the OpenAI API key with your own key in the .env file
   
 - Start the backend service locally
     ```bash
