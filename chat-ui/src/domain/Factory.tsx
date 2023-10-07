@@ -9,7 +9,7 @@ import {StreamCompletionClient} from "./common/StreamCompletionClient";
 
 const session = SessionManager.getInstance()
 const httpClient = new HttpClient(process.env.REACT_APP_SERVER_URL);
-const sseClient = new StreamCompletionClient(process.env.REACT_APP_SERVER_URL);
+const sseClient = new StreamCompletionClient(process.env.REACT_APP_SERVER_URL, session);
 const flowCtl = new FlowController()
 export const chatCtl = new ChatController(flowCtl, {showDateTime: true});
 
