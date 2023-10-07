@@ -226,7 +226,7 @@ async def create_predict_cache():
     value_field = TextField("value")
 
     # Create index
-    await redis_conn.ft(INDEX_NAME + "_predict_cache").create_index(
+    await redis_conn.create_index(
         fields=[value_field],
         definition=IndexDefinition(prefix=["predict_cache:"], index_type=IndexType.HASH)
     )
