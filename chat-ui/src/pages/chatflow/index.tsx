@@ -123,9 +123,9 @@ export function getTopRightMenu(onOpen): ReactElement {
 }
 
 async function start(chatCtl: ChatController): Promise<void> {
-    if (SessionManager.getInstance().getSessionData().app == "chat") {
-        await askIfShouldDemoTheInputs(chatCtl);
-    }
+    // if (SessionManager.getInstance().getSessionData().app == "chat") {
+    //     await askIfShouldDemoTheInputs(chatCtl);
+    // }
     await chatCtl.addMessage({
         type: 'text',
         content: `How can I help you today?`,
