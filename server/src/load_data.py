@@ -194,12 +194,7 @@ async def load_all_data():
             print("Index creation failed. Index already exists")
             # traceback.print_exc()
 
-        try:
-            print("Creating query predict cache")
-            await create_predict_cache()
-        except Exception as e:
-            print("Index creation failed. Index already exists")
-            # traceback.print_exc()
+        # We also use "predict_cache:"
         print("Search index created")
 
 

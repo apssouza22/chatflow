@@ -2,6 +2,7 @@ import json
 
 from pydantic import BaseModel
 
+from core.common import conn
 from core.agent.cache import PredictCache
 from core.app.app_dao import App
 from core.history.chat_history import ChatHistoryService, AddMessageDto
@@ -134,5 +135,5 @@ def agent_factory(chat_history: ChatHistoryService, cost_service: CostService, l
         chat_history,
         cost_service,
         llm,
-        PredictCache()
+        PredictCache(conn.get_redis_instance())
     )
