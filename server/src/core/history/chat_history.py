@@ -22,8 +22,8 @@ class ChatHistoryService:
 
         self.persist_message(user_email, app_key, message)
 
-    def get_history(self, key):
-        return self.redis.hgetall("chat_history_cache:" + key)
+    async def get_history(self, key):
+        return await self.redis.hgetall("chat_history_cache:" + key)
 
     def persist_message(self, user_email, app_key, message):
         is_bot_replay = message.role == MessageRole.ASSISTANT

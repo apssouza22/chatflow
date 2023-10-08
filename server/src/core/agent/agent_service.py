@@ -46,9 +46,9 @@ class AgentService:
         self.update_cost(text_form.usage, req.user.email, req.app.app_key)
         return text_form.message.lower() == "form"
 
-    def handle_user_input(self, req: UserInputDto) -> dict:
+    async def handle_user_input(self, req: UserInputDto) -> dict:
         current_user = req.user
-        self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
+        await self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
             role=MessageRole.USER,
             context=req.context,
             query=req.question
@@ -58,12 +58,12 @@ class AgentService:
         if self.cache.exists(req.question):
             message = self.cache.get(req.question)
         else:
-            llm_resp = self._get_llm_response(req, is_action)
+            llm_resp = await self._get_llm_response(req, is_action)
             self.update_cost(llm_resp.usage, current_user.email, req.app.app_key)
             self.cache.put(req.question, llm_resp.message)
             message = llm_resp.message
 
-        self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
+        await self.history.add_message(req.user.email, req.app.app_key, MessageCompletion(
             role=MessageRole.ASSISTANT,
             response=message
         ))
@@ -84,9 +84,9 @@ class AgentService:
             }
         }
 
-    def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
+    async def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
         history_key = req.user.email + "_" + req.app.app_key
-        user_history = self.history.get_history(history_key)
+        user_history = await self.history.get_history(history_key)
         if user_history is None:
             user_history = []
         if is_action:
