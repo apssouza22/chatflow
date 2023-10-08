@@ -36,4 +36,4 @@ class ChatHistoryService:
 
 def factory_chat_history(pg_conn: DBConnection):
     dao = HistoryDao(pg_conn)
-    return ChatHistoryService(dao, conn.redis_conn)
+    return ChatHistoryService(dao, conn.get_redis_instance())
