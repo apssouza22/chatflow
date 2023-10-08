@@ -60,7 +60,7 @@ Before running the app, please install Docker first
   
 - Create a .env file and set all required variables
     ```bash
-    cp .env.template .env
+    cp server/src/.env.template server/src/.env
     ```
 - Replace the OpenAI API key with your own key in the .env file
   

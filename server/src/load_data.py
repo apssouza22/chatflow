@@ -25,59 +25,6 @@ from data.prepare_data import prepare_data
 redis_conn = redis.from_url(config.REDIS_URL)
 
 
-async def create_index(
-        redis_conn: Redis,
-        prefix: str,
-        text_field: VectorField
-):
-    application_field = TagField("application")
-    # Create index
-    await redis_conn.ft(INDEX_NAME).create_index(
-        fields=[text_field, application_field],
-        definition=IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
-    )
-
-
-async def create_flat_index(
-        redis_conn: Redis,
-        number_of_vectors: int,
-        prefix: str,
-        distance_metric: str = 'L2'
-):
-    """
-    Use this type of index for Exact Nearest Neighbor search. This type of index is best for accuracy.
-    :param redis_conn:
-    :param number_of_vectors:
-    :param prefix:
-    :param distance_metric:
-    :return:
-    """
-    text_field = VectorField("text_vector",
-                             "FLAT", {
-                                 "TYPE": "FLOAT32",
-                                 "DIM": 768,
-                                 "DISTANCE_METRIC": distance_metric,
-                                 "INITIAL_CAP": number_of_vectors,
-                                 "BLOCK_SIZE": number_of_vectors
-                             })
-
-    openai_text_field = VectorField("openai_text_vector",
-                                    "FLAT", {
-                                        "TYPE": "FLOAT32",
-                                        "DIM": 1536,
-                                        "DISTANCE_METRIC": distance_metric,
-                                        "INITIAL_CAP": number_of_vectors,
-                                    })
-
-    application_field = TagField("application")
-
-    # Create index
-    await redis_conn.ft(INDEX_NAME + "_flat2").create_index(
-        fields=[openai_text_field, application_field],
-        definition=IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
-    )
-
-
 async def create_hnsw_index(
         redis_conn: Redis,
         number_of_vectors: int,
@@ -184,10 +131,7 @@ async def load_all_data():
 
         try:
             print("Creating vector search index")
-            if config.INDEX_TYPE == "HNSW":
-                await create_hnsw_index(redis_conn, len(items_metadata), prefix=prefix, distance_metric="COSINE")
-            else:
-                await create_flat_index(redis_conn, len(items_metadata), prefix=prefix, distance_metric="L2")
+            await create_hnsw_index(redis_conn, len(items_metadata), prefix=prefix, distance_metric="COSINE")
             print("Creating text search index")
             await create_text_search_index()
         except Exception as e:

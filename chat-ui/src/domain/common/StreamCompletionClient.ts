@@ -1,16 +1,30 @@
+import {SessionManager} from "../session/SessionManager";
+
 export class StreamCompletionClient {
     private readonly baseUrl: string;
+    private session: SessionManager;
 
-    constructor(baseUrl: string) {
+    constructor(baseUrl: string, session: SessionManager) {
         this.baseUrl = baseUrl;
+        this.session = session;
     }
 
-    async call(context: string, prompt: string, callback: (data, done: boolean) => void): Promise<void> {
+    private getHeaders() {
+        return {
+            "Authorization": "Bearer " + this.session.getSessionData().token,
+            "AppKey": this.session.getSessionData().app,
+            "PluginMode": this.session.getSessionData().isPluginMode.toString(),
+            "sessionId": this.session.getSessionData().sessionId,
+        };
+    }
+
+    async call(prompt: string, context: string, callback: (data, done: boolean) => void): Promise<void> {
         const response = await fetch(`${this.baseUrl}/chat/completions/stream`, {
             method: 'POST',
             headers: {
                 'Accept': 'text/event-stream',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...this.getHeaders()
             },
             body: JSON.stringify({
                 "question": prompt,
