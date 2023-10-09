@@ -217,17 +217,6 @@ async def create_text_search_index():
     )
 
 
-async def create_predict_cache():
-    value_field = TextField("value")
-
-    # Create index
-    await redis_conn.create_index(
-        fields=[value_field],
-        definition=IndexDefinition(prefix=["predict_cache:"], index_type=IndexType.HASH)
-    )
-
-
-
 if __name__ == "__main__":
     print("Preparing data")
     prepare_data()

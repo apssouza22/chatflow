@@ -1,8 +1,7 @@
-# from core.common.encode import encode_to_base64, decode_from_base64
+from core.common.encode import encode_to_base64
 from core.common import conn
 
 
-# Base64 is used to avoid outputting control symbols, etc. to a terminal during debugging.
 class PredictCache:
     def __init__(self, redis):
         self.redis = redis
