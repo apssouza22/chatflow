@@ -62,14 +62,14 @@ class AgentService:
                 query=req.question
             )
         )
-        self.history.add_message(add_message_dto)
+        await self.history.add_message(add_message_dto)
         is_action = self.is_action(req)
 
         # TODO: Eliminate `cache.exists` call:
         if await self.cache.exists(req.question):
             message = await self.cache.get(req.question)
         else:
-            llm_resp = self._get_llm_response(req, is_action)
+            llm_resp = await self._get_llm_response(req, is_action)
             message = llm_resp.message
             self.update_cost(llm_resp.usage, current_user.email, req.app.app_key)
             await self.cache.put(req.question, llm_resp.message)
@@ -84,7 +84,7 @@ class AgentService:
                 response=message
             )
         )
-        self.history.add_message(add_message_dto)
+        await self.history.add_message(add_message_dto)
 
         if is_action:
             commands = self.resp_handler.extract_json_schema(message)
@@ -117,14 +117,14 @@ class AgentService:
             }
         }
 
-    def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
+    async def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
         user_history = self._get_user_history(req)
         if is_action:
             return self.llm.get_task_command(user_history, app=req.app)
         return self.llm.get_question_answer(req.question, req.app, user_history)
 
     def _get_user_history(self, req):
-        user_history = self.history.get_history(req.session_id)
+        user_history = await self.history.get_history(req.session_id)
         if user_history is None:
             user_history = []
         return user_history
