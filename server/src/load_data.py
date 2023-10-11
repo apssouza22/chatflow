@@ -159,7 +159,6 @@ async def create_text_search_index():
         fields=[text_field, title_field, application_field],
         definition=IndexDefinition(prefix=[search_prefix], index_type=IndexType.JSON)
     )
-    # Also use keys: chat_history_cache:*
 
 
 if __name__ == "__main__":

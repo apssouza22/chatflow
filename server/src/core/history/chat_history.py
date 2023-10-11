@@ -6,7 +6,6 @@ from core.common.cache import CacheMemory
 from core.common.pg import DBConnection
 from core.history.history_dao import HistoryDao
 from core.llm.prompt_handler import MessageCompletion, MessageRole
-from core.common import conn
 
 
 class AddMessageDto(BaseModel):
@@ -16,24 +15,27 @@ class AddMessageDto(BaseModel):
     message: MessageCompletion
 
 
-# TODO: Explain in a comment, why we use both HistoryDAO and Redis persistence.
 class ChatHistoryService:
-    def __init__(self, dao: HistoryDao, redis):
+    def __init__(self, dao: HistoryDao):
         self.dao = dao
-        self.redis = redis
+        self.history = CacheMemory(30)
 
-    async def add_message(self, req: AddMessageDto):
+    def add_message(self, req: AddMessageDto):
         user_email = req.user_email
         app_key = req.app_key
         session_id = req.session_id
 
-        list_len = await self.redis.llen("chat_history_cache:" + key)
-        self.redis.hset("chat_history_cache:" + key, list_len, message)  # add to the end of the list
+        if self.history.get(session_id) is None:
+            self.history.put(session_id, [req.message])
+        else:
+            history = self.history.get(session_id)
+            history.append(req.message)
+            self.history.put(session_id, history)
 
         self.persist_message(user_email, app_key, req.message)
 
-    async def get_history(self, key):
-        return await self.redis.hgetall("chat_history_cache:" + key)
+    def get_history(self, key):
+        return self.history.get(key)
 
     def persist_message(self, user_email, app_key, message):
         is_bot_replay = message.role == MessageRole.ASSISTANT
@@ -46,4 +48,4 @@ class ChatHistoryService:
 
 def factory_chat_history(pg_conn: DBConnection):
     dao = HistoryDao(pg_conn)
-    return ChatHistoryService(dao, conn.get_redis_instance())
+    return ChatHistoryService(dao)
