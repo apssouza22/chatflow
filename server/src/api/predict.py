@@ -28,7 +28,7 @@ async def think(
         raise HTTPException(status_code=402, detail="You have exceeded the free allowance for this app")
 
     # return get_fake_command()
-    commands = agent.handle_user_input(user_input_req)
+    commands = await agent.handle_user_input(user_input_req)
     print(commands)
     return commands
 

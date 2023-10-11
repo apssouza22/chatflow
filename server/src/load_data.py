@@ -137,6 +137,8 @@ async def load_all_data():
         except Exception as e:
             print("Index creation failed. Index already exists")
             # traceback.print_exc()
+
+        # We also use "predict_cache:"
         print("Search index created")
 
 
