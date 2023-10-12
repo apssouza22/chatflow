@@ -95,17 +95,17 @@ function replaceImageLinksWithImgTags(text: string): string {
     const pattern = /(https?:\/\/[^\s]+?\.(?:jpg|jpeg|png|gif))/g;
 
     // Replace the URL with an HTML <img> tag
-    return text.replace(pattern, (match) => `<img src="${match}" alt="image" />`);
+    return text.replace(pattern, (match) => `<a href="${match}" class="nsbbox" data-lightbox="image-${match}"><img src="${match}" alt="image" /></a>`);
 }
 
 function replaceVideoLinksWithIframeTags(text: string): string {
     // YouTube URL to iframe
-    text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s]+)/g,
-        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" data-lightbox="video-$1"><img src="http://img.youtube.com/vi/$1/default.jpg" alt="YouTube video"></a>');
+    text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s.]+)/g,
+        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" data-lightbox="video-$1"><img style="max-width:400px" src="http://img.youtube.com/vi/$1/maxresdefault.jpg" alt="YouTube video"></a>');
 
     // Vimeo URL to iframe
     text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:player\.)?vimeo\.com\/([^\s]+)/g,
-        '<a href="https://player.vimeo.com/$1" class="nsbbox" data-lightbox="video-$1"><img src="https://vumbnail.com/$1.jpg" alt="Vimeo video"></a>');
+        '<a href="https://player.vimeo.com/$1" class="nsbbox" data-lightbox="video-$1"><img style="max-width:400px" src="https://vumbnail.com/$1.jpg" alt="Vimeo video"></a>');
     return text;
 }
 
