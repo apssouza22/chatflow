@@ -53,7 +53,7 @@ class AgentService:
     async def handle_user_input(self, req: UserInputDto) -> dict:
         current_user = req.user
         add_message_dto = AddMessageDto(
-            user_ref=int(req.user.pk),
+            user_ref=req.user.pk,
             app_key=req.app.app_key,
             session_id=req.session_id,
             message=MessageCompletion(
