@@ -101,7 +101,7 @@ function replaceImageLinksWithImgTags(text: string): string {
 function replaceVideoLinksWithIframeTags(text: string): string {
     // YouTube URL to iframe
     text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s]+)/g,
-        '<a href="https://www.youtube.com/embed/$1" rel="lightbox" data-lightbox="video-$1" data-title="Video"><img src="http://img.youtube.com/vi/$1/default.jpg" alt="YouTube"></a>');
+        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" rel="lightbox" data-lightbox="video-$1" data-title="Video"><img src="http://img.youtube.com/vi/$1/default.jpg" alt="YouTube"></a>');
         // '<a href="https://www.youtube.com/embed/$1" rel="lightbox" data-lightbox="video-$1" data-title="Video"><iframe width="560" height="315" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></a>');
         // '<a href="https://geekflare.com/wp-content/uploads/2022/05/Robots.png" rel="lightbox" data-lightbox="video-$1" data-title="Video">XXX</a>');
 
@@ -162,7 +162,7 @@ function toReact(text: string): string | JSX.Element {
                 if (attribs.href.endsWith('.')) {
                     attribs.href = attribs.href.slice(0, -1);
                 }
-                return <Link to={attribs.href} rel={attribs.rel} data-lightbox={attribs['data-lightbox']} target={"_blank"} style={{
+                return <Link to={attribs.href} rel={attribs.rel} className={attribs.class === 'nsbbox' ? 'nsbbox' : undefined} data-lightbox={attribs['data-lightbox']} target={"_blank"} style={{
                     "color": "blue",
                 }}>{domToReact(children)}</Link>;
             }
