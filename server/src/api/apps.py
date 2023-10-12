@@ -92,11 +92,11 @@ def delete_app(app_key: str, current_user: User = Depends(get_current_user)):
 @r.get("/applications/{app_key}/history")
 def get_app_conversation(app_key: str, user: User = Depends(get_current_user)):
     if app_key == "chat":
-        return chat_history.get_latest_messages(user.user_ref, app_key)
+        return chat_history.get_latest_messages(user.pk, app_key)
 
     for a in apps.get_by_user_email(user.email):
         if app_key == a.app_key:
-            return chat_history.get_latest_messages(user.user_ref, app_key)
+            return chat_history.get_latest_messages(user.pk, app_key)
 
     raise HTTPException(status_code=404, detail="App not found")
 

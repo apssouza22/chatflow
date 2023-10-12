@@ -48,7 +48,7 @@ class AgentService:
 
     def handle_user_input(self, req: UserInputDto) -> dict:
         current_user = req.user
-        self.history.add_message(str(req.user.user_ref), req.app.app_key, MessageCompletion(
+        self.history.add_message(str(req.user.pk), req.app.app_key, MessageCompletion(
             role=MessageRole.USER,
             context=req.context,
             query=req.question
@@ -63,7 +63,7 @@ class AgentService:
             self.cache.put(req.question, llm_resp.message)
             message = llm_resp.message
 
-        self.history.add_message(str(req.user.user_ref), req.app.app_key, MessageCompletion(
+        self.history.add_message(str(req.user.pk), req.app.app_key, MessageCompletion(
             role=MessageRole.ASSISTANT,
             response=message
         ))
@@ -85,7 +85,7 @@ class AgentService:
         }
 
     def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
-        history_key = str(req.user.user_ref) + "_" + req.app.app_key
+        history_key = str(req.user.pk) + "_" + req.app.app_key
         user_history = self.history.get_history(history_key)
         if user_history is None:
             user_history = []
