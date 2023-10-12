@@ -52,15 +52,8 @@ class AgentService:
 
     async def handle_user_input(self, req: UserInputDto) -> dict:
         current_user = req.user
-<<<<<<< HEAD
-        self.history.add_message(str(req.user.pk), req.app.app_key, MessageCompletion(
-            role=MessageRole.USER,
-            context=req.context,
-            query=req.question
-        ))
-=======
         add_message_dto = AddMessageDto(
-            user_email=current_user.email,
+            user_ref=int(req.user.pk),
             app_key=req.app.app_key,
             session_id=req.session_id,
             message=MessageCompletion(
@@ -70,7 +63,6 @@ class AgentService:
             )
         )
         self.history.add_message(add_message_dto)
->>>>>>> main
         is_action = self.is_action(req)
 
         # TODO: Eliminate `cache.exists` call:
@@ -83,14 +75,8 @@ class AgentService:
             await self.cache.put(req.question, llm_resp.message)
             message = llm_resp.message
 
-<<<<<<< HEAD
-        self.history.add_message(str(req.user.pk), req.app.app_key, MessageCompletion(
-            role=MessageRole.ASSISTANT,
-            response=message
-        ))
-=======
         add_message_dto = AddMessageDto(
-            user_email=current_user.email,
+            user_ref=req.user.pk,
             app_key=req.app.app_key,
             session_id=req.session_id,
             message=MessageCompletion(
@@ -99,7 +85,6 @@ class AgentService:
             )
         )
         self.history.add_message(add_message_dto)
->>>>>>> main
 
         if is_action:
             commands = self.resp_handler.extract_json_schema(message)
@@ -133,14 +118,7 @@ class AgentService:
         }
 
     def _get_llm_response(self, req: UserInputDto, is_action) -> LLMResponse:
-<<<<<<< HEAD
-        history_key = str(req.user.pk) + "_" + req.app.app_key
-        user_history = self.history.get_history(history_key)
-        if user_history is None:
-            user_history = []
-=======
         user_history = self._get_user_history(req)
->>>>>>> main
         if is_action:
             return self.llm.get_task_command(user_history, app=req.app)
         return self.llm.get_question_answer(req.question, req.app, user_history)
