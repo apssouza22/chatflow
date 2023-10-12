@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from psycopg2 import sql
+from pydantic import BaseModel
 
 from core.common.cache import CacheMemory
 from core.common.pg import DBConnection
@@ -8,21 +8,31 @@ from core.history.history_dao import HistoryDao
 from core.llm.prompt_handler import MessageCompletion, MessageRole
 
 
+class AddMessageDto(BaseModel):
+    user_ref: int
+    app_key: str
+    session_id: str
+    message: MessageCompletion
+
+
 class ChatHistoryService:
     def __init__(self, dao: HistoryDao):
         self.dao = dao
         self.history = CacheMemory(30)
 
-    def add_message(self, user_ref, app_key, message: MessageCompletion):
-        key = str(user_ref) + "_" + app_key
-        if self.history.get(key) is None:
-            self.history.put(key, [message])
-        else:
-            history = self.history.get(key)
-            history.append(message)
-            self.history.put(key, history)
+    def add_message(self, req: AddMessageDto):
+        user_ref = req.user_ref
+        app_key = req.app_key
+        session_id = req.session_id
 
-        self.persist_message(user_ref, app_key, message)
+        if self.history.get(session_id) is None:
+            self.history.put(session_id, [req.message])
+        else:
+            history = self.history.get(session_id)
+            history.append(req.message)
+            self.history.put(session_id, history)
+
+        self.persist_message(user_ref, app_key, req.message)
 
     def get_history(self, key):
         return self.history.get(key)
@@ -32,8 +42,8 @@ class ChatHistoryService:
         msg = message.response if is_bot_replay else message.query
         self.dao.persist_message(user_ref, app_key, msg, is_bot_replay)
 
-    def get_latest_messages(self, user_ref: str, app_key: str) -> List[Dict]:
-        return self.dao.get_latest_messages(user_ref, app_key)
+    def get_latest_messages(self, user_ref: int, app_key: str, page: int) -> List[Dict]:
+        return self.dao.get_latest_messages(user_ref, app_key, page)
 
 
 def factory_chat_history(pg_conn: DBConnection):

@@ -1,23 +1,29 @@
+import { v4 as uuidv4 } from 'uuid';
 interface SessionData {
     token: string;
     user: string;
     app: string;
     isPluginMode: boolean;
     appColor: string;
+    sessionId: string;
 }
+
 
 export class SessionManager {
     private static instance: SessionManager;
-    private sessionData: SessionData;
+    private readonly sessionData: SessionData;
 
     private constructor() {
+        let accessId = localStorage.getItem("sessionId") || uuidv4();
+        localStorage.setItem("sessionId", accessId)
         const params = this.loadSessionDataFromUrl()
         this.sessionData = {
             token: params["token"] || "",
             user: params["user"] || "",
             app: params["app"] || "chat",
             isPluginMode: params["pluginMode"]=="true" || false,
-            appColor: params["appColor"] || "black"
+            appColor: params["appColor"] || "black",
+            sessionId:  localStorage.getItem("sessionId"),
         }
         console.log("session data", this.sessionData)
     }
