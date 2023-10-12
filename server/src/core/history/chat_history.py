@@ -13,8 +13,8 @@ class ChatHistoryService:
         self.dao = dao
         self.history = CacheMemory(30)
 
-    def add_message(self, user_email, app_key, message: MessageCompletion):
-        key = user_email + "_" + app_key
+    def add_message(self, user_ref, app_key, message: MessageCompletion):
+        key = str(user_ref) + "_" + app_key
         if self.history.get(key) is None:
             self.history.put(key, [message])
         else:
@@ -22,18 +22,18 @@ class ChatHistoryService:
             history.append(message)
             self.history.put(key, history)
 
-        self.persist_message(user_email, app_key, message)
+        self.persist_message(user_ref, app_key, message)
 
     def get_history(self, key):
         return self.history.get(key)
 
-    def persist_message(self, user_email, app_key, message):
+    def persist_message(self, user_ref, app_key, message):
         is_bot_replay = message.role == MessageRole.ASSISTANT
         msg = message.response if is_bot_replay else message.query
-        self.dao.persist_message(user_email, app_key, msg, is_bot_replay)
+        self.dao.persist_message(user_ref, app_key, msg, is_bot_replay)
 
-    def get_latest_messages(self, user_email: str, app_key: str) -> List[Dict]:
-        return self.dao.get_latest_messages(user_email, app_key)
+    def get_latest_messages(self, user_ref: str, app_key: str) -> List[Dict]:
+        return self.dao.get_latest_messages(user_ref, app_key)
 
 
 def factory_chat_history(pg_conn: DBConnection):

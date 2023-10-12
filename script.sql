@@ -1,14 +1,22 @@
-
+create table users
+(
+    id       serial primary key,
+    email    null varchar(250)
+    password null varchar(50),
+    name     varchar(50) null
+);
 
 create table chat_messages
 (
-    id           serial
-        primary key,
-    user_id      varchar(250),
+    id           serial primary key,
+    user_ref     not null int,
     chatbot_id   varchar(50),
     message      text,
     is_bot_reply boolean,
-    createdat    timestamp default (now() AT TIME ZONE 'UTC'::text)
+    createdat    timestamp default (now() AT TIME ZONE 'UTC'::text),
+    CONSTRAINT fk_user
+      FOREIGN KEY(user_ref) 
+	  REFERENCES users(id)
 );
 
 alter table chat_messages
@@ -20,6 +28,5 @@ create index idx_timestamp
 create index idx_chatbot_id
     on chat_messages (chatbot_id);
 
-create index idx_user_id
-    on chat_messages (user_id);
-
+create index idx_user_email
+    on users (email);
