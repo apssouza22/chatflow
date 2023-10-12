@@ -101,13 +101,11 @@ function replaceImageLinksWithImgTags(text: string): string {
 function replaceVideoLinksWithIframeTags(text: string): string {
     // YouTube URL to iframe
     text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s]+)/g,
-        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" rel="lightbox" data-lightbox="video-$1" data-title="Video"><img src="http://img.youtube.com/vi/$1/default.jpg" alt="YouTube"></a>');
-        // '<a href="https://www.youtube.com/embed/$1" rel="lightbox" data-lightbox="video-$1" data-title="Video"><iframe width="560" height="315" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe></a>');
-        // '<a href="https://geekflare.com/wp-content/uploads/2022/05/Robots.png" rel="lightbox" data-lightbox="video-$1" data-title="Video">XXX</a>');
+        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" data-lightbox="video-$1"><img src="http://img.youtube.com/vi/$1/default.jpg" alt="YouTube video"></a>');
 
     // Vimeo URL to iframe
     text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:player\.)?vimeo\.com\/([^\s]+)/g,
-        '<a href="https://player.vimeo.com/$1" data-lightbox="video-$1" data-title="Video"><iframe width="560" height="315" src="https://player.vimeo.com/$1" frameborder="0" allowfullscreen></iframe></a>');
+        '<a href="https://player.vimeo.com/$1" class="nsbbox" data-lightbox="video-$1"><img src="https://vumbnail.com/$1.jpg" alt="Vimeo video"></a>');
     return text;
 }
 
