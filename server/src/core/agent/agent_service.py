@@ -96,7 +96,7 @@ class AgentService:
 
     def user_history_process(self, req: UserInputDto) -> dict:
         add_message_dto = AddMessageDto(
-            user_email=req.user.email,
+            user_ref=req.user.pk,
             app_key=req.app.app_key,
             session_id=req.session_id,
             message=MessageCompletion(
