@@ -28,5 +28,5 @@ create index idx_timestamp
 create index idx_chatbot_id
     on chat_messages (chatbot_id);
 
-create index idx_user_email
+create unique index idx_user_email
     on users (email);
