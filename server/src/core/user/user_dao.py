@@ -6,17 +6,20 @@ from core.common.file_db import FileDB
 
 
 class User(BaseModel):
+    pk: int
     email: str
     password: str
     name: str = None
 
 
+# FIXME: rewrite with DB.
 class UserDao:
     def __init__(self):
         self.db = FileDB('./file_db/users')
 
     def get_all(self) -> Dict[str, User]:
         users = self.db.get("all")
+        print("USERS: ", users)
         if users is None:
             return {}
         return users

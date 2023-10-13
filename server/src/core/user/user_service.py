@@ -9,7 +9,7 @@ class UserService:
         self.app_dao = app_dao
         self.dao = user_storage
         if self.dao.get_all() == {}:
-            self.add_user(User(name="Alex", password="123", email="admin@gmail.com"))
+            self.add_user(User(pk=1, name="Alex", password="123", email="admin@gmail.com"))
 
     def authenticate_user(self, email, password):
         user = self.dao.get(email)
