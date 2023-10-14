@@ -24,6 +24,7 @@ class UserDao:
 
     def get_by_email(self, email: str) -> User:
         user = self.db.fetch_one("SELECT * FROM users WHERE email=%s", (email,))
+        user["pk"] = user["id"]  # slightly a hack
         return User(**user)
 
     def add(self, user: User):
