@@ -7,7 +7,6 @@ from core.common.utils import filter_content
 from core.cost.cost_dao import Cost
 from core.cost.cost_service import CostService
 from core.docs_search.dtos import SearchRequest
-from core.docs_search.entities import ItemEntity
 from core.docs_search.text_search import TextSearch
 from core.docs_search.utils import remove_content_between_backticks
 from core.docs_search.vector_search import DocVectorSearch
@@ -36,17 +35,15 @@ class DocSearchService:
         results_text = await self._search_text(search_req, translated_text)
 
         results = _combine_scores(results_vector, results_text)
-        entities = [await _map_doc_response(p) for p in results]
-        contents = [p.get("item_metadata").get("text") for p in entities]
+        contents = [r.get("text") for r in results]
 
-        if search_req.app_key != "3261034":  # disabled Connexled app
-            option = self.llm_service.pick_best_doc(contents, translated_text)
-            self._update_cost(option.usage, search_req.user_email, search_req.app_key)
-            contents = filter_content(contents, option.message)
+        option = self.llm_service.pick_best_doc(contents, translated_text)
+        self._update_cost(option.usage, search_req.user_email, search_req.app_key)
+        contents = filter_content(contents, option.message)
 
         return {
             'total': total.total,
-            'entities': entities,
+            'entities': results,
             'docs': contents
         }
 
@@ -94,14 +91,16 @@ def _combine_scores(results_vector, results_text):
     results = []
 
     for doc in results_vector.docs:
-        text_score = text_results[doc.item_pk] if text_results.get(doc.item_pk) else 0
+        text_score = text_results[doc.item_id] if text_results.get(doc.item_id) else 0
         results.append({
             "id": doc.id,
-            "pk": doc.item_pk,
             # "combined_score": (0.8 * float(doc.vector_score)) - (0.2 * float(text_score)),
             "combined_score": float(doc.vector_score),
             "vector_score": doc.vector_score,
-            "text_score": text_score
+            "text_score": text_score,
+            "item_id": doc.item_id,
+            "title": doc.title,
+            "text": doc.text_raw,
         })
     return sorted(results, key=lambda obj: obj['combined_score'], reverse=False)
 
@@ -112,18 +111,6 @@ def _normalize_score(number, max_number):
 
     normalized = number / max_number
     return normalized if 0 <= normalized <= 1 else 1.0 if normalized > 1 else 0.0
-
-
-async def _map_doc_response(p):
-    item = await ItemEntity.get(p["pk"])
-    item_dict = item.dict()
-    try:
-        item_dict['similarity_score'] = p["vector_score"]
-        item_dict['combined_score'] = p["combined_score"]
-        item_dict['text_score'] = p["text_score"]
-    except Exception as _:
-        return item.dict()
-    return item_dict
 
 
 def factory_doc_search_service(llm_service: LLMService, cost_service: CostService) -> DocSearchService:
