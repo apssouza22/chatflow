@@ -1,12 +1,10 @@
 from typing import List, Dict
 
-from psycopg2 import sql
-
-from core.common.pg import DBConnection
+import sqlalchemy
 
 
 class HistoryDao:
-    def __init__(self, db: DBConnection):
+    def __init__(self, db: sqlalchemy.engine.base.Engine):
         self.db = db
 
     def persist_message(self, user_ref, app_key, msg, is_bot_replay):
