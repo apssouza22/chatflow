@@ -3,7 +3,8 @@ from typing import List
 from psycopg2 import IntegrityError
 
 from core.app.app_dao import AppDao
-from core.user.user_dao import UserDao, User
+from core.user.user_dao import UserDao
+from core.scheme import User
 
 
 class UserService:

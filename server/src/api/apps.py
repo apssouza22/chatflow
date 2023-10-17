@@ -5,8 +5,9 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from api.factory import apps, chat_history
-from api.user import User, get_current_user
+from api.user import get_current_user
 from core.app.app_dao import App
+from core.scheme import User
 
 apps_router = r = APIRouter()
 

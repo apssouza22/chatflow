@@ -6,12 +6,13 @@ from fastapi import Depends, Request, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 
 from api.factory import doc_search_service, redis_client, llm_service, cost_service
-from api.user import get_current_user, User
+from api.user import get_current_user
 from core.docs_search.dtos import AddDocRequest
 from core.docs_search.dtos import (
     SearchRequest
 )
 from core.docs_search.entities import ItemEntity
+from core.scheme import User
 
 docs_router = r = APIRouter()
 

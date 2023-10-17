@@ -1,7 +1,9 @@
 from typing import List, Dict
 from core.common import pg_conn
-
 import sqlalchemy
+from sqlalchemy.orm import Session
+
+from core.scheme import ChatMessages
 
 
 class HistoryDao:
@@ -18,14 +20,7 @@ class HistoryDao:
         )
 
     def get_latest_messages(self, user_ref: str, app_key: str) -> List[Dict]:
-        with Session(engine) as session:
-            return session.execute(select(chat_messages).where(chat_messages.chatbot_id == app_key).where(
-                chat_messages.user_ref == user_ref).order_by(chat_messages.c.createdat.desc()).limit(50)).fetchall()
-        return self.db.fetch_all(
-                """
-                SELECT * FROM chat_messages where chatbot_id = %s and user_ref = %s
-                ORDER BY createdat DESC
-                LIMIT 50
-                """,
-                (app_key, user_ref),
-            ).fetchall()
+        with Session(self.db) as session:
+            objs = session.query(ChatMessages).filter_by(chatbot_id=app_key).filter_by(user_ref=user_ref).all()
+        # Convert objs to dicts:
+        return [obj.__dict__ for obj in objs]  # It somehow sucks to convert objects to dicts in a DAO class.

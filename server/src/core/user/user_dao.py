@@ -1,17 +1,14 @@
+# TODO: Remove this file.
+
 from typing import Dict, Optional
 
-from psycopg2 import IntegrityError
+from psycopg2 import IntegrityError  # FIXME: Does it work with SQLAlchemy?
+from sqlalchemy.orm import Session
 
 from pydantic import BaseModel
 
 from core.common.file_db import FileDB
-
-
-class User(BaseModel):
-    pk: Optional[int] = None
-    email: str
-    password: str  # TODO: encrypted password
-    name: str = None
+from core.scheme import ChatMessages, User
 
 
 class UserDao:
@@ -19,36 +16,28 @@ class UserDao:
         self.db = pg_conn
 
     def get_all(self) -> Dict[str, User]:
-        users = self.db.fetch_all("SELECT * FROM users")
-        return [User(**u) for u in users]
+        with Session(self.db) as session:
+            return session.query(ChatMessages).all()
 
     def get_by_email(self, email: str) -> User:
-        user = self.db.fetch_one("SELECT * FROM users WHERE email=%s", (email,))
-        user["pk"] = user["id"]  # slightly a hack
-        return User(**user)
+        with Session(self.db) as session:
+            return session.query(ChatMessages).filter_by(email=email).first()
 
     def add(self, user: User):
         try:
-            self.db.execute(
-                "INSERT INTO users (email, password, name) VALUES (%s, %s, %s)",
-                (user.email, user.password, user.name)
-            )
+            with Session(self.db) as session:
+                session.add(user)
         except IntegrityError as e:
             print("Inserting user:", e)
             return False
 
     def edit(self, user: User):
         try:
-            self.db.execute(
-                "UPDATE users SET email=%s, password=%s, name=%s",
-                (user.email, user.password, user.name)
-            )
+            with Session(self.db) as session:
+                session.add(user)
         except IntegrityError as e:
             print("Updating user:", e)
             return False
 
     def remove(self, pk: int):
-        self.db.execute(
-            "DELETE FROM users WHERE id=%s",
-            (pk,)
-        )
+        User.query.filter_by(id=pk).delete()
