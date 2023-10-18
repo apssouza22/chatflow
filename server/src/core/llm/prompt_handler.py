@@ -3,7 +3,7 @@ import time
 import typing
 from dataclasses import dataclass
 from enum import Enum
-from typing import TypedDict, List
+from typing import Optional, TypedDict, List
 
 from core.app.app_dao import App
 
@@ -84,13 +84,24 @@ class MessageRole(Enum):
         return self.value
 
 
+class Attachment(TypedDict):
+    content_id: str  # the upload ID set by JavaScript
+    filename: str
+    def __str__(self):
+        return {
+            "filename": self.filename
+        }
+
+
 class MessageDict(TypedDict):
     role: MessageRole
     content: str
+    attachment: Optional[Attachment]
     def __str__(self):
         return {
             "role": self.role.value,
-            "content": self.content
+            "content": self.content,
+            "attachment": self.attachment,
         }
 
 @dataclass
