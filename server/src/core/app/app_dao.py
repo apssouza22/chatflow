@@ -41,7 +41,8 @@ class AppDao:
 
     # TODO: Should get by user PK instead of email.
     def get_by_id(self, user_email, app_key: str) -> Optional[App]:
-        app = self.db.fetch_one("SELECT apps.* FROM apps INNER JOIN users ON apps.user_ref = users.id WHERE users.email = %s AND users.app_key=%s",
+        print("XXX", user_email, app_key)
+        app = self.db.fetch_one("SELECT apps.* FROM apps INNER JOIN users ON apps.user_ref = users.id WHERE users.email = %s AND apps.app_key=%s",
                                  (user_email, app_key))
         return App(**app)
 
