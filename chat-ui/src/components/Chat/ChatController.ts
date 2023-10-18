@@ -10,6 +10,8 @@ import {
 } from './index';
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {FlowController} from "../../domain/common/FlowController";
+import {commandService} from "../../domain/Factory";
+import {FileActionResponse} from "../../components/Chat";
 
 interface ChatState {
     option: ChatOption;
@@ -191,6 +193,9 @@ export class ChatController {
             throw new Error('onResponsed is not set.');
         }
 
+        if (request.type === 'file') {
+            commandService.addFiles((response as FileActionResponse).id, (response as FileActionResponse).files)
+        }
         responses.push(response);
 
         if (request.addMessage) {

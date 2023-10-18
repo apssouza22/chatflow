@@ -17,6 +17,15 @@ export class CommandExecution {
         [id: string]: File[] // array, because multiple files can be opened from a single file dialog and have the same ID
     }
 
+    // Add one file or multiple files uploaded together.
+    addFiles(id: string, files: File[]) {
+        // Currently, as a quick hack for reducing the amount of data held in memory, we only keep the last file:
+        for (const key of Array.from(Object.keys(this.files))) { // `Array.from` is necessary to prevent modificatio while iterating.
+            delete this.files[key];
+        }
+        this.files[id] = files;
+    }
+
     constructor(httpClient: HttpClient, session: SessionManager) {
         this.httpClient = httpClient;
         this.session = session;

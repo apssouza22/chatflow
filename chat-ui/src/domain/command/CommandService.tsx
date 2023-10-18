@@ -103,6 +103,10 @@ export class CommandService {
         }
         await this.chatCtl.addMessage({...defaultMsgObj, content: "Something went wrong. Please try again later."});
     }
+
+    addFiles(id: string, files: File[]) {
+        this.commandExec.addFiles(id, files);
+    }
 }
 
 export function commandServiceFactory(
