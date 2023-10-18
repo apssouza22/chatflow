@@ -46,7 +46,7 @@ export class HttpClient {
                     "Content-Type": "application/json",
                     ...options.headers,
                 },
-                body: body ?? JSON.stringify(options.body);
+                body: body ?? JSON.stringify(options.body),
             };
             if (params.method === "GET") {
                 delete params.body;
