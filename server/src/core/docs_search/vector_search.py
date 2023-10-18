@@ -2,7 +2,7 @@ import typing
 
 from core.docs_search.query import create_query, count, find_docs_by_tag_query
 
-DEFAULT_RETURN_FIELDS = ["item_id", "item_pk", "vector_score"]
+DEFAULT_RETURN_FIELDS = ["item_id", "vector_score", "title", "text_raw"]
 
 
 class DocVectorSearch:
