@@ -3,8 +3,7 @@ import requests
 from fastapi import Depends, APIRouter
 from starlette.responses import JSONResponse
 
-from api.user import get_current_user
-from core.scheme import User
+from api.user import User, get_current_user
 
 common_router = r = APIRouter()
 

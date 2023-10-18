@@ -1,10 +1,9 @@
 from typing import List, Dict
 
-import sqlalchemy
-
 from pydantic import BaseModel
 
 from core.common.cache import CacheMemory
+from core.common.pg import DBConnection
 from core.history.history_dao import HistoryDao
 from core.llm.prompt_handler import MessageCompletion, MessageRole
 
@@ -47,6 +46,6 @@ class ChatHistoryService:
         return self.dao.get_latest_messages(user_ref, app_key, page)
 
 
-def factory_chat_history(pg_conn: sqlalchemy.engine.base.Engine):
+def factory_chat_history(pg_conn: DBConnection):
     dao = HistoryDao(pg_conn)
     return ChatHistoryService(dao)

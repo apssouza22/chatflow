@@ -1,14 +1,17 @@
-# TODO: Remove this file.
-
 from typing import Dict, Optional
 
-from psycopg2 import IntegrityError  # FIXME: Does it work with SQLAlchemy?
-from sqlalchemy.orm import Session
+from psycopg2 import IntegrityError
 
 from pydantic import BaseModel
 
 from core.common.file_db import FileDB
-from core.scheme import ChatMessages, User
+
+
+class User(BaseModel):
+    pk: Optional[int] = None
+    email: str
+    password: str  # TODO: encrypted password
+    name: str = None
 
 
 class UserDao:
@@ -16,28 +19,36 @@ class UserDao:
         self.db = pg_conn
 
     def get_all(self) -> Dict[str, User]:
-        with Session(self.db) as session:
-            return session.query(ChatMessages).all()
+        users = self.db.fetch_all("SELECT * FROM users")
+        return [User(**u) for u in users]
 
     def get_by_email(self, email: str) -> User:
-        with Session(self.db) as session:
-            return session.query(ChatMessages).filter_by(email=email).first()
+        user = self.db.fetch_one("SELECT * FROM users WHERE email=%s", (email,))
+        user["pk"] = user["id"]  # slightly a hack
+        return User(**user)
 
     def add(self, user: User):
         try:
-            with Session(self.db) as session:
-                session.add(user)
+            self.db.execute(
+                "INSERT INTO users (email, password, name) VALUES (%s, %s, %s)",
+                (user.email, user.password, user.name)
+            )
         except IntegrityError as e:
             print("Inserting user:", e)
             return False
 
     def edit(self, user: User):
         try:
-            with Session(self.db) as session:
-                session.add(user)
+            self.db.execute(
+                "UPDATE users SET email=%s, password=%s, name=%s",
+                (user.email, user.password, user.name)
+            )
         except IntegrityError as e:
             print("Updating user:", e)
             return False
 
     def remove(self, pk: int):
-        User.query.filter_by(id=pk).delete()
+        self.db.execute(
+            "DELETE FROM users WHERE id=%s",
+            (pk,)
+        )

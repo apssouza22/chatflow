@@ -11,7 +11,7 @@ from core.cost.cost_service import CostService
 from core.agent.chat_response_handler import OpenAIResponseHandler
 from core.llm.llm_service import LLMService, LLMResponse, Usage
 from core.llm.prompt_handler import MessageCompletion, MessageRole
-from core.scheme import User
+from core.user.user_dao import User
 
 
 class UserInputDto(BaseModel):

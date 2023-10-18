@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from api.factory import user_service, current_session, cost_service
 from api.jwttoken import decode_access_token, create_access_token
-from core.scheme import User
+from core.user.user_dao import User
 
 user_router = r = APIRouter()
 

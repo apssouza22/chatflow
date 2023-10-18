@@ -5,13 +5,12 @@ from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
 from api.factory import agent, apps, cost_service, llm_service
-from api.user import get_current_user
+from api.user import User, get_current_user
 from core.agent.agent_service import UserInputDto
 from core.app.app_dao import App
 from core.docs_search.dtos import (
     CompletionRequest
 )
-from core.scheme import User
 
 predict_router = r = APIRouter()
 

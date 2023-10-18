@@ -5,7 +5,7 @@ import pytest
 
 from core.agent.agent_service import AgentService, UserInputDto
 from core.app.app_dao import App
-from core.scheme import User
+from core.user.user_dao import User
 
 
 class AgentTestCase(unittest.TestCase):
