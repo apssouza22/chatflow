@@ -14,7 +14,7 @@ export class CommandExecution {
     private httpClient: HttpClient;
     private session: SessionManager;
     private files: {
-        [id: string]: File
+        [id: string]: File[] // array, because multiple files can be opened from a single file dialog and have the same ID
     }
 
     constructor(httpClient: HttpClient, session: SessionManager) {

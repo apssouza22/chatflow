@@ -25,7 +25,20 @@ export class HttpClient {
             status: 200
         }
         // Remark: This 
-        const hasFiles = Object.values(params.body).some((v: any) => v instanceof Blob); // `File` is derived from `Blob`.
+        const hasFiles = Object.values(options.body).some((v: any) => Array.isArray(v) && v[0] instanceof Blob); // `File` is derived from `Blob`.
+        const body = undefined;
+        if (hasFiles) {
+            const formData = new FormData();
+            for (const [key, value] of Object.entries(options.body)) {
+                if (Array.isArray(value)) { // Usually, it's an array of files, because a single file dialog may harvest multiple files.
+                    for (const subvalue of value) { // so, `subvalue` is a `File` object, usually.
+                        formData.append(key, subvalue as string | Blob); // TODO: Is it a `string | Blob` for sure?
+                    }
+                } else {
+                    formData.append(key, value as string | Blob); // TODO: Is it a `string | Blob` for sure?
+                }
+            }
+        }
         try {
             let params = {
                 method: options.method || "GET",
@@ -33,7 +46,7 @@ export class HttpClient {
                     "Content-Type": "application/json",
                     ...options.headers,
                 },
-                body: hasFiles ? new FormData(options.body) : JSON.stringify(options.body),
+                body: body ?? JSON.stringify(options.body);
             };
             if (params.method === "GET") {
                 delete params.body;
