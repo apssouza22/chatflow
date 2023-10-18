@@ -20,7 +20,11 @@ def create_query(
         tag_query = "*"
 
     base_query = f'{tag_query}=>[{search_type} {number_of_results} @{vector_field_name} $vec_param AS vector_score]'
-    query = Query(base_query).sort_by("vector_score").paging(0, number_of_results).return_fields(*return_fields).dialect(2)
+    query = (Query(base_query).
+             sort_by("vector_score").
+             paging(0, number_of_results).
+             return_fields(*return_fields).
+             dialect(2))
     print(query.get_args())
     print(query.query_string())
     return query

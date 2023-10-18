@@ -19,7 +19,6 @@ from redis.commands.search.indexDefinition import (
 
 from core.common import config
 from core.common.config import INDEX_NAME
-from core.docs_search.entities import ItemEntity
 from data.prepare_data import prepare_data
 
 redis_conn = redis.from_url(config.REDIS_URL)
@@ -76,17 +75,17 @@ def read_data_vectors() -> t.List:
     return data_vectors
 
 
-async def gather_with_concurrency(n, *data_items) -> t.Dict[str, ItemEntity]:
+async def gather_with_concurrency(n, *data_items) -> t.Dict[str, t.Any]:
     semaphore = asyncio.Semaphore(n)
     with_pk = {}
 
     async def load_data(item):
         async with semaphore:
             nonlocal with_pk
-            p = ItemEntity(**item)
+            # p = ItemEntity(**item)
             # use map to prevent sorting later
-            with_pk[p.item_id] = p
-            await p.save()
+            with_pk[item["item_id"]] = item
+            # await p.save()
 
     await asyncio.gather(*[load_data(item) for item in data_items])
     return with_pk
@@ -95,14 +94,14 @@ async def gather_with_concurrency(n, *data_items) -> t.Dict[str, ItemEntity]:
 async def save_data_vectors(data_vectors, redis_conn, data_with_pk):
     for data_vector in data_vectors:
         item_id = data_vector["item_id"]
-        item_pk = data_with_pk[item_id].pk
         key = "data_vector:" + str(item_id)
         mappings = {
-            "item_pk": item_pk,
             "item_id": item_id,
-            "application": data_with_pk[item_id].item_metadata.application,
+            "application": data_with_pk[item_id]["item_metadata"]["application"],
             "text_vector": np.array(data_vector["text_vector"], dtype=np.float32).tobytes(),
-            "openai_text_vector": np.array(data_vector["openai_text_vector"], dtype=np.float32).tobytes()
+            "openai_text_vector": np.array(data_vector["openai_text_vector"], dtype=np.float32).tobytes(),
+            "text_raw": data_with_pk[item_id]["item_metadata"]["text"],
+            "title": data_with_pk[item_id]["item_metadata"]["title"],
         }
         await redis_conn.hset(key, mapping=mappings)
 
@@ -113,7 +112,9 @@ async def load_all_data():
     else:
         print("Loading data into Chat commander App")
         items_metadata = read_items_metadata_json()
-        items_with_pk = await gather_with_concurrency(100, *items_metadata)
+        items_with_pk = {}
+        for item in items_metadata:
+            items_with_pk[item["item_id"]] = item
         print("Data loaded!")
 
         print("Loading data vectors")

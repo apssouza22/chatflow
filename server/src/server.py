@@ -16,7 +16,6 @@ from api.docs import docs_router
 from api.predict import predict_router
 from api.user import user_router
 from core.common import config
-from core.docs_search.entities import ItemEntity
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -83,15 +82,6 @@ async def read_index():
         return FileResponse(frontend_dir + "/index.html")
     else:
         raise HTTPException(status_code=404, detail="Index.html not found")
-
-
-@app.on_event("startup")
-async def startup():
-    # You can set the Redis OM URL using the REDIS_OM_URL environment
-    # variable, or by manually creating the connection using your model's
-    # Meta object.
-    ItemEntity.Meta.database = get_redis_connection(url=config.REDIS_URL, decode_responses=True)
-    await Migrator().run()
 
 
 if __name__ == "__main__":
