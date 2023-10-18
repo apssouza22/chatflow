@@ -44,7 +44,7 @@ export function MuiFileInput({
     const setResponse = useCallback((): void => {
         if (files.length > 0) {
             const value = files.map((f) => f.name).toString();
-            const res: FileActionResponse = {type: 'file', value, files};
+            const res: FileActionResponse = {type: 'file', value, files, id: "f" + Math.floor(Math.random() * 1000000000)};
             chatCtl.setActionResponse(actionRequest, res);
         }
     }, [actionRequest, chatCtl, files]);

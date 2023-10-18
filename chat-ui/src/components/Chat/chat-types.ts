@@ -100,6 +100,7 @@ export interface MultiSelectActionResponse extends ActionResponse {
 export interface FileActionResponse extends ActionResponse {
   type: 'file';
   files: File[];
+  id: string; // the identifier to pass to the command service
 }
 
 export interface AudioActionResponse extends ActionResponse {
