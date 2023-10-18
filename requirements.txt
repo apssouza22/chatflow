@@ -9,7 +9,7 @@ python-jose
 numpy
 pandas
 requests
-psycopg2-binary
+psycopg2
 python-decouple
 sseclient-py
 openai
