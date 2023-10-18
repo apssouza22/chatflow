@@ -24,6 +24,8 @@ export class HttpClient {
             isLoading: true,
             status: 200
         }
+        // Remark: This 
+        const hasFiles = Object.values(params.body).some((v: any) => v instanceof Blob); // `File` is derived from `Blob`.
         try {
             let params = {
                 method: options.method || "GET",
@@ -31,7 +33,7 @@ export class HttpClient {
                     "Content-Type": "application/json",
                     ...options.headers,
                 },
-                body: JSON.stringify(options.body),
+                body: hasFiles ? new FormData(options.body) : JSON.stringify(options.body),
             };
             if (params.method === "GET") {
                 delete params.body;

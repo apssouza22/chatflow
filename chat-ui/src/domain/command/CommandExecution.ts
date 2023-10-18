@@ -8,13 +8,19 @@ export interface CommandExecResult {
     error?: any
 }
 
+type File = any; // should be DOM File object
+
 export class CommandExecution {
     private httpClient: HttpClient;
     private session: SessionManager;
+    private files: {
+        [id: string]: File
+    }
 
     constructor(httpClient: HttpClient, session: SessionManager) {
         this.httpClient = httpClient;
         this.session = session;
+        this.files = {};
     }
 
     async executeCommand(command: Command, commandData: any): Promise<CommandExecResult> {
@@ -126,6 +132,20 @@ export class CommandExecution {
         if (process.env.NODE_ENV === "production") {
             command.args.url = command.args.url.replace("http://localhost:8880", "https://apps.newaisolutions.com");
         }
+
+        // Replace file references by File objects:
+        const newCommandData = {}; // should use Map instead of object?
+        for (const [key, value] of Object.entries(commandData)) {
+            if ((value as any).type === 'attachment') {
+                newCommandData[key] = this.files[(value as any).fileId]; // a blob of type `File`
+            } else {
+                newCommandData[key] = value;
+            }
+        }
+        for (const [key, value] of Object.entries(newCommandData)) {
+            commandData[key] = value;
+        }
+
         this.handleAppKeySession(command, commandData);
         this.handleAuthToken(command);
     }
