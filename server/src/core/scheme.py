@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import now
-
+from sqlalchemy import UniqueConstraint
 
 class Base(DeclarativeBase):
     pass
@@ -24,6 +24,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(50))
 
     chat_messages = relationship("ChatMessages", back_populates="user_ref")
+    apps = relationship("App", back_populates="apps")
 
 
 class ChatMessages(Base):
@@ -35,3 +36,18 @@ class ChatMessages(Base):
     message: Mapped[str] = mapped_column(Text)
     is_bot_reply: Mapped[bool] = mapped_column(Boolean)
     createdat: Mapped[datetime] = mapped_column(server_default=now(), index=True)
+
+
+class App(Base):
+    __tablename__ = "apps"
+
+    id: Mapped[intpk]
+    user_ref: Mapped[intpk] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
+    app_name: Mapped[str] = mapped_column(String(100))
+    app_description: Mapped[str] = mapped_column(Text)
+    app_key: Mapped[str] = mapped_column(String(50))
+    app_model: Mapped[str] = mapped_column(String(50))
+    app_temperature: Mapped[float] = mapped_column(default=0.1)
+
+    __table_args__ = (UniqueConstraint('user_ref', 'app_key', name='_app_key_unique'),
+                      UniqueConstraint('user_ref', 'app_name', name='_app_name_unique'))
