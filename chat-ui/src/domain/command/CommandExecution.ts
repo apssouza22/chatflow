@@ -137,6 +137,7 @@ export class CommandExecution {
         const newCommandData = {}; // should use Map instead of object?
         for (const [key, value] of Object.entries(commandData)) {
             if ((value as any).type === 'attachment') {
+                // TODO: Display error message if file with this ID is not found.
                 newCommandData[key] = this.files[(value as any).fileId]; // a blob of type `File`
             } else {
                 newCommandData[key] = value;
