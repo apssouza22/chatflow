@@ -4,66 +4,57 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from core.common.file_db import FileDB
-
 
 class App(BaseModel):
+    user_ref: int
     app_name: str
     app_description: str
     app_key: str = ""
-    app_user: str = ""
     app_model: str = ""
     app_temperature: float = 0.1
 
 
 class AppDao:
-    def __init__(self):
-        self.db = FileDB('./file_db/apps')
+    def __init__(self, pg_conn):
+        self.db = pg_conn
 
+    # TODO: Should get by user PK instead of email.
     def get_by_user_email(self, user_email: str) -> List[App]:
-        apps = self.db.get(user_email)
-        if apps is None:
-            return []
-
-        return [App(**app) for app in json.loads(apps)]
+        apps = self.db.fetch_all("SELECT apps.* FROM apps INNER JOIN users ON apps.user_ref = users.id WHERE users.email=%s",
+                                 (user_email,))
+        return [App(**app) for app in apps]
 
     def add(self, user, app: App):
-        if self.get_by_user_email(user) is None:
-            self.db.put(user, json.dumps([app.dict()]))
-            return
+        self.db.execute(
+            "INSERT INTO apps (user_ref, app_name, app_description, app_key, app_model, app_temperature) VALUES (%s, %s, %s, %s, %s, %s)",
+            (app.user_ref, app.app_name, app.app_description, app.app_key, app.app_model, app.app_temperature)
+        )
 
-        apps = self.get_by_user_email(user)
-        apps.append(app)
-        self.put(apps, user)
-
+    # TODO: Remove `user` parameter.
     def edit(self, user, app: App):
-        apps = self.get_by_user_email(user)
-        if apps is None:
-            return False
+        self.db.execute(
+            "UPDATE apps SET app_name=%s, app_description=%s, app_key=%s, app_model=%s, app_temperature=%s WHERE user_ref=%s" \
+                "WHERE id=%d",
+            (app.app_name, app.app_description, app.app_key, app.app_model, app.app_temperature, app.user_ref,
+             app.id)
+        )
 
-        for i, val in enumerate(apps):
-            if app.app_key == val.app_key:
-                apps[i] = app
-                break
-        self.put(apps, user)
+    # TODO: Should get by user PK instead of email.
+    def get_by_id(self, user_email, app_key: str) -> Optional[App]:
+        app = self.db.fetch_one("SELECT apps.* FROM apps INNER JOIN users ON apps.user_ref = users.id WHERE users.email = %s AND users.app_key=%s",
+                                 (user_email, app_key))
+        return App(**app)
 
-    def get_by_id(self, user, app_key: str) -> Optional[App]:
-        if self.get_by_user_email(user) is None:
-            return None
-        apps = self.get_by_user_email(user)
-        for i in apps:
-            if app_key == i.app_key:
-                return i
-        return None
-
+    # FIXME: `user` parameter is supefrluous.
     def put(self, apps, user):
-        self.db.put(user, json.dumps([app.dict() for app in apps]))
+        for app in apps:
+            self.db.execute(
+                "INSERT apps (user_ref, app_name, app_description, app_key, app_model, app_temperature VALUES(%s, %s, %s, %s, %s, %s)",
+                (app.user_ref, app.app_name, app.app_description, app.app_key, app.app_model, app.app_temperature)
+            )
 
+    # TODO: Probably should remove by the PK instead of `app_key`.
     def remove(self, user, app_key):
-        if self.get_by_user_email(user) is None:
-            return False
-        apps = self.get_by_user_email(user)
-        for i in apps:
-            if app_key == i.app_key:
-                apps.remove(i)
-        self.put(apps, user)
+        self.db.execute(
+            "DELETE FROM apps WHERE app_key=%s", (app_key,)
+        )

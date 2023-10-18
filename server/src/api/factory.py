@@ -15,6 +15,6 @@ llm_service = llm_service_factory(config.OPENAI_API_KEY_GPT3, config.OPENAI_API_
 doc_search_service = factory_doc_search_service(llm_service, cost_service)
 chat_history = factory_chat_history(pg_conn)
 agent = agent_factory(chat_history, cost_service, llm_service)
-apps = AppDao()
+apps = AppDao(pg_conn)
 user_service = UserService(UserDao(pg_conn), apps)
 current_session = {}
