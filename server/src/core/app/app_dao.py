@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 
 class App(BaseModel):
-    user_ref: int
+    user_ref: Optional[int] = None
     app_name: str
     app_description: str
     app_key: str = ""

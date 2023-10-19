@@ -14,6 +14,7 @@ apps_router = r = APIRouter()
 @r.post("/admin/applications", response_model=App, deprecated=True)
 def create_app(app: App, current_user: User = Depends(get_current_user)):
     app_key = random.randint(0, 100000000)
+    print("AAA", current_user)
     app = App(
         app_key=f"{app_key}",
         app_name=app.app_name,
@@ -22,6 +23,7 @@ def create_app(app: App, current_user: User = Depends(get_current_user)):
         app_model=app.app_model,
         app_temperature=app.app_temperature
     )
+    print("BBB", app)
     apps.add(current_user.email, app)
     return JSONResponse(content=app.dict())
 
