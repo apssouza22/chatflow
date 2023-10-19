@@ -11,7 +11,7 @@ import {
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {FlowController} from "../../domain/common/FlowController";
 import {commandService} from "../../domain/Factory";
-import {FileActionResponse} from "../../components/Chat";
+import {FileActionResponse} from "../../components/Chat/chat-types";
 
 interface ChatState {
     option: ChatOption;
