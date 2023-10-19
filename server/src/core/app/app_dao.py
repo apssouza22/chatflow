@@ -34,7 +34,7 @@ class AppDao:
     def edit(self, user, app: App):
         self.db.execute(
             "UPDATE apps SET app_name=%s, app_description=%s, app_key=%s, app_model=%s, app_temperature=%s WHERE user_ref=%s" \
-                "WHERE id=%d",
+                "WHERE id=%s",
             (app.app_name, app.app_description, app.app_key, app.app_model, app.app_temperature, app.user_ref,
              app.id)
         )

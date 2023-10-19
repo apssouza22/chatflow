@@ -18,7 +18,7 @@ def create_app(app: App, current_user: User = Depends(get_current_user)):
         app_key=f"{app_key}",
         app_name=app.app_name,
         app_description=app.app_description,
-        app_user=current_user.email,
+        user_ref=current_user.ok,
         app_model=app.app_model,
         app_temperature=app.app_temperature
     )
@@ -57,7 +57,7 @@ def create_app(app: App, current_user: User = Depends(get_current_user)):
         app_key=f"{app_key}",
         app_name=app.app_name,
         app_description=app.app_description,
-        app_user=current_user.email,
+        user_ref=current_user.pk,
         app_model=app.app_model,
         app_temperature=app.app_temperature
     )

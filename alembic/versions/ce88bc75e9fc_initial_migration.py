@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 9c116104177d
+Revision ID: ce88bc75e9fc
 Revises: 
-Create Date: 2023-10-19 22:52:09.210053
+Create Date: 2023-10-19 23:02:45.695218
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9c116104177d'
+revision: str = 'ce88bc75e9fc'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,7 +50,7 @@ def upgrade() -> None:
     sa.Column('createdat', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.ForeignKeyConstraint(['user_ref'], ['users.id'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('chatbot_id')
+    sa.UniqueConstraint('user_ref', 'chatbot_id', name='_chatbot_id_unique')
     )
     op.create_index(op.f('ix_chat_messages_createdat'), 'chat_messages', ['createdat'], unique=False)
     # ### end Alembic commands ###

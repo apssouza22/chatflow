@@ -32,11 +32,13 @@ class ChatMessages(Base):
 
     id: Mapped[intpk]
     user_ref: Mapped[int] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
-    chatbot_id: Mapped[str] = mapped_column(String(50), unique=True)
+    chatbot_id: Mapped[str] = mapped_column(String(50))
     message: Mapped[str] = mapped_column(Text)
     is_bot_reply: Mapped[bool] = mapped_column(Boolean)
     createdat: Mapped[datetime] = mapped_column(server_default=now(), index=True)
 
+    # TODO: Possibly a unique constraint should not be missing?
+    #__table_args__ = (UniqueConstraint('user_ref', 'chatbot_id', name='_chatbot_id_unique'),)
 
 class App(Base):
     __tablename__ = "apps"
