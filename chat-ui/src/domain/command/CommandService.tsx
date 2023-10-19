@@ -120,5 +120,7 @@ export function commandServiceFactory(
     const cmdRespHandler = new CommandResponseHandler(chatCtl)
     const commandFinder = new CommandFinder(httpClient, sseClient, session)
     const commandExec = new CommandExecution(httpClientNoBaseUrl, session)
-    return new CommandService(cmdReqHandler, commandFinder, commandExec, cmdRespHandler, chatCtl)
+    const service = new CommandService(cmdReqHandler, commandFinder, commandExec, cmdRespHandler, chatCtl)
+    chatCtl.setCommandService(service) // a mutual dependency, may be a code smell
+    return service
 }

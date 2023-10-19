@@ -10,8 +10,8 @@ import {
 } from './index';
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {FlowController} from "../../domain/common/FlowController";
-import {commandService} from "../../domain/Factory";
 import {FileActionResponse} from "../../components/Chat/chat-types";
+import { CommandService } from '../../domain/command/CommandService';
 
 interface ChatState {
     option: ChatOption;
@@ -38,6 +38,7 @@ export const defaultMsgObj = {
 
 export class ChatController {
     private state: ChatState;
+    private commandService: CommandService;
 
     private defaultOption: ChatOption = {
         delay: 300,
@@ -65,6 +66,10 @@ export class ChatController {
             onMessagesChanged: [],
             onActionChanged: [],
         };
+    }
+
+    public setCommandService(commandService: CommandService) {
+        this.commandService = commandService
     }
 
     getFlowController() {
@@ -194,7 +199,7 @@ export class ChatController {
         }
 
         if (request.type === 'file') {
-            commandService.addFiles((response as FileActionResponse).id, (response as FileActionResponse).files)
+            this.commandService.addFiles((response as FileActionResponse).id, (response as FileActionResponse).files)
         }
         responses.push(response);
 
