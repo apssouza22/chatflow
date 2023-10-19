@@ -42,7 +42,7 @@ class App(Base):
     __tablename__ = "apps"
 
     id: Mapped[intpk]
-    user_ref: Mapped[intpk] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
+    user_ref: Mapped[int] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
     app_name: Mapped[str] = mapped_column(String(100))
     app_description: Mapped[str] = mapped_column(Text)
     app_key: Mapped[str] = mapped_column(String(50))
