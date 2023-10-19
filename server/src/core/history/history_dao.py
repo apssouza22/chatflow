@@ -13,7 +13,7 @@ class HistoryDao:
         insert_query = sql.SQL(
             """
             INSERT INTO chat_messages(user_ref, chatbot_id, message, is_bot_reply)
-            VALUES(%d, %s, %s, %s)
+            VALUES(%s, %s, %s, %s)
             """
         )
         self.db.execute(insert_query, (user_ref, app_key, msg, is_bot_replay))
@@ -21,7 +21,7 @@ class HistoryDao:
     def get_latest_messages(self, user_ref: int, app_key: str) -> List[Dict]:
         return self.db.fetch_all(
             """
-            SELECT * FROM chat_messages where chatbot_id = %s and user_ref = %d
+            SELECT * FROM chat_messages where chatbot_id = %s and user_ref = %s
             ORDER BY createdat DESC
             LIMIT 50
             """,
