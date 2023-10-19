@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
     pass
 
 
-intpk = Annotated[int, mapped_column(primary_key=True)]
+intpk = Annotated[int, mapped_column(primary_key=True, autoincrement=True)]
 
 
 class User(Base):
@@ -30,7 +30,7 @@ class ChatMessages(Base):
     __tablename__ = "chat_messages"
 
     id: Mapped[intpk]
-    user_ref: Mapped[intpk] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
+    user_ref: Mapped[int] = mapped_column(ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
     chatbot_id: Mapped[str] = mapped_column(String(50), unique=True)
     message: Mapped[str] = mapped_column(Text)
     is_bot_reply: Mapped[bool] = mapped_column(Boolean)
