@@ -4,6 +4,7 @@ interface RequestOptions {
     method?: "GET" | "POST" | "PATCH" | "DELETE";
     headers?: { [key: string]: string };
     body?: any;
+    credentials?: "include" | "omit" | "same-origin",
 }
 
 interface UseFetchError {
@@ -44,6 +45,7 @@ export const useRestAPI = (baseUrl: string): UseRestAPI => {
                     ...options.headers,
                 },
                 body: JSON.stringify(options.body),
+                credentials: options.credentials,
             };
             if (params.method === "GET") {
                 delete params.body;

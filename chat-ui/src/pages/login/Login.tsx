@@ -9,17 +9,20 @@ import {SessionManager} from "../../domain/session/SessionManager";
 export function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {loading, post} = useRestAPI(process.env.REACT_APP_SERVER_URL)
+    const {loading, makeRequest} = useRestAPI(process.env.REACT_APP_SERVER_URL)
     const {dispatch} = useChatContext()
 
     const navigate = useNavigate()
 
     const handleSubmit = async e => {
         e.preventDefault();
-        const resp = await post("/admin/user/login", {
-            "email": email,
-            "password": password,
-        })
+        const resp = await makeRequest("/admin/user/login", {
+            body: {
+                "email": email,
+                "password": password,
+            },
+            credentials: "include",
+        });
 
         // @ts-ignore
         if (resp.status !== 200 || resp.data?.access_token == null) {

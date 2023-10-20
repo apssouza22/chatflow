@@ -1,7 +1,10 @@
+from typing import Annotated, Optional
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
+from fastapi import Cookie
+from fastapi import Response
 
 from api.factory import user_service, current_session, cost_service
 from api.jwttoken import decode_access_token, create_access_token
@@ -22,7 +25,9 @@ class SessionReq(BaseModel):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: Annotated[Optional[str], Cookie()] = None):
+    if token is None:
+        return None
     payload = decode_access_token(token)
     user = user_service.get_user_by_email(payload["sub"])
     if user is None:
@@ -37,8 +42,8 @@ def register(user: User):
 
 
 @r.post("/admin/user/login", deprecated=True)
-def login(form_data: LoginRequestBody):
-    return user_login(form_data)
+def login(form_data: LoginRequestBody, response: Response):
+    return user_login(form_data, response)
 
 
 @r.put("/admin/user/session", deprecated=True)
@@ -94,11 +99,12 @@ def signup(user: User):
     return JSONResponse(content={"message": "User registered successfully"})
 
 
-def user_login(req: LoginRequestBody):
+def user_login(req: LoginRequestBody, response: JSONResponse):
     user = user_service.authenticate_user(req.email, req.password)
 
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user.email, "type": "user-auth"})
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True)
     return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
