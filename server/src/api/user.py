@@ -42,8 +42,8 @@ def register(user: User):
 
 
 @r.post("/admin/user/login", deprecated=True)
-def login(form_data: LoginRequestBody, response: Response):
-    return user_login(form_data, response)
+def login(form_data: LoginRequestBody):
+    return user_login(form_data)
 
 
 @r.put("/admin/user/session", deprecated=True)
@@ -99,12 +99,13 @@ def signup(user: User):
     return JSONResponse(content={"message": "User registered successfully"})
 
 
-def user_login(req: LoginRequestBody, response: JSONResponse):
+def user_login(req: LoginRequestBody):
     user = user_service.authenticate_user(req.email, req.password)
 
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user.email, "type": "user-auth"})
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True)
-    return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    resp = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    resp.set_cookie(key="access_token", value=access_token, httponly=True)  # FIXME: In release mode should use `secure=True`.
+    return resp

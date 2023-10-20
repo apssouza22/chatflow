@@ -17,6 +17,7 @@ export function Login() {
     const handleSubmit = async e => {
         e.preventDefault();
         const resp = await makeRequest("/admin/user/login", {
+            method: "POST",
             body: {
                 "email": email,
                 "password": password,
