@@ -4,6 +4,7 @@ import {useRestAPI} from "../../hooks/useFetch";
 import {NavLink, useNavigate} from "react-router-dom";
 import {useChatContext} from "../../hooks/useChatContext";
 import {SessionManager} from "../../domain/session/SessionManager";
+import cookie from "cookie";
 
 
 export function Login() {
@@ -16,6 +17,10 @@ export function Login() {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        const cookies = cookie.parse(document.cookie || '');
+        if (cookies.access_token !== undefined) {
+            // TODO
+        }
         const resp = await makeRequest("/admin/user/login", {
             method: "POST",
             body: {
