@@ -43,10 +43,11 @@ export function Login() {
             // @ts-ignore
             access_token = resp.data.access_token;
         }
+        // TODO: Why both setToken and and two setItem?
         session.setToken(access_token);
         // session.setUser(email);
         sessionStorage.setItem("token", access_token)
-        console.log("PPP")
+        localStorage.setItem("token", access_token)
         navigate("/chatflow")
     };
 

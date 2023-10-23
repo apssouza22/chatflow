@@ -17,9 +17,9 @@ export class SessionManager {
         let accessId = localStorage.getItem("sessionId") || uuidv4();
         localStorage.setItem("sessionId", accessId)
         const params = this.loadSessionDataFromUrl()
-        // TODO: The following data is never set, should we remove it?
+        // TODO: Most of the following data is never set, should we remove it?
         this.sessionData = {
-            token: params["token"] || "",
+            token: localStorage.getItem("token"),
             user: params["user"] || "",
             app: params["app"] || "chat",
             isPluginMode: params["pluginMode"]=="true" || false,
