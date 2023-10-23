@@ -17,7 +17,7 @@ export class SessionManager {
         let accessId = localStorage.getItem("sessionId") || uuidv4();
         localStorage.setItem("sessionId", accessId)
         const params = this.loadSessionDataFromUrl()
-        // TODO: Most of the following data is never set, should we remove it?
+        // TODO: Most of the following data is never set or used, should we remove it?
         // TODO: Some of the following data is not stored persistently,
         //       `token` and `sessionId` can be accessed directly from localStorage.
         //       so I don't understand what is the use of session.
