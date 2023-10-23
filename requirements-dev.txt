@@ -2,7 +2,3 @@
 pre-commit
 mypy
 types-requests
-
-# for migrations:
-SQLAlchemy==2.0.22
-alembic
