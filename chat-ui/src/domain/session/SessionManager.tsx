@@ -18,6 +18,10 @@ export class SessionManager {
         localStorage.setItem("sessionId", accessId)
         const params = this.loadSessionDataFromUrl()
         // TODO: Most of the following data is never set, should we remove it?
+        // TODO: Some of the following data is not stored persistently,
+        //       `token` and `sessionId` can be accessed directly from localStorage.
+        //       so I don't understand what is the use of session.
+        // TODO: When to reset `sessionId`? on page reload?
         this.sessionData = {
             token: localStorage.getItem("token"),
             user: params["user"] || "",
