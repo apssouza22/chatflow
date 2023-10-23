@@ -31,7 +31,7 @@ export function Login() {
                     "email": email,
                     "password": password,
                 },
-                credentials: "include",
+                credentials: "include", // TODO: superfluous
             });
     
             // @ts-ignore
