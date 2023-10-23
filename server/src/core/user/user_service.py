@@ -18,6 +18,7 @@ class UserService:
             self.dao.db.conn.rollback()
 
     def authenticate_user(self, email, password):
+        print("AAA", email)
         user = self.dao.get_by_email(email)
         if user is None:
             return None

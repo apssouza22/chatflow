@@ -17,31 +17,35 @@ export function Login() {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        let access_token;
         const cookies = cookie.parse(document.cookie || '');
         if (cookies.access_token !== undefined) {
-            // TODO
+            access_token = cookies.access_token;
+        } else {
+            const resp = await makeRequest("/admin/user/login", {
+                method: "POST",
+                body: {
+                    "email": email,
+                    "password": password,
+                },
+                credentials: "include",
+            });
+    
+            // @ts-ignore
+            if (resp.status !== 200 || resp.data?.access_token == null) {
+                alert("Login failed")
+                return
+            }
+            dispatch({type: "LOGIN", payload: email})
+            // @ts-ignore
+            access_token = resp.data.access_token;
         }
-        const resp = await makeRequest("/admin/user/login", {
-            method: "POST",
-            body: {
-                "email": email,
-                "password": password,
-            },
-            credentials: "include",
-        });
-
-        // @ts-ignore
-        if (resp.status !== 200 || resp.data?.access_token == null) {
-            alert("Login failed")
-            return
-        }
-        dispatch({type: "LOGIN", payload: email})
+        // TODO: This can be simplified by using directly the session cookie.
+        // TODO: Limit lifetime of the session cookie.
         const session = SessionManager.getInstance();
-        // @ts-ignore
-        let token = resp.data.access_token;
-        session.setToken(token);
-        session.setUser(email);
-        sessionStorage.setItem("token", token)
+        session.setToken(access_token);
+        // session.setUser(email);
+        sessionStorage.setItem("token", access_token)
         navigate("/chatflow")
     };
 

@@ -17,6 +17,7 @@ export class SessionManager {
         let accessId = localStorage.getItem("sessionId") || uuidv4();
         localStorage.setItem("sessionId", accessId)
         const params = this.loadSessionDataFromUrl()
+        // TODO: The following data is never set, should we remove it?
         this.sessionData = {
             token: params["token"] || "",
             user: params["user"] || "",
@@ -68,7 +69,8 @@ export class SessionManager {
             })
     }
 
-    setUser(email: string) {
-        this.sessionData.user = email;
-    }
+    // We use `access_token`, not email as user identification
+    // setUser(email: string) {
+    //     this.sessionData.user = email;
+    // }
 }
