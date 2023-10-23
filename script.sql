@@ -18,7 +18,7 @@ CREATE TABLE chat_messages (
 );
 
 CREATE TABLE users (
-    id integer primary key NOT NULL,
+    id serial primary key NOT NULL,
     email character varying(250) NOT NULL,
     password character varying(200) NOT NULL,
     name character varying(50) NOT NULL
