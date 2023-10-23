@@ -45,8 +45,6 @@ export function Login() {
         }
         // TODO: Why both setToken and and two setItem?
         session.setToken(access_token);
-        // session.setUser(email);
-        sessionStorage.setItem("token", access_token)
         localStorage.setItem("token", access_token)
         navigate("/chatflow")
     };
