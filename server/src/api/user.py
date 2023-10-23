@@ -107,5 +107,5 @@ def user_login(req: LoginRequestBody):
 
     access_token = create_access_token(data={"sub": user.email, "type": "user-auth"})
     resp = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-    resp.set_cookie(key="access_token", value=access_token)  # FIXME: In release mode should use `secure=True`.
+    # resp.set_cookie(key="access_token", httponly=False, value=access_token)  # FIXME: In release mode should use `secure=True`.
     return resp

@@ -18,9 +18,12 @@ export function Login() {
     const handleSubmit = async e => {
         e.preventDefault();
         let access_token;
-        const cookies = cookie.parse(document.cookie || '');
-        if (cookies.access_token !== undefined) {
-            access_token = cookies.access_token;
+        // const cookies = cookie.parse(document.cookie || '');
+        // TODO: This can be simplified by using directly the session cookie.
+        // TODO: Limit lifetime of the session cookie.
+        const session = SessionManager.getInstance();
+        if (session.getSessionData().token) {
+            access_token = session.getSessionData().token;
         } else {
             const resp = await makeRequest("/admin/user/login", {
                 method: "POST",
@@ -40,12 +43,10 @@ export function Login() {
             // @ts-ignore
             access_token = resp.data.access_token;
         }
-        // TODO: This can be simplified by using directly the session cookie.
-        // TODO: Limit lifetime of the session cookie.
-        const session = SessionManager.getInstance();
         session.setToken(access_token);
         // session.setUser(email);
         sessionStorage.setItem("token", access_token)
+        console.log("PPP")
         navigate("/chatflow")
     };
 
