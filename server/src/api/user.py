@@ -1,3 +1,4 @@
+import time
 from typing import Annotated, Optional
 from fastapi import Depends, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
@@ -29,6 +30,9 @@ def get_current_user(token: Annotated[Optional[str], Cookie()] = None):
     if token is None:
         return None
     payload = decode_access_token(token)
+    # TODO: Handle the exceptions.
+    if payload["exp"] > time.time():
+        raise HTTPException(status_code=401, detail="Token expired")
     user = user_service.get_user_by_email(payload["sub"])
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid token")
