@@ -31,6 +31,7 @@ def get_current_user(token: Annotated[Optional[str], Cookie()] = None):
         return None
     payload = decode_access_token(token)
     # TODO: Handle the exceptions.
+    # FIXME: Create a new token with every request, to delay expiration.
     if payload["exp"] > time.time():
         raise HTTPException(status_code=401, detail="Token expired")
     user = user_service.get_user_by_email(payload["sub"])
