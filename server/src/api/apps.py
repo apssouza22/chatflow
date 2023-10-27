@@ -14,14 +14,16 @@ apps_router = r = APIRouter()
 @r.post("/admin/applications", response_model=App, deprecated=True)
 def create_app(app: App, current_user: User = Depends(get_current_user)):
     app_key = random.randint(0, 100000000)
+    print("AAA", current_user)
     app = App(
         app_key=f"{app_key}",
         app_name=app.app_name,
         app_description=app.app_description,
-        app_user=current_user.email,
+        user_ref=current_user.pk,
         app_model=app.app_model,
         app_temperature=app.app_temperature
     )
+    print("BBB", app)
     apps.add(current_user.email, app)
     return JSONResponse(content=app.dict())
 
@@ -57,7 +59,7 @@ def create_app(app: App, current_user: User = Depends(get_current_user)):
         app_key=f"{app_key}",
         app_name=app.app_name,
         app_description=app.app_description,
-        app_user=current_user.email,
+        user_ref=current_user.pk,
         app_model=app.app_model,
         app_temperature=app.app_temperature
     )
@@ -92,11 +94,11 @@ def delete_app(app_key: str, current_user: User = Depends(get_current_user)):
 @r.get("/applications/{app_key}/history")
 def get_app_conversation(app_key: str, user: User = Depends(get_current_user)):
     if app_key == "chat":
-        return chat_history.get_latest_messages(user.email, app_key)
+        return chat_history.get_latest_messages(user.pk, app_key)
 
     for a in apps.get_by_user_email(user.email):
         if app_key == a.app_key:
-            return chat_history.get_latest_messages(user.email, app_key)
+            return chat_history.get_latest_messages(user.pk, app_key)
 
     raise HTTPException(status_code=404, detail="App not found")
 

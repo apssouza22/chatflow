@@ -57,8 +57,8 @@ def get_request_dto(current_user, question_request, request):
     is_plugin_mode = request.headers.get("pluginmode") == "true"
     session_id = request.headers.get("sessionid") or current_user.email
     app = apps.get_by_id(current_user.email, request.headers.get("appkey"))
-    if app is None:
-        app = App(app_name="chat", app_description="admin app", app_key="chat")
+    if app is None: # hack
+        app = App(app_name="chat", app_description="admin app", app_key="chat", user_ref=current_user.pk)
 
     user_input_req = UserInputDto(**{
         "question": question_request.question,
