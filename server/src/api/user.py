@@ -68,10 +68,18 @@ def login(form_data: LoginRequestBody):
     return user_login(form_data)
 
 
+# TODO: What does this endpoint do?
 @r.put("/user/session")
 def session(session_req: SessionReq, current_user: User = Depends(get_current_user)):
     current_session[current_user.email] = session_req
     return JSONResponse(content={"message": "Session updated successfully"})
+
+
+@r.post("/auth/refresh")
+def refresh_token(current_user: User = Depends(get_current_user)):
+    # TODO: duplicate code
+    access_token, expire = create_access_token(data={"sub": current_user.email, "type": "user-auth"})
+    return JSONResponse(content={"access_token": access_token, "token_type": "bearer", "expire": expire})
 
 
 @r.get("/users")
@@ -88,8 +96,8 @@ def usage(user: User = Depends(get_current_user)):
 def user_app_auth(user_email: str, app_key: str):
     exists = user_service.exists_app(user_email, app_key)
     if exists:
-        access_token = create_access_token(data={"sub": user_email, "type": "app-auth"})
-        return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+        access_token, expire = create_access_token(data={"sub": user_email, "type": "app-auth"})
+        return JSONResponse(content={"access_token": access_token, "token_type": "bearer", "expire": expire})
 
     raise HTTPException(status_code=401, detail="Invalid user or app.")
 
@@ -110,7 +118,7 @@ def user_login(req: LoginRequestBody):
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access_token = create_access_token(data={"sub": user.email, "type": "user-auth"})
-    resp = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    access_token, expire = create_access_token(data={"sub": user.email, "type": "user-auth"})
+    resp = JSONResponse(content={"access_token": access_token, "token_type": "bearer", "expire": expire})
     # resp.set_cookie(key="access_token", httponly=False, value=access_token)  # FIXME: In release mode should use `secure=True`.
     return resp

@@ -39,7 +39,7 @@ export function Login() {
                 alert("Login failed")
                 return
             }
-            dispatch({type: "LOGIN", payload: email})
+            dispatch({type: "LOGIN", payload: email}) // TODO: What is it?
             // @ts-ignore
             access_token = resp.data.access_token;
         }
