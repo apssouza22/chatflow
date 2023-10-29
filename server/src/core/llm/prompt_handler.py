@@ -40,7 +40,7 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'Markdown code snippet formatted in the following schema:\n\n' \
                                f'```json\n command: {{\n   ' \
                                f'"name": "api_call" \\ The command will be an api call\n' \
-                               f'"args": {{"url": "<url>", "method": "<http method>","data_request": "<JSON object>","headers": "<JSON object>"}} \\ The arguments for the api call\n' \
+                               f'"args": {{"url": "<url>", "method": "<http method>","data_type":"application/json|application/x-www-form-urlencoded|multipart/form-data","data_request": "<JSON object>","uploads":["<file upload ID>"],"headers": "<JSON object>"}} \\ The arguments for the api call\n' \
                                f'"request_render": {{"<field name>":{{"field_type": "<input|checkbox|select|password>", field_options: "<array string>"}} }} \\ Instruction of how to render the request fields\n' \
                                f'"response_render": {{"render_type": "<list|chart>", fields: "<array string>"}} \\ Instruction of how to render the response\n' \
                                f'}}\n```' \

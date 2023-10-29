@@ -2,6 +2,7 @@ interface RequestOptions {
     method?: "GET" | "POST" | "PATCH" | "DELETE";
     headers?: { [key: string]: string };
     body?: any;
+    data_type?: "application/json" | "application/x-www-form-urlencoded" | "multipart/form-data";
 }
 
 
@@ -24,11 +25,19 @@ export class HttpClient {
             isLoading: true,
             status: 200
         }
-        // Remark: This 
+
+        let useFormData = options.data_type === 'application/x-www-form-urlencoded' || options.data_type === 'multipart/form-data';
+        let formData;
+        if (useFormData) {
+            formData = new FormData();
+            for (const [key, value] of Object.entries(options.body)) {
+                formData.append(key, value);
+            }
+        }
+        // FIXME:
         const hasFiles = Object.values(options.body).some((v: any) => Array.isArray(v) && v[0] instanceof Blob); // `File` is derived from `Blob`.
         const body = undefined;
         if (hasFiles) {
-            const formData = new FormData();
             for (const [key, value] of Object.entries(options.body)) {
                 if (Array.isArray(value)) { // Usually, it's an array of files, because a single file dialog may harvest multiple files.
                     for (const subvalue of value) { // so, `subvalue` is a `File` object, usually.
@@ -43,10 +52,10 @@ export class HttpClient {
             let params = {
                 method: options.method || "GET",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": options.data_type ?? "application/json",
                     ...options.headers,
                 },
-                body: body ?? JSON.stringify(options.body),
+                body: useFormData ? formData : body ?? JSON.stringify(options.body),
             };
             if (params.method === "GET") {
                 delete params.body;
