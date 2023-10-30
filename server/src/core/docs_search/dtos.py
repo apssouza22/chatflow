@@ -18,7 +18,7 @@ class AddDocRequest(BaseModel):
 
 
 class CompletionRequest(BaseModel):
-    type: str  # 'text' | 'file'
+    type: Optional[str]  # 'text' | 'file'  # TODO: shouldn't be optional
     id: Optional[str] = None
     question: str
     context: str
