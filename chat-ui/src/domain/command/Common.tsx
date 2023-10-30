@@ -33,6 +33,7 @@ export type Command = {
         url: string;
         method: any;
         data_request: any;
+        uploads: any; // TODO: more specific type
     };
     function?: {
         name: string;

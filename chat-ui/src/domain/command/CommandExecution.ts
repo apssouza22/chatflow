@@ -154,17 +154,9 @@ export class CommandExecution {
         }
 
         // Replace file references by File objects:
-        const newCommandData = {}; // should use Map instead of object?
-        for (const [key, value] of Object.entries(commandData)) {
-            if ((value as any).type === 'attachment') {
-                // TODO: Display error message if file with this ID is not found.
-                newCommandData[key] = this.files[(value as any).fileId]; // a blob of type `File`
-            } else {
-                newCommandData[key] = value;
-            }
-        }
-        for (const [key, value] of Object.entries(newCommandData)) {
-            commandData[key] = value;
+        for (const [key, value] of Object.entries(command.args!.uploads)) { // TODO: check if `command.args` is not null
+            // TODO: Display error message if file with this ID is not found.
+            command.args!.data_request[key] = this.files[(value as any).id]; // a blob of type `File`
         }
 
         this.handleAppKeySession(command, commandData);
