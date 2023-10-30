@@ -166,7 +166,7 @@ def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
         if message.role == MessageRole.USER and message.context == "":
             content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n' \
                     f'{message.query}'
-            if message.attachment is not None:
+            if message.attachment is not None:  # FIXME: `.attachment` is not used, use `.id` instead.
                 content += f'\n\nFile attachments: attachment ID = {message.attachment.content_id}'
             prompts.append(MessageDict(
                 role=MessageRole.USER,
