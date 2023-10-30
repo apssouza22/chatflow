@@ -88,14 +88,6 @@ class MessageRole(Enum):
         return self.value
 
 
-# TODO: This seems unused. Remove?
-class Attachment(TypedDict):
-    content_id: str  # the upload ID set by JavaScript
-    filenames: List[str]
-    def __str__(self):
-        return ", ".join(self.filenames)
-
-
 class MessageDict(TypedDict):
     role: MessageRole
     content: str
@@ -103,7 +95,6 @@ class MessageDict(TypedDict):
         return {
             "role": self.role.value,
             "content": self.content,
-            "attachment": self.attachment,
         }
 
 @dataclass
@@ -112,7 +103,6 @@ class MessageCompletion:
     context: str = ""
     query: str = ""
     response: str = ""
-    attachment: Optional[Attachment] = None
 
 
 def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
@@ -166,8 +156,8 @@ def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
         if message.role == MessageRole.USER and message.context == "":
             content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n' \
                     f'{message.query}'
-            if message.attachment is not None:  # FIXME: `.attachment` is not used, use `.id` instead.
-                content += f'\n\nFile attachments: attachment ID = {message.attachment.content_id}'
+            # if message.attachment is not None:
+            #     content += f'\n\nFile attachments: attachment ID = {message.attachment.content_id}'
             prompts.append(MessageDict(
                 role=MessageRole.USER,
                 content=content
