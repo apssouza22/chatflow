@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 DEFAULT_RETURN_FIELDS = ["item_id", "item_pk", "vector_score"]
@@ -17,5 +18,7 @@ class AddDocRequest(BaseModel):
 
 
 class CompletionRequest(BaseModel):
+    type: str  # 'text' | 'file'
+    id: Optional[str] = None
     question: str
     context: str

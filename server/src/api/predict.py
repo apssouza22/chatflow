@@ -60,8 +60,10 @@ def get_request_dto(current_user, question_request, request):
     if app is None:
         app = App(app_name="chat", app_description="admin app", app_key="chat")
 
+    # TODO: Passing file name in question field is a hack.
     user_input_req = UserInputDto(**{
-        "question": question_request.question,
+        "question": f"Uploaded file(s) with ID {question_request.id} and name {question_request.question}" \
+            if question_request.type == 'file' else question_request.question,
         "context": question_request.context,
         "user": current_user,
         "app": app,
