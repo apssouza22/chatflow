@@ -118,7 +118,7 @@ export function MuiChat({chatController}: PropsWithChildren<MuiChatParams>): Rea
                             prevTime = current;
                         }
                     }
-                    if (msg.type === 'text' || msg.type === 'jsx') {
+                    if (msg.type === 'text' || msg.type === 'jsx' || msg.type === 'file') {
                         return (
                             <MuiMessage
                                 key={messages.indexOf(msg)}
