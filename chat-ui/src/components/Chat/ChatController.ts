@@ -205,8 +205,9 @@ export class ChatController {
 
         if (request.addMessage) {
             await this.addMessage({
-                type: 'text',
+                type: request.type === 'file' ? 'file' : 'text', // can be simplified to `type: request.type`?
                 content: response.value,
+                ...(request.type === 'file' ? {id: (response as FileActionResponse).id} : {}),
                 self: true,
             });
         }

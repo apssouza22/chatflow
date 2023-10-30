@@ -40,7 +40,7 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'Markdown code snippet formatted in the following schema:\n\n' \
                                f'```json\n command: {{\n   ' \
                                f'"name": "api_call" \\ The command will be an api call\n' \
-                               f'"args": {{"url": "<url>", "method": "<http method>","data_type":"application/json|application/x-www-form-urlencoded|multipart/form-data","data_request": "<JSON object>","uploads":["<file upload ID>"],"headers": "<JSON object>"}} \\ The arguments for the api call\n' \
+                               f'"args": {{"url": "<url>", "method": "<http method>","data_type":"application/json|application/x-www-form-urlencoded|multipart/form-data","data_request": "<JSON object>","uploads":["<file attachment ID>"],"headers": "<JSON object>"}} \\ The arguments for the api call\n' \
                                f'"request_render": {{"<field name>":{{"field_type": "<input|checkbox|select|password>", field_options: "<array string>"}} }} \\ Instruction of how to render the request fields\n' \
                                f'"response_render": {{"render_type": "<list|chart>", fields: "<array string>"}} \\ Instruction of how to render the response\n' \
                                f'}}\n```' \
@@ -86,17 +86,14 @@ class MessageRole(Enum):
 
 class Attachment(TypedDict):
     content_id: str  # the upload ID set by JavaScript
-    filename: str
+    filenames: List[str]
     def __str__(self):
-        return {
-            "filename": self.filename
-        }
+        return ", ".join(self.filenames)
 
 
 class MessageDict(TypedDict):
     role: MessageRole
     content: str
-    attachment: Optional[Attachment]
     def __str__(self):
         return {
             "role": self.role.value,
@@ -110,6 +107,7 @@ class MessageCompletion:
     context: str = ""
     query: str = ""
     response: str = ""
+    attachment: Optional[Attachment] = None
 
 
 def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
@@ -161,10 +159,13 @@ def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
             continue
         # empty context means that the user is refining the command based on the assistant's response
         if message.role == MessageRole.USER and message.context == "":
+            content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n' \
+                    f'{message.query}'
+            if message.attachment is not None:
+                content += f'\n\nFile attachments: attachment ID = {message.attachment.content_id}'
             prompts.append(MessageDict(
                 role=MessageRole.USER,
-                content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n'
-                        f'{message.query}'
+                content=content
             ))
             continue
         if message.role == MessageRole.USER and message.context != "":
