@@ -18,6 +18,7 @@ export enum CommandName {
     BROWSE_WEBSITE = "browse_website",
     CHAT_QUESTION = "chat_question",
     JAVASCRIPT = "js_func",
+    UPLOAD = "upload_file",
 }
 
 export type ResponseRenderDto = {

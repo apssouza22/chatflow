@@ -1,6 +1,7 @@
 import {FetchResult, HttpClient} from "../common/HttpClient";
 import {Command, CommandName} from "./Common";
 import {SessionManager} from "../session/SessionManager";
+import { ChatController } from "../../components/Chat";
 
 export interface CommandExecResult {
     status: number
@@ -13,6 +14,7 @@ type File = any; // should be DOM File object
 export class CommandExecution {
     private httpClient: HttpClient;
     private session: SessionManager;
+    private chatCtl: ChatController;
     private files: {
         [id: string]: File[] // array, because multiple files can be opened from a single file dialog and have the same ID
     }
@@ -26,9 +28,10 @@ export class CommandExecution {
         this.files[id] = files;
     }
 
-    constructor(httpClient: HttpClient, session: SessionManager) {
+    constructor(httpClient: HttpClient, session: SessionManager, chatCtl: ChatController) {
         this.httpClient = httpClient;
         this.session = session;
+        this.chatCtl = chatCtl;
         this.files = {};
     }
 
@@ -64,6 +67,14 @@ export class CommandExecution {
             } catch (e) {
                 console.log(e)
             }
+        }
+        if (command.name === CommandName.UPLOAD) {
+            // TODO: correct?
+            await this.chatCtl.setActionRequest({
+                type: 'file',
+                accept: '*/*',
+                multiple: true,
+            });
         }
         return {status: 200};
     };

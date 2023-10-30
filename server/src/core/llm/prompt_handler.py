@@ -14,7 +14,7 @@ response_format = {
         "criticism": "constructive self-criticism"
     },
     "command": {
-        "name": "api_call|browse_website|send_email|chat_question",
+        "name": "api_call|browse_website|send_email|chat_question|upload_file",
         "args": {"arg name": "value"},
         "request_render": {
             "field_name_1": {
@@ -72,6 +72,10 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'"name": "js_func" \\ The command will be a Javascript function\n' \
                                f'"function": {{"name": "<function_name>", "code": "<function_code>", "param": "<json_param>"}} \\ The javascript function details\n' \
                                f'}}\n ```' \
+                               f'\n\n**Option 6:**\n' \
+                               f'```json\n command:{{\n   ' \
+                               f'"name": "upload_file" \\ The command will show file upload widget\n' \
+                               f'}}\n ```' \
                                f'Notice: All the options will be along with the ``` thoughts:{{ }}```'
 
 
@@ -84,6 +88,7 @@ class MessageRole(Enum):
         return self.value
 
 
+# TODO: This seems unused. Remove?
 class Attachment(TypedDict):
     content_id: str  # the upload ID set by JavaScript
     filenames: List[str]
