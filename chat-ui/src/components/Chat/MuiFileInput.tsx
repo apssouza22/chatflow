@@ -53,6 +53,14 @@ export function MuiFileInput({
         ? actionRequest.sendButtonText
         : 'Send';
 
+    function cancelUpload() {
+        chatCtl.setActionRequest({
+            type: 'text',
+            placeholder: 'Please enter your text.',
+            always: true,
+        });
+    }
+
     return (
         <Box
             flex="1 1 auto"
@@ -85,6 +93,7 @@ export function MuiFileInput({
                 justifyContent="space-between"
                 gap={2}
             >
+                <Button onClick={cancelUpload} >Cancel</Button>
                 <Button
                     isDisabled={false}
                     as="label"

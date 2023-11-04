@@ -1,10 +1,6 @@
 import os
 
 import uvicorn
-from aredis_om import (
-    get_redis_connection,
-    Migrator
-)
 from fastapi import FastAPI, APIRouter, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -68,12 +64,14 @@ app.include_router(
 )
 
 frontend_dir = "/app/frontend"  # inside docker
+generated_dir = "/app/uploads"
 if os.path.exists("../../chat-ui/build/index.html"):
     frontend_dir = "../../chat-ui/build"
+    generated_dir = "./uploads"
 
 app.mount("/assets", StaticFiles(directory=frontend_dir), name="assets")
 app.mount("/chat-commander-ui", StaticFiles(directory=frontend_dir), name="old-assets")
-
+app.mount("/uploads", StaticFiles(directory=generated_dir), name="generated files")
 
 @app.get("/")
 async def read_index():
