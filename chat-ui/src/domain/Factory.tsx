@@ -56,6 +56,19 @@ const actionListener = async (req, resp) => {
         await handleFileUpload(resp)
         return
     }
+    if (resp.type == "select") {
+        return
+    }
+    if (resp.type == "multi-select") {
+        return
+    }
+    if (resp.type == "audio") {
+        return
+    }
+    if (resp.type == "custom") {
+        return
+    }
+
     await chatCtl.addMessage({...defaultMsgObj, type: "jsx", className: "command-loading", content: <ThinkingMsg/>});
     await commandService.process(resp)
     const msgs = chatCtl.getMessages()
