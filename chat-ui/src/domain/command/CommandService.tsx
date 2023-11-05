@@ -7,6 +7,7 @@ import {CommandExecution} from "./CommandExecution";
 import {CommandResponseHandler} from "../commandresp/CommandResponseHandler";
 import {SessionManager} from "../session/SessionManager";
 import {HttpClient} from "../common/HttpClient";
+import {showEmailForm} from "../common/CustomInputs";
 import {StreamCompletionClient} from "../common/StreamCompletionClient";
 
 function isAction(doc: string, input: string) {
@@ -42,16 +43,22 @@ export class CommandService {
     async handleAnswerStream(input: string, docContext: string) {
         let answer = ""
 
-        await this.chatCtl.addMessage({...defaultMsgObj, content: formatText(answer)})
+        let chatCtl = this.chatCtl;
+        await chatCtl.addMessage({...defaultMsgObj, content: formatText(answer)})
 
-        this.commandFinder.getAnswerStream(input, docContext,
+        this.commandFinder.getAnswerStream(
+            input,
+            docContext,
             (data: any, done: boolean) => {
                 if (data.choices[0]?.delta?.content == null) {
+                    if (localStorage.getItem("displayedForm") !== "true") {
+                        showEmailForm(chatCtl)
+                    }
                     return
                 }
                 answer += data.choices[0]?.delta?.content + ""
                 const contAnswer = formatText(answer)
-                this.chatCtl.updateMessage(this.chatCtl.getMessages().length - 1, {...defaultMsgObj, content: contAnswer})
+                chatCtl.updateMessage(chatCtl.getMessages().length - 1, {...defaultMsgObj, content: contAnswer})
             })
     }
 
