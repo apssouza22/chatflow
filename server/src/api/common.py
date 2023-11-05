@@ -1,6 +1,9 @@
+import os
+import random
 import typing as t
 import requests
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, UploadFile
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from api.user import User, get_current_user
@@ -31,3 +34,26 @@ def command(
     data = response.json()
 
     return JSONResponse(data, status_code=response.status_code)
+
+
+@r.post("/upload")
+async def upload_file(
+        file: UploadFile,
+        request: Request,
+        current_user: User = Depends(get_current_user)):
+    try:
+        appkey = request.headers.get("appkey")
+        if file.filename:
+            upload_folder = 'uploads' + os.sep + appkey
+            os.makedirs(upload_folder, exist_ok=True)
+            filename = str(random.randint(0, 100000000)) + "_" + file.filename
+            file_path = os.path.join(upload_folder, filename)
+
+            with open(file_path, "wb") as f:
+                f.write(file.file.read())
+
+            return {"message": "File uploaded successfully", "filename": upload_folder + "/" + filename}
+
+        return {"message": "No file selected"}
+    except Exception as e:
+        return {"error": str(e)}

@@ -17,6 +17,7 @@ services:
     volumes:
       - ./server/src:/app/src
       - ./chat-ui/build:/app/frontend
+      - ./server/src/uploads:/app/uploads
     environment:
       REDIS_DB: 0
       SERVER_HOST: "0.0.0.0"

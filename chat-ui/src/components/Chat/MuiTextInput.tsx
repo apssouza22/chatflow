@@ -1,10 +1,14 @@
 import {Box, Button, Icon, Input} from "@chakra-ui/react";
 
 
-import {ChatController} from './index';
+import {AudioActionResponse, ChatController, FileActionResponse} from './index';
 import {TextActionRequest, TextActionResponse} from './index';
 import {ReactElement, useCallback, useEffect, useState} from "react";
 import {AiOutlineSend} from "react-icons/ai";
+import {GoSidebarCollapse, GoSidebarExpand, GoUnmute, GoUpload} from "react-icons/go";
+import IconBox from "../Icons/IconBox";
+import * as React from "react";
+import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 
 export function MuiTextInput({
                                  chatController,
@@ -52,6 +56,20 @@ export function MuiTextInput({
         ? actionRequest.sendButtonText
         : 'Send';
 
+    let loadUploadComponent = async () => {
+        const file = (await chatCtl.setActionRequest({
+            type: 'file',
+            accept: '*',
+            multiple: true,
+        })) as FileActionResponse;
+
+        await chatCtl.setActionRequest({
+                type: 'text',
+                placeholder: 'Please enter your text.',
+                always: true,
+            },
+        );
+    };
     return (
         <Box
             sx={{
@@ -69,6 +87,19 @@ export function MuiTextInput({
                 },
             }}
         >
+            <IconBox {...{
+                onClick: loadUploadComponent,
+                color: "black",
+                className: "bt-upload",
+                cursor: "pointer",
+                padding: "0.5rem",
+                title: "Upload file",
+                _hover: {
+                    bg: "gray.200"
+                }
+            }} >
+                <GoUpload/>
+            </IconBox>
             <Input
                 placeholder={actionRequest.placeholder}
                 value={value}
@@ -92,6 +123,7 @@ export function MuiTextInput({
         </Box>
     );
 }
+
 function extractContentBetweenBraces(inputString) {
     const regex = /{{{(.*?)}}}/g;
     const matches = [];
