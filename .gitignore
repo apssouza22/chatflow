@@ -21,3 +21,4 @@ file_db/
 /venv/
 /.mypy_cache/
 /postgres-data/
+/server/src/uploads/

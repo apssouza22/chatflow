@@ -1,6 +1,6 @@
-import {Button, IconButton, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, useDisclosure} from "@chakra-ui/react";
+import {Button, IconButton, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure} from "@chakra-ui/react";
 import {DeleteIcon, EditIcon, HamburgerIcon, ViewIcon} from "@chakra-ui/icons";
-import {useState} from "react";
+import React, {useState} from "react";
 import {ChatController} from "../../components/Chat";
 
 interface DataTableProps {
@@ -26,6 +26,8 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
     } = useDisclosure()
     const [modalContent, setModalContent] = useState<string>("")
     const isArray = Array.isArray(data);
+    let tableNames = Object.keys(isArray ? data[0] : data);
+
     if (data == null) {
         return
     }
@@ -63,67 +65,89 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
 
     return (
         <>
-            {
-                isArray && data.length > 0 && <Button variant={"ghost"}
-                                                      color={"blue.600"}
-                                                      _hover={{color: "blue.400"}}
-                                                      onClick={() => {
-                                                          alert("Not implemented yet")
-                                                      }} size="sm">View as a table</Button>
-            }
+            {/*{*/}
+            {/*    isArray && data.length > 0 && <Button variant={"ghost"}*/}
+            {/*                                          color={"blue.600"}*/}
+            {/*                                          _hover={{color: "blue.400"}}*/}
+            {/*                                          onClick={() => {*/}
+            {/*                                              alert("Not implemented yet")*/}
+            {/*                                          }} size="sm">View as a table</Button>*/}
+            {/*}*/}
 
             {isArray && data.length == 0 && (<span>No data</span>)}
 
             <TableContainer bg={"white"}>
-                <Table variant='simple' style={{borderBottom: "10px solid #edf2f7"}}>
+                <Table variant='simple'>
+                    <Thead >
+                        <Tr>
+                            {tableNames.map((name) => (
+                                <Th>{name}</Th>
+                            ))}
+                            {isArray && (<Th>Action</Th>)}
+                        </Tr>
+                    </Thead>
                     <Tbody>
-                        {Object.entries(data).map(([key, value]) => (
-                            <tr key={key} style={{border: "1px solid #edf2f7"}}>
-                                <td style={{"verticalAlign": "top", paddingRight: "5px"}}>
-                                    {key}
-                                </td>
-                                <td>
-                                    <>
-                                        {(
-                                            typeof value === 'object' && value !== null ? (
-                                                <RenderDataTable data={value as any} chatCtl={chatCtl}/>
-                                            ) : (
-                                                <SmartRender item={value} index={key}/>
-                                            )
-                                        )}
-                                    </>
-                                </td>
-                                {isArray && (
-                                    <td style={{"verticalAlign": "top"}}>
-                                        <Menu>
-                                            <MenuButton
-                                                as={IconButton}
-                                                aria-label="Copy"
-                                                icon={<HamburgerIcon/>}
-                                                variant="primary"
-                                                border={'1px solid #E2E8F0'}
-                                                size="sm"
-                                                mr={2}
-                                                ml={2}
-                                                mt={2}
-                                            />
-                                            <MenuList>
-                                                <MenuItem icon={<EditIcon/>} onClick={() => {
-                                                    setPrompt(`Edit {{{RESOURCE_NAME_HERE}}} with the following: \`${splitKey(value)}\``)
-                                                }}>
-                                                    Edit
-                                                </MenuItem>
-                                                <MenuItem icon={<DeleteIcon/>} onClick={() => {
-                                                    setPrompt(`Delete {{{RESOURCE_NAME_HERE}}} ${key}. \`${splitKey(value)}\``)
-                                                }}>
-                                                    Delete
-                                                </MenuItem>
-                                            </MenuList>
-                                        </Menu>
-                                    </td>
-                                )}
-                            </tr>
+                        {isArray && data.map((item, index) => (
+                            <Tr>
+                                {Object.values(item).map((value, index) => (
+                                    <Td style={{"verticalAlign": "top"}}>
+                                        <>
+                                            {(
+                                                typeof value === 'object' && value !== null ? (
+                                                    <RenderDataTable data={value as any} chatCtl={chatCtl}/>
+                                                ) : (
+                                                    <SmartRender item={value} index={index}/>
+                                                )
+                                            )}
+                                        </>
+                                    </Td>
+                                ))}
+                                <Td style={{"verticalAlign": "top"}}>
+                                    <Menu>
+                                        <MenuButton
+                                            as={IconButton}
+                                            aria-label="Copy"
+                                            icon={<HamburgerIcon/>}
+                                            variant="primary"
+                                            border={'1px solid #E2E8F0'}
+                                            size="sm"
+                                            mr={2}
+                                            ml={2}
+                                            mt={2}
+                                        />
+                                        <MenuList>
+                                            <MenuItem icon={<EditIcon/>} onClick={() => {
+                                                setPrompt(`Edit {{{RESOURCE_NAME_HERE}}} with the following: \`${splitKey(item)}\``)
+                                            }}>
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem icon={<DeleteIcon/>} onClick={() => {
+                                                setPrompt(`Delete {{{RESOURCE_NAME_HERE}}} \`${splitKey(item)}\``)
+                                            }}>
+                                                Delete
+                                            </MenuItem>
+                                        </MenuList>
+                                    </Menu>
+                                </Td>
+                            </Tr>
                         ))}
+                        {!isArray && (
+                            <Tr>
+                                {Object.values(data).map((value, index) => (
+                                    <Td style={{"verticalAlign": "top"}}>
+                                        <>
+                                            {(
+                                                typeof value === 'object' && value !== null ? (
+                                                    <RenderDataTable data={value as any} chatCtl={chatCtl}/>
+                                                ) : (
+                                                    <SmartRender item={value} index={index}/>
+                                                )
+                                            )}
+                                        </>
+                                    </Td>
+                                ))}
+                            </Tr>
+                        )}
                     </Tbody>
                 </Table>
             </TableContainer>
