@@ -79,9 +79,9 @@ export function MuiMessage({
                             width={message.self ? '100%' : '100vw'}
                             py={1}
                             px={2}
-                            bg={message.self ? 'blue.400' : 'gray.100'}
+                            bg={message.self ? 'blue.700' : 'white'}
                             color={message.self ? 'white' : 'black'}
-                            borderRadius={message.self ? 'md' : '10pt'}
+                            borderRadius='md'
                             shadow="md"
                             fontSize="md"
                         >
