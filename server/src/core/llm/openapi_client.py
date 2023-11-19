@@ -2,6 +2,7 @@
 import json
 from typing import List
 
+import openai
 import requests
 
 from core.common.config import OPENAI_BACKOFF, OPENAI_MAX_RETRIES
@@ -104,3 +105,13 @@ class OpenAI:
             results.append(result['embedding'])
 
         return results
+
+    def transcriptions(self, file_path: str) -> str:
+        audio_file = open(file_path, "rb")
+        transcript = openai.Audio.transcribe(
+            model="whisper-1",
+            file=audio_file,
+            response_format="text",
+            api_key=self.api_key
+        )
+        return transcript

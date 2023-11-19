@@ -6,6 +6,7 @@ from fastapi import Depends, APIRouter, UploadFile
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from api.factory import llm_service
 from api.user import User, get_current_user
 
 common_router = r = APIRouter()
@@ -53,6 +54,28 @@ async def upload_file(
                 f.write(file.file.read())
 
             return {"message": "File uploaded successfully", "filename": upload_folder + "/" + filename}
+
+        return {"message": "No file selected"}
+    except Exception as e:
+        return {"error": str(e)}
+
+@r.post("/speech-to-text")
+async def audio(
+        file: UploadFile,
+        request: Request,
+        current_user: User = Depends(get_current_user)):
+    try:
+        appkey = request.headers.get("appkey")
+        if file.filename:
+            upload_folder = 'uploads' + os.sep + appkey + os.sep + "audios"
+            os.makedirs(upload_folder, exist_ok=True)
+            filename = str(random.randint(0, 100000000)) + "_" + file.filename
+            file_path = os.path.join(upload_folder, filename)
+
+            with open(file_path, "wb") as f:
+                f.write(file.file.read())
+            text = llm_service.audio_to_text(file_path)
+            return {"message": text}
 
         return {"message": "No file selected"}
     except Exception as e:

@@ -9,6 +9,7 @@ import {GoSidebarCollapse, GoSidebarExpand, GoUnmute, GoUpload} from "react-icon
 import IconBox from "../Icons/IconBox";
 import * as React from "react";
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
+import {MdKeyboardVoice} from "react-icons/md";
 
 export function MuiTextInput({
                                  chatController,
@@ -69,6 +70,30 @@ export function MuiTextInput({
                 always: true,
             },
         );
+        // the result is in the Factory.tsx
+
+    };
+
+
+    let loadAudioComponent = async () => {
+        await chatCtl.addMessage({
+            type: 'text',
+            content: `Please enter your voice.`,
+            self: false,
+            avatar: AVATAR_IMG
+        });
+        const audio = (await chatCtl
+            .setActionRequest({
+                type: 'audio',
+            })
+            .catch(() => ({
+                type: 'audio',
+                value: 'Voice input failed.',
+                avatar: AVATAR_IMG
+            }))) as AudioActionResponse;
+
+        // the result is in the Factory.tsx
+
     };
     return (
         <Box
@@ -99,6 +124,19 @@ export function MuiTextInput({
                 }
             }} >
                 <GoUpload/>
+            </IconBox>
+            <IconBox {...{
+                onClick: loadAudioComponent,
+                color: "black",
+                className: "bt-mic",
+                cursor: "pointer",
+                padding: "0.5rem",
+                title: "Microphone",
+                _hover: {
+                    bg: "gray.200"
+                }
+            }} >
+                <MdKeyboardVoice/>
             </IconBox>
             <Input
                 placeholder={actionRequest.placeholder}

@@ -3,7 +3,13 @@ import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {useCallback} from "react";
 import {Box, Button, FormControl, FormLabel, Input, VStack} from "@chakra-ui/react";
 
-export async function showEmailForm(chatCtl: ChatController) {
+export async function showCustomField(chatCtl: ChatController) {
+    if (localStorage.getItem("displayedForm") !== "true") {
+        await showEmailForm(chatCtl)
+    }
+}
+
+async function showEmailForm(chatCtl: ChatController) {
     localStorage.setItem("displayedForm", "true")
     await chatCtl.addMessage({
         type: 'text',
