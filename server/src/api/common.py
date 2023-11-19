@@ -46,12 +46,7 @@ async def upload_file(
         appkey = request.headers.get("appkey")
         if file.filename:
             upload_folder = 'uploads' + os.sep + appkey
-            os.makedirs(upload_folder, exist_ok=True)
-            filename = str(random.randint(0, 100000000)) + "_" + file.filename
-            file_path = os.path.join(upload_folder, filename)
-
-            with open(file_path, "wb") as f:
-                f.write(file.file.read())
+            filename = await save_file(file, upload_folder)
 
             return {"message": "File uploaded successfully", "filename": upload_folder + "/" + filename}
 
@@ -68,15 +63,20 @@ async def audio(
         appkey = request.headers.get("appkey")
         if file.filename:
             upload_folder = 'uploads' + os.sep + appkey + os.sep + "audios"
-            os.makedirs(upload_folder, exist_ok=True)
-            filename = str(random.randint(0, 100000000)) + "_" + file.filename
+            filename = await save_file(file, upload_folder)
             file_path = os.path.join(upload_folder, filename)
-
-            with open(file_path, "wb") as f:
-                f.write(file.file.read())
             text = llm_service.audio_to_text(file_path)
             return {"message": text}
 
         return {"message": "No file selected"}
     except Exception as e:
         return {"error": str(e)}
+
+
+async def save_file(file, upload_folder):
+    os.makedirs(upload_folder, exist_ok=True)
+    filename = str(random.randint(0, 100000000)) + "_" + file.filename
+    file_path = os.path.join(upload_folder, filename)
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+    return filename

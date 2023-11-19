@@ -23,14 +23,7 @@ async function handleFileUpload(resp) {
     for (const file of resp.files) {
         const formData = new FormData();
         formData.append('file', file);
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/upload`, {
-            method: 'POST',
-            headers: {
-                "Authorization": `Bearer ${session.getSessionData().token}`,
-                "appkey": SessionManager.getInstance().getSessionData().app,
-            },
-            body: formData,
-        });
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/upload`, getReqData(formData));
         if (response.status !== 200) {
             alert("Failed to upload file")
             return
@@ -46,6 +39,17 @@ async function handleFileUpload(resp) {
     });
 }
 
+function getReqData(formData: FormData) {
+    return {
+        method: 'POST',
+        headers: {
+            "Authorization": `Bearer ${session.getSessionData().token}`,
+            "appkey": SessionManager.getInstance().getSessionData().app,
+        },
+        body: formData,
+    };
+}
+
 async function handleAudioRecorded(actionResp: AudioActionResponse) {
     const blob = actionResp.audio
     const formData = new FormData();
@@ -53,22 +57,13 @@ async function handleAudioRecorded(actionResp: AudioActionResponse) {
         type: "audio/webm",
     });
     formData.append("file", file);
-    let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/speech-to-text`, {
-        method: 'POST',
-        headers: {
-            "Authorization": `Bearer ${session.getSessionData().token}`,
-            "appkey": SessionManager.getInstance().getSessionData().app,
-        },
-        body: formData,
-    });
+    let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/speech-to-text`, getReqData(formData));
     if (response.status !== 200) {
         alert("Failed to upload the audio")
         return
     }
     const resp = await response.json();
-
     console.log("audio response", resp)
-
     await chatCtl.setActionRequest({
             type: 'text',
             placeholder: 'Please enter your text.',
