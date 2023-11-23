@@ -25,12 +25,11 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
         onClose
     } = useDisclosure()
     const [modalContent, setModalContent] = useState<string>("")
-    const isArray = Array.isArray(data);
-    let tableNames = Object.keys(isArray ? data[0] : data);
-
     if (data == null) {
         return
     }
+    const isArray = Array.isArray(data);
+    let tableNames = Object.keys(isArray && data.length > 0 ? data[0] : data);
 
     function setPrompt(prompt: string) {
         chatCtl.setActionRequest({
@@ -56,7 +55,7 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
                         setModalContent(text)
                         onOpen()
                     }}/>
-                     {"  " + text.substring(0, 100)}...
+                    {"  " + text.substring(0, 100)}...
                 </span>
             )
         }
@@ -78,7 +77,7 @@ export function RenderDataTable({data, chatCtl}: DataTableProps) {
 
             <TableContainer bg={"white"}>
                 <Table variant='simple'>
-                    <Thead >
+                    <Thead>
                         <Tr>
                             {tableNames.map((name) => (
                                 <Th>{name}</Th>

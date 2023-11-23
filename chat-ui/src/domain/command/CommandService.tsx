@@ -7,7 +7,7 @@ import {CommandExecution} from "./CommandExecution";
 import {CommandResponseHandler} from "../commandresp/CommandResponseHandler";
 import {SessionManager} from "../session/SessionManager";
 import {HttpClient} from "../common/HttpClient";
-import {showEmailForm} from "../common/CustomInputs";
+import {showCustomField} from "../common/CustomInputs";
 import {StreamCompletionClient} from "../common/StreamCompletionClient";
 
 function isAction(doc: string, input: string) {
@@ -50,16 +50,18 @@ export class CommandService {
             input,
             docContext,
             (data: any, done: boolean) => {
-                if (data.choices[0]?.delta?.content == null) {
-                    if (localStorage.getItem("displayedForm") !== "true") {
-                        showEmailForm(chatCtl)
-                    }
+                if (this.isStreamFinished(data)) {
+                    showCustomField(chatCtl)
                     return
                 }
                 answer += data.choices[0]?.delta?.content + ""
                 const contAnswer = formatText(answer)
                 chatCtl.updateMessage(chatCtl.getMessages().length - 1, {...defaultMsgObj, content: contAnswer})
             })
+    }
+
+    private isStreamFinished(data: any) {
+        return data.choices[0]?.delta?.content == null;
     }
 
     async process(res: ActionResponse): Promise<void> {

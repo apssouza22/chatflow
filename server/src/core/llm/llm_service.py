@@ -93,6 +93,8 @@ class LLMService:
 
     def embed_text(self, text: str) -> List[list]:
         return self.openai_api_gpt3.create_openai_embeddings([text])
+    def audio_to_text(self, audio: str) -> str:
+        return self.openai_api_gpt3.transcriptions(audio)
 
     def translate(self, text) -> LLMResponse:
         prompt = f"Translate the user input into english. User input: {text} \n\nTranslated:"

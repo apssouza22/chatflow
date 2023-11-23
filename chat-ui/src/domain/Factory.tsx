@@ -1,8 +1,7 @@
 import {HttpClient} from "./common/HttpClient";
 import {FlowController} from "./common/FlowController";
-import {ChatController, FileActionResponse} from "../components/Chat";
+import {AudioActionResponse, ChatController, defaultMsgObj} from "../components/Chat";
 import {SessionManager} from "./session/SessionManager";
-import {defaultMsgObj} from "../components/Chat";
 import {commandServiceFactory} from "./command/CommandService";
 import {ThinkingMsg} from "./common/ThinkingMsg";
 import {StreamCompletionClient} from "./common/StreamCompletionClient";
@@ -24,14 +23,7 @@ async function handleFileUpload(resp) {
     for (const file of resp.files) {
         const formData = new FormData();
         formData.append('file', file);
-        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/upload`, {
-            method: 'POST',
-            headers: {
-                "Authorization": `Bearer ${session.getSessionData().token}`,
-                "appkey": SessionManager.getInstance().getSessionData().app,
-            },
-            body: formData,
-        });
+        let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/upload`, getReqData(formData));
         if (response.status !== 200) {
             alert("Failed to upload file")
             return
@@ -43,8 +35,42 @@ async function handleFileUpload(resp) {
     let answer = formatTextWithHyperlink(content);
     await chatCtl.addMessage({
         ...defaultMsgObj,
-        content: <div dangerouslySetInnerHTML={{ __html: answer }} /> // render as HTML
+        content: <div dangerouslySetInnerHTML={{__html: answer}}/> // render as HTML
     });
+}
+
+function getReqData(formData: FormData) {
+    return {
+        method: 'POST',
+        headers: {
+            "Authorization": `Bearer ${session.getSessionData().token}`,
+            "appkey": SessionManager.getInstance().getSessionData().app,
+        },
+        body: formData,
+    };
+}
+
+async function handleAudioRecorded(actionResp: AudioActionResponse) {
+    const blob = actionResp.audio
+    const formData = new FormData();
+    const file = new File([blob], "user_audio.webm", {
+        type: "audio/webm",
+    });
+    formData.append("file", file);
+    let response = await fetch(`${process.env.REACT_APP_SERVER_URL}/speech-to-text`, getReqData(formData));
+    if (response.status !== 200) {
+        alert("Failed to upload the audio")
+        return
+    }
+    const resp = await response.json();
+    console.log("audio response", resp)
+    await chatCtl.setActionRequest({
+            type: 'text',
+            placeholder: 'Please enter your text.',
+            always: true,
+            defaultValue: resp.message
+        },
+    );
 }
 
 const actionListener = async (req, resp) => {
@@ -63,6 +89,7 @@ const actionListener = async (req, resp) => {
         return
     }
     if (resp.type == "audio") {
+        await handleAudioRecorded(resp)
         return
     }
     if (resp.type == "custom") {
