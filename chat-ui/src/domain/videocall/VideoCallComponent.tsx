@@ -3,11 +3,11 @@ import * as React from "react";
 import {useCallback, useEffect, useState} from "react";
 import {Box, Button, Menu, MenuButton, MenuItem, MenuList} from '@chakra-ui/react';
 import {MdVideoCall} from "react-icons/md";
-import VideoChatApp from "./index";
+import {VideoChatApp} from "./index";
 import io from "socket.io-client";
 
 let  videoChatApp: VideoChatApp ;
-export function VideoCall({
+export function VideoCallComponent({
                               chatController,
                               actionRequest,
                           }: {

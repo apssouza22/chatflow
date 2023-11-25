@@ -10,7 +10,7 @@ import IconBox from "../Icons/IconBox";
 import * as React from "react";
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {MdKeyboardVoice, MdVideoCall} from "react-icons/md";
-import {VideoCall} from "../../domain/videocall/VideoCall";
+import {VideoCallComponent} from "../../domain/videocall";
 
 export function MuiTextInput({
                                  chatController,
@@ -77,7 +77,7 @@ export function MuiTextInput({
     let loadVideoChatComponent = async () => {
         const videoCall = await chatCtl.setActionRequest({
             type: 'custom',
-            Component: VideoCall,
+            Component: VideoCallComponent,
         });
         // the result is in the Factory.tsx
     };
