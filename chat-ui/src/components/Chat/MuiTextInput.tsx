@@ -1,7 +1,7 @@
 import {Box, Button, Icon, Input} from "@chakra-ui/react";
 
 
-import {AudioActionResponse, ChatController, FileActionResponse, VideoCall} from './index';
+import {AudioActionResponse, ChatController, FileActionResponse} from './index';
 import {TextActionRequest, TextActionResponse} from './index';
 import {ReactElement, useCallback, useEffect, useState} from "react";
 import {AiOutlineSend} from "react-icons/ai";
@@ -10,6 +10,7 @@ import IconBox from "../Icons/IconBox";
 import * as React from "react";
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
 import {MdKeyboardVoice, MdVideoCall} from "react-icons/md";
+import {VideoCall} from "../../domain/videocall/VideoCall";
 
 export function MuiTextInput({
                                  chatController,
@@ -75,7 +76,7 @@ export function MuiTextInput({
     };
     let loadVideoChatComponent = async () => {
         const videoCall = await chatCtl.setActionRequest({
-            type: 'video-call',
+            type: 'custom',
             Component: VideoCall,
         });
         // the result is in the Factory.tsx

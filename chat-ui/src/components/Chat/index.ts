@@ -8,5 +8,4 @@ export { MuiSelectInput } from './MuiSelectInput';
 export { MuiMultiSelectInput } from './MuiMultiSelectInput';
 export { MuiFileInput } from './MuiFileInput';
 export { MuiAudioInput } from './MuiAudioInput';
-export { VideoCall } from './VideoCall';
 export {defaultMsgObj} from "../../components/Chat/ChatController";

@@ -108,6 +108,7 @@ export function MuiAudioInput({
                         variant="solid"
                         colorScheme="blue"
                         leftIcon={<MdKeyboardVoice/>}
+                        mr={2}
                     >
                         Rec start
                     </Button>
