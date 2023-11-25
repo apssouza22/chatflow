@@ -96,7 +96,8 @@ export function MuiAudioInput({
                         type="button"
                         onClick={handleCancel}
                         variant="solid"
-                        colorScheme="blue"
+                        colorScheme="red"
+                        mr={2}
                     >
                         Cancel
                     </Button>

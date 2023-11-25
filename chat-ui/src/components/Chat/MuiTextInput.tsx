@@ -1,15 +1,15 @@
 import {Box, Button, Icon, Input} from "@chakra-ui/react";
 
 
-import {AudioActionResponse, ChatController, FileActionResponse} from './index';
+import {AudioActionResponse, ChatController, FileActionResponse, VideoCall} from './index';
 import {TextActionRequest, TextActionResponse} from './index';
 import {ReactElement, useCallback, useEffect, useState} from "react";
 import {AiOutlineSend} from "react-icons/ai";
-import {GoSidebarCollapse, GoSidebarExpand, GoUnmute, GoUpload} from "react-icons/go";
+import { GoUpload} from "react-icons/go";
 import IconBox from "../Icons/IconBox";
 import * as React from "react";
 import {AVATAR_IMG} from "../../pages/chatflow/inputs";
-import {MdKeyboardVoice} from "react-icons/md";
+import {MdKeyboardVoice, MdVideoCall} from "react-icons/md";
 
 export function MuiTextInput({
                                  chatController,
@@ -72,6 +72,13 @@ export function MuiTextInput({
         );
         // the result is in the Factory.tsx
 
+    };
+    let loadVideoChatComponent = async () => {
+        const videoCall = await chatCtl.setActionRequest({
+            type: 'video-call',
+            Component: VideoCall,
+        });
+        // the result is in the Factory.tsx
     };
 
 
@@ -137,6 +144,19 @@ export function MuiTextInput({
                 }
             }} >
                 <MdKeyboardVoice/>
+            </IconBox>
+            <IconBox {...{
+                onClick: loadVideoChatComponent,
+                color: "black",
+                className: "bt-video",
+                cursor: "pointer",
+                padding: "0.5rem",
+                title: "Video call",
+                _hover: {
+                    bg: "gray.200"
+                }
+            }} >
+                <MdVideoCall/>
             </IconBox>
             <Input
                 placeholder={actionRequest.placeholder}
