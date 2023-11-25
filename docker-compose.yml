@@ -9,6 +9,14 @@ services:
       - "6379:6379"
       - "8001:8001"
 
+  video-chat-server:
+    build:
+        context: .
+        dockerfile: ./videocallserver/Dockerfile
+    image: video-chat:latest
+    ports:
+      - "8881:8881"
+
   backend:
     image: apssouza/chatux:latest
     depends_on:

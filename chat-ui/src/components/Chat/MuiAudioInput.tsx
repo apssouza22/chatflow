@@ -1,4 +1,4 @@
-import {Box, Button, Icon} from "@chakra-ui/react";
+import {Box, Button} from "@chakra-ui/react";
 
 import {AudioMediaRecorder} from './AudioMediaRecorder';
 import {AudioActionRequest, AudioActionResponse} from './chat-types';
