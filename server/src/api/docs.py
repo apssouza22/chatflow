@@ -45,6 +45,11 @@ async def add_doc_old(request: AddDocRequest, current_user: User = Depends(get_c
     return await add_app_doc(request)
 
 
+@r.put("/admin/user/docs/{item_id}", response_model=t.Dict, deprecated=True)
+async def add_doc_old(request: AddDocRequest, item_id: int, current_user: User = Depends(get_current_user)) -> t.Dict:
+    return await update_app_doc(request, item_id)
+
+
 @r.post("/docs", response_model=t.Dict)
 async def add_doc(request: AddDocRequest, current_user: User = Depends(get_current_user)) -> t.Dict:
     return await add_app_doc(request)
@@ -90,6 +95,27 @@ async def add_app_doc(request) -> t.Dict:
     # hset returns int if the key already exists
     if not isinstance(hset_result, int):
         await hset_result
+    return {
+        "message": "doc added successfully",
+    }
+
+
+async def update_app_doc(request, item_id: int) -> t.Dict:
+    key = "data_vector:" + str(item_id)
+    # vector = TEXT_MODEL.encode(request.text).astype(np.float32).tolist()
+    embedding = llm_service.embed_text(request.text)[0]
+    openai_vector = np.array(embedding, dtype=np.float32).tobytes()
+    mappings = {
+        "item_id": int(item_id),
+        "application": request.app_key,
+        "text_vector": np.array([], dtype=np.float32).tobytes(),
+        "openai_text_vector": openai_vector,
+        "title": request.title,
+        "text_raw": request.text,
+    }
+    hset_result = redis_client.hset(key, mapping=mappings)
+    if not isinstance(hset_result, int):
+        print("hset_result", await hset_result)
     return {
         "message": "doc added successfully",
     }
