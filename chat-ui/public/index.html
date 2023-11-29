@@ -24,6 +24,12 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- jQuery must come before LightBox. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- LightBox -->
+    <!-- LightBox 2 does not show videos, SwipeBox is totally buggy. -->
+    <link href="/assets/image-iframe-gallery-lightbox/NSB_Box.css" rel="stylesheet" />
+    <script src="/assets/image-iframe-gallery-lightbox/NSB_Box.js"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
