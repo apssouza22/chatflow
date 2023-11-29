@@ -16,5 +16,5 @@ doc_search_service = factory_doc_search_service(llm_service, cost_service)
 chat_history = factory_chat_history(pg_conn)
 agent = agent_factory(chat_history, cost_service, llm_service)
 apps = AppDao()
-user_service = UserService(UserDao(), apps)
+user_service = UserService(UserDao(pg_conn), apps)
 current_session = {}

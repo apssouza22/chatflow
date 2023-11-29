@@ -1,4 +1,6 @@
-from typing import Dict
+from typing import Dict, Optional
+
+from psycopg2 import IntegrityError
 
 from pydantic import BaseModel
 
@@ -6,43 +8,47 @@ from core.common.file_db import FileDB
 
 
 class User(BaseModel):
+    pk: Optional[int] = None
     email: str
-    password: str
+    password: str  # TODO: encrypted password
     name: str = None
 
 
 class UserDao:
-    def __init__(self):
-        self.db = FileDB('./file_db/users')
+    def __init__(self, pg_conn):
+        self.db = pg_conn
 
     def get_all(self) -> Dict[str, User]:
-        users = self.db.get("all")
-        if users is None:
-            return {}
-        return users
+        users = self.db.fetch_all("SELECT * FROM users")
+        return [User(**u) for u in users]
 
-    def get(self, user) -> User:
-        return self.get_all().get(user)
+    def get_by_email(self, email: str) -> User:
+        user = self.db.fetch_one("SELECT * FROM users WHERE email=%s", (email,))
+        user["pk"] = user["id"]  # slightly a hack
+        return User(**user)
 
     def add(self, user: User):
-        if self.get(user.email) is not None:
+        try:
+            self.db.execute(
+                "INSERT INTO users (email, password, name) VALUES (%s, %s, %s)",
+                (user.email, user.password, user.name)
+            )
+        except IntegrityError as e:
+            print("Inserting user:", e)
             return False
-
-        users = self.get_all()
-        users[user.email] = user
-
-        self.db.put("all", users)
 
     def edit(self, user: User):
-        users = self.get_all()
-        if users.get(user.email) is None:
+        try:
+            self.db.execute(
+                "UPDATE users SET email=%s, password=%s, name=%s",
+                (user.email, user.password, user.name)
+            )
+        except IntegrityError as e:
+            print("Updating user:", e)
             return False
-        users[user.email] = user
-        self.db.put("all", users)
 
-    def remove(self, user: str):
-        if self.get(user) is None:
-            return False
-        users = self.get_all()
-        del users[user]
-        self.db.put("all", users)
+    def remove(self, pk: int):
+        self.db.execute(
+            "DELETE FROM users WHERE id=%s",
+            (pk,)
+        )

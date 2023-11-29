@@ -33,3 +33,13 @@ class DBConnection:
         for row in rows:
             result.append(dict(zip(cols, row)))
         return result
+
+    def fetch_one(self, query: str, params=None) -> Dict:
+        self.cursor.execute(query, params)
+        row = self.cursor.fetchone()
+        if row is None:
+            return None
+        # Convert rows to list of dictionaries so they're easier to work with
+        cols = [desc[0] for desc in self.cursor.description]
+        result = []
+        return dict(zip(cols, row))
