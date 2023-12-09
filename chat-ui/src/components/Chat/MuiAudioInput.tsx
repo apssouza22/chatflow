@@ -1,4 +1,4 @@
-import {Box, Button, Icon} from "@chakra-ui/react";
+import {Box, Button} from "@chakra-ui/react";
 
 import {AudioMediaRecorder} from './AudioMediaRecorder';
 import {AudioActionRequest, AudioActionResponse} from './chat-types';
@@ -96,7 +96,8 @@ export function MuiAudioInput({
                         type="button"
                         onClick={handleCancel}
                         variant="solid"
-                        colorScheme="blue"
+                        colorScheme="red"
+                        mr={2}
                     >
                         Cancel
                     </Button>
@@ -107,6 +108,7 @@ export function MuiAudioInput({
                         variant="solid"
                         colorScheme="blue"
                         leftIcon={<MdKeyboardVoice/>}
+                        mr={2}
                     >
                         Rec start
                     </Button>

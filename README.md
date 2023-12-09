@@ -47,7 +47,7 @@ Before running the app, please install Docker first
 
 - Start the databases
     ```bash
-    $ docker-compose up -d redis postgres
+    $ docker-compose up -d redis postgres video-chat-server
     ```
 - Install the dependencies
     ```bash
