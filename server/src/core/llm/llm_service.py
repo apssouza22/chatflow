@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from core.app.app_dao import App
 from core.common.utils import filter_content
+from core.llm.gpt_functions import GPT_FUNCTIONS
 from core.llm.openapi_client import OpenAI
 from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
 from core.llm.openai_stream import OpenAIStream
@@ -29,9 +30,9 @@ class LLMService:
         self.openai_api_gpt3 = gpt3
         self.openai_api_gpt4 = gpt4
 
-    def _gpt3(self, prompts, temperature=0.1) -> LLMResponse:
+    def _gpt3(self, prompts, functions=None, temperature=0.1) -> LLMResponse:
         print("gpt3 prompt", prompts)
-        response = self.openai_api_gpt3.get_chat_completions(prompts, temperature=temperature)
+        response = self.openai_api_gpt3.get_chat_completions(prompts, functions=functions, temperature=temperature)
         print("gpt3 response successfuly")
         usage = response["usage"]
         usage["model"] = response["model"]
@@ -55,7 +56,7 @@ class LLMService:
 
     def get_task_command(self, history: List[MessageCompletion], app: App) -> LLMResponse:
         prompts = build_prompt_command(history)
-        return self._gpt3(prompts, app.app_temperature)
+        return self._gpt3(prompts, functions=GPT_FUNCTIONS, temperature=app.app_temperature)
 
     def get_question_answer(self, user_input: str, app: App, history: List[MessageCompletion]) -> LLMResponse:
         prompts, usages = self.get_question_prompts(app, history, user_input)
@@ -93,6 +94,7 @@ class LLMService:
 
     def embed_text(self, text: str) -> List[list]:
         return self.openai_api_gpt3.create_openai_embeddings([text])
+
     def audio_to_text(self, audio: str) -> str:
         return self.openai_api_gpt3.transcriptions(audio)
 

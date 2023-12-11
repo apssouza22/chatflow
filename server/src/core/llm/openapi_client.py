@@ -27,8 +27,9 @@ class OpenAI:
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def get_chat_completions(self, messages: List[dict], max_tokens=1000, temperature=0.1):
+    def get_chat_completions(self, messages: List[dict], functions=None, max_tokens=1000, temperature=0.1):
         """
+        :param functions:
         :param messages:
         :param max_tokens:
         :param temperature:
@@ -41,8 +42,10 @@ class OpenAI:
             "max_tokens": max_tokens,
             "temperature": temperature,
             "top_p": 1,
-            "stream": False,
+            "stream": False
         }
+        if functions:
+            completion_options["tools"] = functions
 
         response = requests.post(
             f"{self.base_url}/chat/completions",
