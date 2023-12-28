@@ -41,9 +41,9 @@ class LLMService:
             message=response["choices"][0]["message"]["content"]
         )
 
-    def _gpt4(self, prompts: List[dict], temperature=0.1) -> LLMResponse:
+    def _gpt4(self, prompts: List[dict],functions=None, temperature=0.1) -> LLMResponse:
         print("gpt4 prompt", prompts)
-        response = self.openai_api_gpt4.get_chat_completions(prompts, temperature=temperature)
+        response = self.openai_api_gpt4.get_chat_completions(prompts, functions=functions, temperature=temperature)
         usage = response["usage"]
         usage["model"] = response["model"]
         return LLMResponse(
@@ -113,7 +113,7 @@ class LLMService:
 
 def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
     return LLMService(
-        OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
+        OpenAI(app_key_gpt3, "gpt-3.5-turbo-1106"),
         OpenAI(app_key_gpt4, "gpt-4"),
         OpenAIStream(app_key_gpt4),
     )
