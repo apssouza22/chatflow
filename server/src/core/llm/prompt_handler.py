@@ -7,74 +7,6 @@ from typing import TypedDict, List
 
 from core.app.app_dao import App
 
-response_format = {
-    "thoughts": {
-        "reasoning": "reasoning. Use future tense e.g. 'I will do this'",
-        "speak": "Friendly thoughts summary to say to user. Use future tense e.g. 'I will do this'. Important: Make sure to always translate your reply to the user's language.",
-        "criticism": "constructive self-criticism"
-    },
-    "command": {
-        "name": "api_call|browse_website|send_email|chat_question",
-        "args": {"arg name": "value"},
-        "request_render": {
-            "field_name_1": {
-                "field_type": "select",
-                "field_options": ["SP", "RJ"]
-            },
-            "field_name_2": {
-                "field_type": "password",
-                "field_options": []
-            }
-        },
-        "response_render": {
-            "render_type": "list",
-            "fields": ["total"]
-        }
-    },
-}
-formatted_response_format = json.dumps(response_format, indent=4)
-response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n----------------------------\n\n" \
-                               f"When responding to me, please output a response in one of five formats:\n\n" \
-                               f"**Option 1:**\n" \
-                               f"Use this if the command is a API call\n" \
-                               f'Markdown code snippet formatted in the following schema:\n\n' \
-                               f'```json\n command: {{\n   ' \
-                               f'"name": "api_call" \\ The command will be an api call\n' \
-                               f'"args": {{"url": "<url>", "method": "<http method>","data_request": "<JSON object>","headers": "<JSON object>"}} \\ The arguments for the api call\n' \
-                               f'"request_render": {{"<field name>":{{"field_type": "<input|checkbox|select|password>", field_options: "<array string>"}} }} \\ Instruction of how to render the request fields\n' \
-                               f'"response_render": {{"render_type": "<list|chart>", fields: "<array string>"}} \\ Instruction of how to render the response\n' \
-                               f'}}\n```' \
-                               f'\n\n**Option 2:**\n' \
-                               f'Use this if the command is a browse website\n' \
-                               f'Markdown code snippet formatted in the following schema:\n\n' \
-                               f'```json\n command:{{\n   ' \
-                               f'"name": "browse_website" \\ The command will be a browse website\n' \
-                               f'"args": "url": "<url>" \\ The arguments for the browse website\n' \
-                               f'"request_render": "field_type": "<input|checkbox|select|password>", field_options: "<array string>" \\ Instruction of how to render the request fields\n' \
-                               f'}}\n```' \
-                               f'\n\n**Option 3:**\n' \
-                               f'Use this if the command is a send email\n' \
-                               f'Markdown code snippet formatted in the following schema:\n\n' \
-                               f'```json\n command:{{\n   ' \
-                               f'"name": "send_email" \\ The command will be a send email\n' \
-                               f'"args": {{"name": "<your name>","email": "<your email>", "subject": "<subject>", "body": "<email body>"}} \\ The arguments for the send email\n' \
-                               f'}}\n```' \
-                               f'\n\n**Option 4:**\n' \
-                               f'Use this command if you want to ask a question to the user\n' \
-                               f'Markdown code snippet formatted in the following schema:\n\n' \
-                               f'```json\n command:{{\n   ' \
-                               f'"name": "chat_question" \\ The command will be a chat question\n' \
-                               f'}}\n ```' \
-                               f'\n\n**Option 5:**\n' \
-                               f'Use this if the command is a javascript function\n' \
-                               f'Markdown code snippet formatted in the following schema:\n\n' \
-                               f'```json\n command:{{\n   ' \
-                               f'"name": "js_func" \\ The command will be a Javascript function\n' \
-                               f'"function": {{"name": "<function_name>", "code": "<function_code>", "param": "<json_param>"}} \\ The javascript function details\n' \
-                               f'}}\n ```' \
-                               f'Notice: All the options will be along with the ``` thoughts:{{ }}```'
-
-
 class MessageRole(Enum):
     SYSTEM = "system"
     USER = "user"
@@ -120,24 +52,20 @@ def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
         ),
         MessageDict(
             role=MessageRole.USER,
-            content=f"Execute the task using only the provided documentation above."
+            content=f"Help me to execute the task using only the provided documentation"
         ),
         MessageDict(
             role=MessageRole.USER,
-            content=response_format_instructions
+            content=f"Please use one of the provided functions as the response:\n"
+                    f"Option 1: Use the api_call function if the command is a API call\n\n"
+                    f"Option 2: Use the send_email function if the command is a send email\n\n"
+                    f"Option 3: Use the browse_website function if the command is to browse website\n\n"
+                    f"Option 4: Use the ask_question function f you want to ask a question to the user\n\n"
+                    f"Option 5: Use the js_func function if the command is a javascript function"
         ),
         MessageDict(
             role=MessageRole.USER,
-            content='Determine which command to use, and respond using the format specified above'
-        ),
-        MessageDict(
-            role=MessageRole.USER,
-            content=f"Under no circumstances should your response deviate from the following JSON FORMAT:  \n{formatted_response_format} \n"
-        ),
-        MessageDict(
-            role=MessageRole.USER,
-            content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n'
-                    f'User input: {sanitized_query}'
+            content=f'Here is the user\'s input :\n\n {sanitized_query}'
         ),
     ]
 
@@ -152,8 +80,7 @@ def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
         if message.role == MessageRole.USER and message.context == "":
             prompts.append(MessageDict(
                 role=MessageRole.USER,
-                content=f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n'
-                        f'{message.query}'
+                content=f'Here is the user\'s input {message.query}'
             ))
             continue
         if message.role == MessageRole.USER and message.context != "":
