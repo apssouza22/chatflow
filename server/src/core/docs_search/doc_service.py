@@ -32,9 +32,8 @@ class DocSearchService:
 
         results_vector = await self.vector_search.search_vectors(search_req.tags, vector_bytes)
         total = await self.vector_search.count_by_tag(search_req.tags)
-        results_text = await self._search_text(search_req, translated_text)
 
-        results = _combine_scores(results_vector, results_text)
+        results = _filter_invalid_data(results_vector)
         contents = [r.get("text") for r in results]
 
         option = self.llm_service.pick_best_doc(contents, translated_text)
@@ -51,21 +50,6 @@ class DocSearchService:
         for usage in usages:
             self.cost_service.put_cost(Cost(**usage.dict()), user_email, app_key)
 
-    async def _search_text(self, search_req, translated_text) -> list:
-        return []
-
-        resp = self.llm_service.get_keywords(translated_text)
-        self._update_cost(resp.usage, search_req.user_email, search_req.app_key)
-        print("gpt keywords", resp.message)
-        keywords = resp.message.split(",")
-        return [item.strip() for item in keywords]
-        text = "|".join(keywords)
-        try:
-            results_text = await self.text_search.search_text(text, search_req.tags)
-        except:
-            results_text = None
-        return results_text
-
     async def get_metadata_by_app(self, app: str):
         return await self.text_search.get_by_tag(app)
 
@@ -78,34 +62,20 @@ class DocSearchService:
         }
 
 
-def _combine_scores(results_vector, results_text):
-    text_results = {}
-    if results_text:
-        for doc in results_text.docs:
-            pk = doc.id.split(":")[-1]
-            text_results[pk] = doc.score
-
-    score_sum = sum(text_results.values())
-    for index, score in text_results.items():
-        text_results[index] = _normalize_score(score, score_sum)
+def _filter_invalid_data(results_vector):
     results = []
-
     for doc in results_vector.docs:
-        text_score = text_results[doc.item_id] if text_results.get(doc.item_id) else 0
         if not hasattr(doc, 'title'):
             continue
-
         results.append({
             "id": doc.id,
-            # "combined_score": (0.8 * float(doc.vector_score)) - (0.2 * float(text_score)),
             "combined_score": float(doc.vector_score),
             "vector_score": doc.vector_score,
-            "text_score": text_score,
             "item_id": doc.item_id,
             "title": doc.title,
             "text": doc.text_raw,
         })
-    return sorted(results, key=lambda obj: obj['combined_score'], reverse=False)
+    return results
 
 
 def _normalize_score(number, max_number):
