@@ -112,6 +112,6 @@ class LLMService:
 def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
     return LLMService(
         OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
-        OpenAI(app_key_gpt4, "gpt-4"),
+        OpenAI(app_key_gpt4, "gpt-4o"),
         OpenAIStream(app_key_gpt4),
     )

@@ -9,11 +9,13 @@ class ModelInfo:
     prompt_token_cost: float
     completion_token_cost: float
 
+
 chat_model_mapping = {
     "gpt-3.5-turbo": "gpt-3.5-turbo-0613",
     "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k-0613",
     "gpt-4": "gpt-4-0613",
     "gpt-4-32k": "gpt-4-32k-0613",
+    "gpt-4o": "gpt-4o"
 }
 
 OPEN_AI_CHAT_MODELS = {
@@ -59,6 +61,12 @@ OPEN_AI_CHAT_MODELS = {
             name="gpt-4-32k-0613",
             prompt_token_cost=0.06,
             completion_token_cost=0.12,
+            max_tokens=32768,
+        ),
+        ModelInfo(
+            name="gpt-4o",
+            prompt_token_cost=0.005,
+            completion_token_cost=0.015,
             max_tokens=32768,
         ),
     ]

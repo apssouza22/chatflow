@@ -92,6 +92,9 @@ def _combine_scores(results_vector, results_text):
 
     for doc in results_vector.docs:
         text_score = text_results[doc.item_id] if text_results.get(doc.item_id) else 0
+        if not hasattr(doc, 'title'):
+            continue
+
         results.append({
             "id": doc.id,
             # "combined_score": (0.8 * float(doc.vector_score)) - (0.2 * float(text_score)),
