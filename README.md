@@ -24,19 +24,6 @@ Before running the app, please install Docker first
 
 ## Set up the environment
 
-### Automatic Setup(Windows only):
-- `cd scripts`
-- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action setup -apiKey [OpenAI API Key]`
-
-#### Starting the App
-- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action on`
-
-#### Stopping the App
-- `PowerShell -ExecutionPolicy Bypass -File .\windows-utils.ps1 -action off`
-
-
-## Manual setup:
-
 ### React UI
 - `cd chat-ui`
 - `npm install`
@@ -47,15 +34,15 @@ Before running the app, please install Docker first
 
 - Start the databases
     ```bash
-    $ docker-compose up -d redis postgres video-chat-server
+    docker-compose up -d redis postgres video-chat-server
     ```
 - Install the dependencies
     ```bash
-    $ pip install -r requirements-dev.txt
+    pip install -r requirements-dev.txt
     ```
 - Navigate to the backend src cod 
     ```bash
-    $ cd server/src
+    cd server/src
     ```
   
 - Create a .env file and set all required variables
@@ -66,8 +53,10 @@ Before running the app, please install Docker first
   
 - Start the backend service locally
     ```bash
-   $ python load_data.py
-   $ python server.py
+  # Load the initial data
+   python load_data.py
+  # Start the server
+   python server.py
     ```
   
 - Log into the app http://localhost:3000/assets#/login with the following credentials

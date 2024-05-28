@@ -69,6 +69,9 @@ if os.path.exists("../../chat-ui/build/index.html"):
     frontend_dir = "../../chat-ui/build"
     generated_dir = "./uploads"
 
+if not os.path.exists(generated_dir):
+    os.makedirs(generated_dir)
+
 app.mount("/assets", StaticFiles(directory=frontend_dir), name="assets")
 app.mount("/chat-commander-ui", StaticFiles(directory=frontend_dir), name="old-assets")
 app.mount("/uploads", StaticFiles(directory=generated_dir), name="generated files")

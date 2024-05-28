@@ -21,6 +21,7 @@ def get_pg_instance():
     global _pg_conn
 
     if _pg_conn is None:
+        print("PGSQL_HOST", PGSQL_HOST)
         _pg_conn = DBConnection(
             PGSQL_DB,
             PGSQL_USER,
