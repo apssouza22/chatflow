@@ -11,45 +11,6 @@ from core.app.app_dao import App
 apps_router = r = APIRouter()
 
 
-@r.post("/admin/applications", response_model=App, deprecated=True)
-def create_app(app: App, current_user: User = Depends(get_current_user)):
-    app_key = random.randint(0, 100000000)
-    app = App(
-        app_key=f"{app_key}",
-        app_name=app.app_name,
-        app_description=app.app_description,
-        app_user=current_user.email,
-        app_model=app.app_model,
-        app_temperature=app.app_temperature
-    )
-    apps.add(current_user.email, app)
-    return JSONResponse(content=app.dict())
-
-
-@r.get("/admin/applications", deprecated=True)
-def list_apps(current_user: User = Depends(get_current_user)):
-    json_compatible_item_data = jsonable_encoder(apps.get_by_user_email(current_user.email))
-    return JSONResponse(content=json_compatible_item_data)
-
-
-@r.put("/admin/applications/{app_key}", deprecated=True)
-def update(app_key: str, app: App, current_user: User = Depends(get_current_user)):
-    app_updated = update_user_app(current_user.email, app_key, app)
-    if app_updated:
-        return JSONResponse(content=app_updated.dict())
-
-    raise HTTPException(status_code=404, detail="App not found")
-
-
-@r.delete("/admin/applications/{app_key}", deprecated=True)
-def delete_app(app_key: str, current_user: User = Depends(get_current_user)):
-    for a in apps.get_by_user_email(current_user.email):
-        if app_key == a.app_key:
-            apps.remove(current_user.email, a.app_key)
-            return JSONResponse(content={"message": "App deleted successfully"})
-    raise HTTPException(status_code=404, detail="App not found")
-
-
 @r.post("/applications", response_model=App)
 def create_app(app: App, current_user: User = Depends(get_current_user)):
     app_key = random.randint(0, 100000000)

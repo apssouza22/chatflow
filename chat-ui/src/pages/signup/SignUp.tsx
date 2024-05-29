@@ -15,7 +15,7 @@ const SignupPage = () => {
     let navigate = useNavigate()
 
     const login = async () => {
-        const resp = await post("/admin/user/login", {
+        const resp = await post("/user/login", {
             "email": email,
             "password": password,
         })
@@ -39,7 +39,7 @@ const SignupPage = () => {
             alert("Please fill all fields")
         }
 
-        const resp = await post("/admin/user/register", {
+        const resp = await post("/user/register", {
             "email": email,
             "password": password,
             "name": name

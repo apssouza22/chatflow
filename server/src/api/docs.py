@@ -30,24 +30,15 @@ async def find_docs(search_req: SearchRequest, request: Request, current_user: U
     return await doc_search_service.full_search(search_req)
 
 
-@r.get("/admin/applications/{app_key}/docs", response_model=t.Dict, deprecated=True)
-async def find_docs_all(app_key: str, current_user: User = Depends(get_current_user)) -> t.Dict:
-    return await get_all_docs(app_key)
-
-
-@r.get("/docs?app={app_key}", response_model=t.Dict)
-async def all_docs(app_key: t.Optional[str], current_user: User = Depends(get_current_user)) -> t.Dict:
-    return await get_all_docs(app_key)
-
-
-@r.post("/admin/user/docs", response_model=t.Dict, deprecated=True)
-async def add_doc_old(request: AddDocRequest, current_user: User = Depends(get_current_user)) -> t.Dict:
-    return await add_app_doc(request)
-
-
 @r.post("/docs", response_model=t.Dict)
 async def add_doc(request: AddDocRequest, current_user: User = Depends(get_current_user)) -> t.Dict:
     return await add_app_doc(request)
+
+
+@r.get("/docs", response_model=t.Dict)
+async def all_docs(app: t.Optional[str], current_user: User = Depends(get_current_user)) -> t.Dict:
+    return await get_all_docs(app)
+
 
 
 @r.delete("/docs/{pk}", response_model=t.Dict)

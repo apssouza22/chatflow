@@ -16,7 +16,7 @@ export function Login() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        const resp = await post("/admin/user/login", {
+        const resp = await post("/user/login", {
             "email": email,
             "password": password,
         })

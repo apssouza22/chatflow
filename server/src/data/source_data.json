@@ -4,14 +4,14 @@
 		"title": "User register",
 		"article_type": "api",
 		"application": "chat",
-		"text": "To create a new Admin user you need to call the register endpoint with the admin user data. The response will be the user data created. \n Params: \n -name \n -password \n -email  \n  Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/admin/user/register' --header 'Content-Type: application/json' --form 'name=\"name\"' --form 'password=\"pass\"' --form 'email=\"email@cc.com\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'},'email':{'field_type': 'email'}}` \n\n #action"
+		"text": "To create a new Admin user you need to call the register endpoint with the admin user data. The response will be the user data created. \n Params: \n -name \n -password \n -email  \n  Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/user/register' --header 'Content-Type: application/json' --form 'name=\"name\"' --form 'password=\"pass\"' --form 'email=\"email@cc.com\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'},'email':{'field_type': 'email'}}` \n\n #action"
 	},
 	{
 		"item_id": 30039,
 		"title": "User login",
 		"article_type": "api",
 		"application": "chat",
-		"text": "To login into the Admin you need to call the login endpoint with the credentials of the admin user. The response will contain a token that you need to use in the Authorization header for all the subsequent requests. \n Params: \n -username \n -password  \n Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/admin/user/login' --header 'Content-Type: application/json' --form 'username=\"user\"' --form 'password=\"pass\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'}}` \n\n #action"
+		"text": "To login into the Admin you need to call the login endpoint with the credentials of the admin user. The response will contain a token that you need to use in the Authorization header for all the subsequent requests. \n Params: \n -username \n -password  \n Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/user/login' --header 'Content-Type: application/json' --form 'username=\"user\"' --form 'password=\"pass\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'}}` \n\n #action"
 
 	},
 	{
@@ -19,7 +19,7 @@
 		"title": "User session update",
 		"article_type": "api",
 		"application": "chat",
-		"text": "To update the user session you need to call the user/session endpoint. \n Params: \n - app_key  \n Example:  ```curl --location --request PUT 'http://localhost:8880/api/v1/admin/user/session' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'  --data-raw '{\n    \"app_key\": \"application key\"} ``` \n\n #action"
+		"text": "To update the user session you need to call the user/session endpoint. \n Params: \n - app_key  \n Example:  ```curl --location --request PUT 'http://localhost:8880/api/v1/user/session' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'  --data-raw '{\n    \"app_key\": \"application key\"} ``` \n\n #action"
 
 	},
 	{
@@ -27,7 +27,7 @@
 		"title": "Create application",
 		"article_type": "api",
 		"application": "chat",
-		"text": "You can create a new application for the user. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request POST 'http://localhost:8880/api/v1/admin/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>' --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\", \"app_model\":\"model\", \"app_temperature\":\"temperature\"}` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' }, 'app_temperature':{ 'field_type':'input'},{'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
+		"text": "You can create a new application for the user. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request POST 'http://localhost:8880/api/v1/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>' --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\", \"app_model\":\"model\", \"app_temperature\":\"temperature\"}` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' }, 'app_temperature':{ 'field_type':'input'},{'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
 
 	},
 	{
@@ -35,35 +35,35 @@
 		"title": "List applications",
 		"article_type": "api",
 		"application": "chat",
-		"text": "You can list all applications for your account by calling the list endpoint. Example:  `curl --location --request GET 'http://localhost:8880/api/v1/admin/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
+		"text": "You can list all applications for your account by calling the list endpoint. Example:  `curl --location --request GET 'http://localhost:8880/api/v1/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
 	},
 	{
 		"item_id": 90214,
 		"title": "Delete applications",
 		"article_type": "api",
 		"application": "chat",
-		"text": "You can delete an application by providing the key in the uri when calling delete endpoint. Example: `curl --location --request DELETE 'http://localhost:8880/api/v1/admin/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
+		"text": "You can delete an application by providing the key in the uri when calling delete endpoint. Example: `curl --location --request DELETE 'http://localhost:8880/api/v1/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
 	},
 	{
 		"item_id": 90215,
 		"title": "Edit applications",
 		"article_type": "api",
 		"application": "chat",
-		"text": "You can edit an application by calling the edit endpoint. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request PUT 'http://localhost:8880/api/v1/admin/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN> --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\",  \"app_model\":\"model\", \"app_temperature\":\"temperature\"}'` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' },'app_temperature':{ 'field_type':'input'}, {'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
+		"text": "You can edit an application by calling the edit endpoint. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request PUT 'http://localhost:8880/api/v1/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN> --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\",  \"app_model\":\"model\", \"app_temperature\":\"temperature\"}'` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' },'app_temperature':{ 'field_type':'input'}, {'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
 	},
 	{
 		"item_id": 48123,
 		"title": "Add doc",
 		"article_type": "api",
 		"application": "chat",
-		"text": "To add a new documentation a given application you can use the following request. \n Params: - title \n - text \n- app_key \n Example: `curl -L  -X POST  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/admin/user/docs  -d '{\"title\":\"my doc title\", \"text\":\"my doc text\", \"app_key\":\"application key\"}'` \n\n Request render: ` request_render:{'text':{'field_type': 'textarea'}}` \n\n #action"
+		"text": "To add a new documentation a given application you can use the following request. \n Params: - title \n - text \n- app_key \n Example: `curl -L  -X POST  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs  -d '{\"title\":\"my doc title\", \"text\":\"my doc text\", \"app_key\":\"application key\"}'` \n\n Request render: ` request_render:{'text':{'field_type': 'textarea'}}` \n\n #action"
 	},
 	{
 		"item_id": 4812344,
 		"title": "List docs",
 		"article_type": "api",
 		"application": "chat",
-		"text": "To list all docs for a given application you can use the following request. \n Example: `curl -L  -X GET  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/admin/applications/{app_key}/docs` \n\n #action"
+		"text": "To list all docs for a given application you can use the following request. \n Example: `curl -L  -X GET  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs?app={app_key}` \n\n #action"
 	},
 	{
 		"item_id": 481,
@@ -99,14 +99,14 @@
 		"title": "Kids",
 		"article_type": "browse_website",
 		"application": "demo",
-		"text": "KIDS 4-8 \nThis is the very first course your children will start with, in this class our only main focus is to build self-esteem, a sense of respect for rules and on the technical point of view teaching drills and fun games to starts working on coordination and basics BJJ technique for further development.\n\nMonday and Wednesday at 4pm, and Saturday at 9:30 AM\n\nBOOK A FREE CLASS\n KIDS 8-10\nThis program is structured for the development of Brazilian Jiu Jitsu for kids from 8 to 10 years old, the aim is to build self-discipline and exploring overview of all positions and situation, building a solid foundation of basics technique. \n\nTuesday and Thursday at 4pm, and Saturday at 10.30 AM\n\nTEENS 11-15\nOur teens classes runs on Tuesday and Thursday at 5 PM, focused on building a strong BJJ foundation and implement with self-defense techniques. The students cover in more depth the BJJ scenarios and learn foundation techniques. \n to learn more about jiujitsu for kids visit https://www.jsbjj.ie/bjj-kids \n\nThis should use the browse_website"
+		"text": "KIDS 4-8 \nThis is the very first course your children will start with, in this class our only main focus is to build self-esteem, a sense of respect for rules and on the technical point of view teaching drills and fun games to starts working on coordination and basics BJJ technique for further development.\n\nMonday and Wednesday at 4pm, and Saturday at 9:30 AM\n\nBOOK A FREE CLASS\n KIDS 8-10\nThis program is structured for the development of Brazilian Jiu Jitsu for kids from 8 to 10 years old, the aim is to build self-discipline and exploring overview of all positions and situation, building a solid foundation of basics technique. \n\nTuesday and Thursday at 4pm, and Saturday at 10.30 AM\n\nTEENS 11-15\nOur teens classes runs on Tuesday and Thursday at 5 PM, focused on building a strong BJJ foundation and implement with self-defense techniques. The students cover in more depth the BJJ scenarios and learn foundation techniques. \n to learn more about jiujitsu for kids visit https://www.jsbjj.ie/bjj-kids \n\nThis should use the browse_website \n\n #action"
 	},
 	{
 		"item_id": 90512,
 		"title": "Kids",
 		"article_type": "browse_website",
 		"application": "demo",
-		"text": "Welcome to your first BJJ class, there is no experience or skills required. Just bring comfortable clothes and water and complete this form prior to the class. \nClasses start at 7am. \n\nTo book a class for an adult visit https://calendly.com/info-jsbjj/jsbjj-free-class/<yyyy-mm-ddThh:00:00+01:00>?month=<yyyy-mm>&date=<yyyy-mm-dd>&email=<email>&name=<name>\n name and email are required \n\nFor kid's class trials please email info@jsbjj.ie \n\nThis should use the browse_website"
+		"text": "Welcome to your first BJJ class, there is no experience or skills required. Just bring comfortable clothes and water and complete this form prior to the class. \nClasses start at 7am. \n\nTo book a class for an adult visit https://calendly.com/info-jsbjj/jsbjj-free-class/<yyyy-mm-ddThh:00:00+01:00>?month=<yyyy-mm>&date=<yyyy-mm-dd>&email=<email>&name=<name>\n name and email are required \n\nFor kid's class trials please email info@jsbjj.ie \n\nThis should use the browse_website \n\n #action"
 	},
 	{
 		"item_id": 90,

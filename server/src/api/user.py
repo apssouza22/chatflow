@@ -30,24 +30,6 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 
-# Deprecated endpoints
-@r.post("/admin/user/register", deprecated=True)
-def register(user: User):
-    return signup(user)
-
-
-@r.post("/admin/user/login", deprecated=True)
-def login(form_data: LoginRequestBody):
-    return user_login(form_data)
-
-
-@r.put("/admin/user/session", deprecated=True)
-def session(session_req: SessionReq, current_user: User = Depends(get_current_user)):
-    # current_session[current_user.email] = session_req
-    return JSONResponse(content={"message": "Session updated successfully"})
-
-
-# New endpoints
 @r.post("/user/register")
 def user_register(user: User):
     return signup(user)
