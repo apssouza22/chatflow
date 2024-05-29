@@ -2,6 +2,9 @@ from core.docs_search.query import create_text_query
 
 
 class TextSearch:
+    """Use this class to search text in the Redis index"""
+
+
     def __init__(self, conn, index):
         self.conn = conn
         self.index = index

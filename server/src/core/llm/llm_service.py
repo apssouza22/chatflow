@@ -93,19 +93,12 @@ class LLMService:
 
     def embed_text(self, text: str) -> List[list]:
         return self.openai_api_gpt3.create_openai_embeddings([text])
+
     def audio_to_text(self, audio: str) -> str:
         return self.openai_api_gpt3.transcriptions(audio)
 
     def translate(self, text) -> LLMResponse:
         prompt = f"Translate the user input into english. User input: {text} \n\nTranslated:"
-        return self._gpt3([{"role": "user", "content": prompt}])
-
-    def get_keywords(self, text: str) -> LLMResponse:
-        prompt = f"Extract keywords for a search query from the text provided. " \
-                 f"Include synonyms for words where a more common one exists." \
-                 f"IMPORTANT: separate the keywords with ',' " \
-                 f"\n\nText: {text} \n\nKeywords:"
-
         return self._gpt3([{"role": "user", "content": prompt}])
 
 

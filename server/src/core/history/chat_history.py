@@ -16,6 +16,8 @@ class AddMessageDto(BaseModel):
 
 
 class ChatHistoryService:
+    """Service to handle chat history conversations."""
+
     def __init__(self, dao: HistoryDao):
         self.dao = dao
         self.history = CacheMemory(30)

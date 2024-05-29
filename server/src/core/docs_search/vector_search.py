@@ -6,6 +6,7 @@ DEFAULT_RETURN_FIELDS = ["item_id", "vector_score", "title", "text_raw"]
 
 
 class DocVectorSearch:
+    """Use this class to search vectors in the Redis index"""
 
     def __init__(self, conn, index):
         self.index = index

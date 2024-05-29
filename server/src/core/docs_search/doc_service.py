@@ -14,6 +14,8 @@ from core.llm.llm_service import LLMService, Usage
 
 
 class DocSearchService:
+    """Service to search documents using multiple strategies."""
+
     def __init__(self, llm_service: LLMService, cost_service, vector_search: DocVectorSearch, text_search: TextSearch):
         self.cost_service = cost_service
         self.text_search = text_search

@@ -4,6 +4,8 @@ import psycopg2
 
 
 class DBConnection:
+    """Manage the connection to the PostgreSQL database."""
+
     def __init__(self, db_name, db_user, db_password, db_host, db_port):
         self.conn = psycopg2.connect(
             dbname=db_name,

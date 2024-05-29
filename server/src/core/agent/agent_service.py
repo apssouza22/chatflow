@@ -24,6 +24,7 @@ class UserInputDto(BaseModel):
 
 
 class AgentService:
+    """Agent service to handle user input and return responses."""
 
     def __init__(self, history: ChatHistoryService, cost_service: CostService, llm: LLMService, cache: PredictCache):
         self.cache = cache
