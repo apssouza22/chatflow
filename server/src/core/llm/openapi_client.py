@@ -29,6 +29,8 @@ class OpenAI:
     )
     def get_chat_completions(self, messages: List[dict], max_tokens=1000, temperature=0.1):
         """
+        Call chatGpt completions.
+
         :param messages:
         :param max_tokens:
         :param temperature:

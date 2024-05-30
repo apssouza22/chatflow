@@ -110,7 +110,6 @@ async def load_all_data():
     if await redis_conn.dbsize() > 5000:
         print("Data already loaded")
     else:
-        print("Loading data into Chat commander App")
         items_metadata = read_items_metadata_json()
         items_with_pk = {}
         for item in items_metadata:
