@@ -65,12 +65,10 @@ class AgentService:
         self.history.add_message(add_message_dto)
         is_action = self.is_action(req)
 
-        # TODO: Eliminate `cache.exists` call:
         if await self.cache.exists(req.question):
             message = await self.cache.get(req.question)
         else:
             llm_resp = self._get_llm_response(req, is_action)
-            message = llm_resp.message
             self.update_cost(llm_resp.usage, current_user.email, req.app.app_key)
             await self.cache.put(req.question, llm_resp.message)
             message = llm_resp.message

@@ -73,6 +73,14 @@ Before running the app, please install Docker first
 - Run `docker-compose up` to start the app
 - Visit http://localhost:8880/api/docs to see the API docs
 
+## Github demo
+- Go to Github and create a new classic token https://github.com/settings/tokens
+- Set the Github Token in the local storage of the browser
+```
+localStorage.setItem("external-token", "github-token")
+localStorage.setItem("external-url", "github.com")
+```
+- Prompt the Github related actions. Ex List Github repositories and display as a chart with the fields: full_name and forks_count
 
 ## Backlog
 Please look at the issues for the backlog

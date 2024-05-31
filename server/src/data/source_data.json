@@ -95,13 +95,6 @@
 	}
 	,
 	{
-		"item_id": 9051,
-		"title": "Kids",
-		"article_type": "browse_website",
-		"application": "demo",
-		"text": "KIDS 4-8 \nThis is the very first course your children will start with, in this class our only main focus is to build self-esteem, a sense of respect for rules and on the technical point of view teaching drills and fun games to starts working on coordination and basics BJJ technique for further development.\n\nMonday and Wednesday at 4pm, and Saturday at 9:30 AM\n\nBOOK A FREE CLASS\n KIDS 8-10\nThis program is structured for the development of Brazilian Jiu Jitsu for kids from 8 to 10 years old, the aim is to build self-discipline and exploring overview of all positions and situation, building a solid foundation of basics technique. \n\nTuesday and Thursday at 4pm, and Saturday at 10.30 AM\n\nTEENS 11-15\nOur teens classes runs on Tuesday and Thursday at 5 PM, focused on building a strong BJJ foundation and implement with self-defense techniques. The students cover in more depth the BJJ scenarios and learn foundation techniques. \n to learn more about jiujitsu for kids visit https://www.jsbjj.ie/bjj-kids \n\nThis should use the browse_website \n\n #action"
-	},
-	{
 		"item_id": 90512,
 		"title": "Kids",
 		"article_type": "browse_website",
@@ -113,6 +106,6 @@
 		"title": "Multi media",
 		"article_type": "text",
 		"application": "demo",
-		"text": "We have multiple products for you. Check the list below: \n\n **Product 1** \n This product is great! watch the video demo https://player.vimeo.com/video/850735603?h=92907fe9e5&amp;autoplay=1&amp;loop=1&amp;autopause=0&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=0 \n\n  **Product 2** \n This product is great for small companies. Product url https://geekflare.com/wp-content/uploads/2022/05/Robots.png \n\n  **Product 3** \n This product is great for big companies. Watch the video https://youtu.be/jULtLGHxaiM \n\n Chat bot instructions: Ensure the urls are returned in the response"
+		"text": "We have multiple products for you. Check the list below: \n\n **Product 1** \n This product is great! watch the video demo https://player.vimeo.com/video/850735603?h=92907fe9e5&amp;autoplay=1&amp;loop=1&amp;autopause=0&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;controls=0 \n\n  **Product 2** \n This product is great for small companies. Product url https://geekflare.com/wp-content/uploads/2022/05/Robots.png \n\n  **Product 3** \n This product is great for big companies. Watch the video https://youtu.be/S_-6Oi1Zq1o \n\n Chat bot instructions: Ensure the urls are returned in the response"
 	}
 ]

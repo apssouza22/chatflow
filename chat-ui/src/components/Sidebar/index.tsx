@@ -10,17 +10,6 @@ type MuiChatParams = {
     isHome?: boolean;
 };
 
-const homePrompts = [
-    "Why make the interface so different?",
-    "What is the potential of natural language interfaces?",
-    "Can the chatbot help me automate complex tasks?",
-    "Do you only sell chatbots?",
-    "How much do the chatbots cost?",
-    "Open chatbot",
-    "Help me send an email",
-    "Add document",
-]
-
 const adminPrompts = [
     "Register a new admin user as follow: alex; 123; alex@gmail.com",
     "Create a new application",
@@ -30,18 +19,17 @@ const adminPrompts = [
     "Add new documentation",
     "Create a new address with the following: Camac crescent, Co. Dublin, Dublin, Ireland, D08f9g9",
     "++ Please return the same command but set addressLine2=Inchicore",
-    "Help me to book a free class to my son",
-    "Help me to book a free class for tomorrow"
-    // "create a new private repository name=test repo and allow squash merge",
-    // "++ return the same command but this time include all the available fields option",
-    // list my repositories
-    // ++ sort by created asc
-    // ++ display as a chart with the fields: full_name and forks_count
-
+    "List my products",
+    "Help me to book a free class for tomorrow",
+    "Open the chatbot  window",
+    "create a new private repository name=test repo and allow squash merge",
+    "List Github repositories",
+    "++ sort by created asc",
+    "++ display as a chart with the fields: full_name and forks_count",
 ]
 export default function Sidebar({chatController, isHome}: PropsWithChildren<MuiChatParams>) {
     const {dispatch} = useChatContext()
-    const [prompts, _] = useState(isHome ? homePrompts : adminPrompts);
+    const [prompts, _] = useState(adminPrompts);
 
     //https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28
 

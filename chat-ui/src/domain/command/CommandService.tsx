@@ -11,6 +11,9 @@ import {showCustomField} from "../common/CustomInputs";
 import {StreamCompletionClient} from "../common/StreamCompletionClient";
 
 function isAction(doc: string, input: string) {
+    if(input.startsWith("++")) {
+        return true
+    }
     if (input.endsWith("?")) {
         return false
     }

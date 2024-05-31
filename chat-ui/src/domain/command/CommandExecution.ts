@@ -106,17 +106,13 @@ export class CommandExecution {
         if (!command.args.headers) {
             return
         }
-        Object.keys(command.args.headers).forEach((key) => {
-            // Github app demo
-            if (command.args.headers[key].indexOf("<YOUR-TOKEN>") >= 0 && command.args.url.indexOf("api.github.com") > 0) {
-                command.args.headers[key] = "Bearer " + localStorage.getItem("github-token") ?? "";
-                return
-            }
-
-            if (command.args.headers[key].indexOf("<YOUR-TOKEN>") >= 0) {
-                command.args.headers[key] = "Bearer " + SessionManager.getInstance().getSessionData().token;
-            }
-        });
+        // Enable the user to set token to be used for external API calls
+        if (command.args.url.indexOf(localStorage.getItem("external-url")) > 0 && localStorage.getItem("external-token")) {
+            console.log("External token set")
+            command.args.headers["Authorization"] = "Bearer " + localStorage.getItem("external-token") ?? "";
+            return
+        }
+        command.args.headers["Authorization"] = "Bearer " + SessionManager.getInstance().getSessionData().token;
     }
 
     private prepareCommand(command: Command, commandData:any) {
