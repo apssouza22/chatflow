@@ -1,13 +1,8 @@
-import os
 from typing import List
 
 from pydantic import BaseModel
 
-from core.app.app_dao import App
-from core.common.utils import filter_content
-from core.llm.openapi_client import OpenAI
-from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
-from core.llm.openai_stream import OpenAIStream
+from core.llm.openapi_client import OpenAIClient
 
 
 class Usage(BaseModel):
@@ -24,87 +19,38 @@ class LLMResponse(BaseModel):
 
 class LLMService:
 
-    def __init__(self, gpt3: OpenAI, gpt4: OpenAI, completion_stream: OpenAIStream):
-        self.completion_stream = completion_stream
-        self.openai_api_gpt3 = gpt3
-        self.openai_api_gpt4 = gpt4
+    def __init__(self, cheap_model: OpenAIClient, expensive_model: OpenAIClient):
+        self.cheap_model = cheap_model
+        self.expensive_model = expensive_model
 
-    def _gpt3(self, prompts, temperature=0.1) -> LLMResponse:
-        print("gpt3 prompt", prompts)
-        response = self.openai_api_gpt3.get_chat_completions(prompts, temperature=temperature)
-        print("gpt3 response successfuly")
+    def _use_cheap(self, prompts, temperature=0.1) -> LLMResponse:
+        response = self.cheap_model.predict(prompts, temperature=temperature)
+        return self._model_response(response)
+
+    def _use_expensive(self, prompts: List[dict], temperature=0.1) -> LLMResponse:
+        response = self.expensive_model.predict(prompts, temperature=temperature)
+        return self._model_response(response)
+
+    def _model_response(self, response):
         usage = response["usage"]
         usage["model"] = response["model"]
         return LLMResponse(
             usage=[Usage(**usage)],
             message=response["choices"][0]["message"]["content"]
         )
-
-    def _gpt4(self, prompts: List[dict], temperature=0.1) -> LLMResponse:
-        print("gpt4 prompt", prompts)
-        response = self.openai_api_gpt4.get_chat_completions(prompts, temperature=temperature)
-        usage = response["usage"]
-        usage["model"] = response["model"]
-        return LLMResponse(
-            usage=[Usage(**usage)],
-            message=response["choices"][0]["message"]["content"]
-        )
-
-    def get_completions_stream(self, prompts: List[dict], model, temperature):
-        return self.completion_stream.get_chat_completions(prompts, model=model, temperature=temperature)
-
-    def get_task_command(self, history: List[MessageCompletion], app: App) -> LLMResponse:
-        prompts = build_prompt_command(history)
-        return self._gpt3(prompts, app.app_temperature)
-
-    def get_question_answer(self, user_input: str, app: App, history: List[MessageCompletion]) -> LLMResponse:
-        prompts, usages = self.get_question_prompts(app, history, user_input)
-
-        if app.app_model == "gpt4":
-            resp = self._gpt4(prompts, app.app_temperature)
-        else:
-            resp = self._gpt3(prompts, app.app_temperature)
-        usages.append(resp.usage[0])
-        return LLMResponse(
-            usage=usages,
-            message=resp.message
-        )
-
-    def get_question_prompts(self, app, history, user_input: str):
-        contents, msgs = get_prompt_objs_from_history(history)
-        usages = []
-        if len(contents) > 1:
-            option = self.pick_best_doc(contents, user_input)
-            contents = filter_content(contents, option.message)
-            usages.append(option.usage[0])
-        prompts = build_prompt_answer_questions(app, contents, msgs)
-        return prompts, usages
-
-    def pick_best_doc(self, contents, user_input: str) -> LLMResponse:
-        pick_content_prompt = prompt_pick_content(contents, user_input)
-        return self._gpt3(pick_content_prompt)
-
-    def get_text_or_form(self, text: str):
-        prompt = prompt_text_form(text)
-        return self._gpt4(prompt)
-
-    def call_ai_function(self, function, args, description) -> str:
-        return self.openai_api_gpt3.call_ai_function(function, args, description)
 
     def embed_text(self, text: str) -> List[list]:
-        return self.openai_api_gpt3.create_openai_embeddings([text])
+        return self.cheap_model.create_embeddings([text])
 
-    def audio_to_text(self, audio: str) -> str:
-        return self.openai_api_gpt3.transcriptions(audio)
+    def get_prediction(self, prompts: List[dict], model: str = "cheap", temperature: float = 0.1) -> LLMResponse:
+        if model == "cheap":
+            return self._use_cheap(prompts, temperature)
+        else:
+            return self._use_expensive(prompts, temperature)
 
-    def translate(self, text) -> LLMResponse:
-        prompt = f"Translate the user input into english. User input: {text} \n\nTranslated:"
-        return self._gpt3([{"role": "user", "content": prompt}])
 
-
-def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
+def llm_service_factory(app_key: str, gpt3_model: str, gpt4_model: str) -> LLMService:
     return LLMService(
-        OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
-        OpenAI(app_key_gpt4, "gpt-4o"),
-        OpenAIStream(app_key_gpt4),
+        OpenAIClient(app_key, gpt3_model),
+        OpenAIClient(app_key, gpt4_model),
     )

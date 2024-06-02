@@ -1,17 +1,17 @@
-# OpenAI API http client
 import json
 from typing import List
 
-import openai
 import requests
 
 from core.common.config import OPENAI_BACKOFF, OPENAI_MAX_RETRIES
 from core.common.http_retry import retry_with_exponential_backoff
 from core.common.utils import EnumEncoder
+from core.llm.llm_interface import LLMInterface
 from core.llm.openai_errors import OpenAIRateLimitError, OpenAIError
 
 
-class OpenAI:
+class OpenAIClient(LLMInterface):
+    """OpenAI API client."""
 
     def __init__(self, api_key, model="gpt-3"):
         self.model = model
@@ -27,7 +27,7 @@ class OpenAI:
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def get_chat_completions(self, messages: List[dict], max_tokens=1000, temperature=0.1):
+    def predict(self, messages: List[dict], max_tokens=1000, temperature=0.1):
         """
         Call chatGpt completions.
 
@@ -69,28 +69,7 @@ class OpenAI:
 
         return response.json()
 
-    # This is a magic function that can do anything with no-code. See
-    # https://github.com/Torantulino/AI-Functions for more info.
-    def call_ai_function(self, function, args, description) -> str:
-        """Call an AI function"""
-
-        # For each arg, if any are None, convert to "None":
-        args = [str(arg) if arg is not None else "None" for arg in args]
-        # parse args to comma separated string
-        args = ", ".join(args)
-        messages = [
-            {
-                "role": "system",
-                "content": f"You are now the following python function: ```# {description}"
-                           f"\n{function}```\n\nOnly respond with your `return` value.",
-            },
-            {"role": "user", "content": args},
-        ]
-
-        completions = self.get_chat_completions(messages)
-        return completions["choices"][0]["message"]["content"]
-
-    def create_openai_embeddings(self, inputs: List[str]) -> List[list]:
+    def create_embeddings(self, inputs: List[str]) -> List[list]:
         data = {
             'input': inputs,
             'model': 'text-embedding-ada-002'
@@ -107,13 +86,3 @@ class OpenAI:
             results.append(result['embedding'])
 
         return results
-
-    def transcriptions(self, file_path: str) -> str:
-        audio_file = open(file_path, "rb")
-        transcript = openai.Audio.transcribe(
-            model="whisper-1",
-            file=audio_file,
-            response_format="text",
-            api_key=self.api_key
-        )
-        return transcript
