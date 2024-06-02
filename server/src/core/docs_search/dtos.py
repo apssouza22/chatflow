@@ -16,6 +16,3 @@ class AddDocRequest(BaseModel):
     app_key: str
 
 
-class CompletionRequest(BaseModel):
-    question: str
-    context: str

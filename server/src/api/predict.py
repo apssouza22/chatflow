@@ -3,16 +3,19 @@ import typing as t
 import sseclient
 from fastapi import Depends, Request, APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from api.factory import agent, apps, cost_service, llm_service
 from api.user import User, get_current_user
 from core.agent.agent_service import UserInputDto
 from core.app.app_dao import App
-from core.docs_search.dtos import (
-    CompletionRequest
-)
 
 predict_router = r = APIRouter()
+
+class CompletionRequest(BaseModel):
+    question: str
+    context: str
+
 
 
 @r.post("/chat/completions", response_model=t.Dict)
@@ -21,7 +24,6 @@ async def think(
         request: Request,
         current_user: User = Depends(get_current_user),
 ) -> t.Dict:
-
     user_input_req = get_request_dto(current_user, question_request, request)
 
     if cost_service.has_allowance_exceeded(current_user.email, user_input_req.app.app_key):
@@ -88,6 +90,7 @@ def get_user_ip(request):
     else:
         client_host = request.client.host
     return client_host
+
 
 
 def get_fake_command():

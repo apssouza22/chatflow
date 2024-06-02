@@ -8,9 +8,6 @@ Users can easily navigate and utilize complex websites/products with multiple pa
 functionalities through a chat interface rather than using a point-and-click
 approach.
 
-This leads to decreased training expenses, enhanced user experience, and improved
-productivity.
-
 You can try it out [here](http://apps.newaisolutions.com/)
 
 Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn more.
@@ -18,6 +15,9 @@ Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn mor
 Join our Discord to know what's going on in development and to ask questions to the maintainers about the project and how to contribute: https://discord.gg/fJ5ecMmsSf
 
 <img src="declarative-imperative.png">
+
+## RAG architecture
+<img src="assets/rag-flow.png" width="500">
 
 ## Running the App
 Before running the app, please install Docker first
@@ -81,6 +81,8 @@ localStorage.setItem("external-token", "github-token")
 localStorage.setItem("external-url", "github.com")
 ```
 - Prompt the Github related actions. Ex List Github repositories and display as a chart with the fields: full_name and forks_count
+
+
 
 ## Backlog
 Please look at the issues for the backlog
