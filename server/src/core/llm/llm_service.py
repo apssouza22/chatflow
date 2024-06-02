@@ -1,48 +1,33 @@
-import os
 from typing import List
-
-from pydantic import BaseModel
 
 from core.app.app_dao import App
 from core.common.utils import filter_content
+from core.llm.dtos import LLMResponse, Usage
+from core.llm.openai_stream import OpenAIStream
 from core.llm.openapi_client import OpenAIClient
 from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
-from core.llm.openai_stream import OpenAIStream
-
-
-class Usage(BaseModel):
-    prompt_tokens = 0
-    completion_tokens = 0
-    total_tokens = 0
-    model: str
-
-
-class LLMResponse(BaseModel):
-    usage: List[Usage]
-    message: str
 
 
 class LLMService:
 
-    def __init__(self, gpt3: OpenAIClient, gpt4: OpenAIClient, completion_stream: OpenAIStream):
+    def __init__(self, cheap_model: OpenAIClient, expensive_model: OpenAIClient, completion_stream: OpenAIStream):
         self.completion_stream = completion_stream
-        self.openai_api_gpt3 = gpt3
-        self.openai_api_gpt4 = gpt4
+        self._cheap_model = cheap_model
+        self._expensive_model = expensive_model
 
-    def _gpt3(self, prompts, temperature=0.1) -> LLMResponse:
+    def _use_cheap(self, prompts, temperature=0.1) -> LLMResponse:
         print("gpt3 prompt", prompts)
-        response = self.openai_api_gpt3.predict(prompts, temperature=temperature)
+        response = self._cheap_model.predict(prompts, temperature=temperature)
         print("gpt3 response successfuly")
-        usage = response["usage"]
-        usage["model"] = response["model"]
-        return LLMResponse(
-            usage=[Usage(**usage)],
-            message=response["choices"][0]["message"]["content"]
-        )
+        return self._handle_model_response(response)
 
-    def _gpt4(self, prompts: List[dict], temperature=0.1) -> LLMResponse:
+    def _use_expensive(self, prompts: List[dict], temperature=0.1) -> LLMResponse:
         print("gpt4 prompt", prompts)
-        response = self.openai_api_gpt4.predict(prompts, temperature=temperature)
+        response = self._expensive_model.predict(prompts, temperature=temperature)
+        return self._handle_model_response(response)
+
+    @staticmethod
+    def _handle_model_response(response):
         usage = response["usage"]
         usage["model"] = response["model"]
         return LLMResponse(
@@ -55,15 +40,15 @@ class LLMService:
 
     def get_task_command(self, history: List[MessageCompletion], app: App) -> LLMResponse:
         prompts = build_prompt_command(history)
-        return self._gpt3(prompts, app.app_temperature)
+        return self._use_cheap(prompts, app.app_temperature)
 
     def get_question_answer(self, user_input: str, app: App, history: List[MessageCompletion]) -> LLMResponse:
         prompts, usages = self.get_question_prompts(app, history, user_input)
 
         if app.app_model == "gpt4":
-            resp = self._gpt4(prompts, app.app_temperature)
+            resp = self._use_expensive(prompts, app.app_temperature)
         else:
-            resp = self._gpt3(prompts, app.app_temperature)
+            resp = self._use_cheap(prompts, app.app_temperature)
         usages.append(resp.usage[0])
         return LLMResponse(
             usage=usages,
@@ -82,24 +67,24 @@ class LLMService:
 
     def pick_best_doc(self, contents, user_input: str) -> LLMResponse:
         pick_content_prompt = prompt_pick_content(contents, user_input)
-        return self._gpt3(pick_content_prompt)
+        return self._use_cheap(pick_content_prompt)
 
     def get_text_or_form(self, text: str):
         prompt = prompt_text_form(text)
-        return self._gpt4(prompt)
+        return self._use_expensive(prompt)
 
     def call_ai_function(self, function, args, description) -> str:
-        return self.openai_api_gpt3.call_ai_function(function, args, description)
+        return self._cheap_model.call_ai_function(function, args, description)
 
     def embed_text(self, text: str) -> List[list]:
-        return self.openai_api_gpt3.create_embeddings([text])
+        return self._cheap_model.create_embeddings([text])
 
     def audio_to_text(self, audio: str) -> str:
-        return self.openai_api_gpt3.transcriptions(audio)
+        return self._cheap_model.transcriptions(audio)
 
     def translate(self, text) -> LLMResponse:
         prompt = f"Translate the user input into english. User input: {text} \n\nTranslated:"
-        return self._gpt3([{"role": "user", "content": prompt}])
+        return self._use_cheap([{"role": "user", "content": prompt}])
 
     def get_keywords(self, text: str) -> LLMResponse:
         prompt = f"Extract keywords for a search query from the text provided. " \
@@ -107,7 +92,7 @@ class LLMService:
                  f"IMPORTANT: separate the keywords with ',' " \
                  f"\n\nText: {text} \n\nKeywords:"
 
-        return self._gpt3([{"role": "user", "content": prompt}])
+        return self._use_cheap([{"role": "user", "content": prompt}])
 
 
 def llm_service_factory(app_key: str, gpt3_model: str, gpt4_model: str) -> LLMService:
