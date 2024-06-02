@@ -7,11 +7,11 @@ import pandas as pd
 from core.common.config import OPENAI_API_KEY_GPT3
 # from sentence_transformers import SentenceTransformer  # for creating semantic (text-based) vector embeddings
 
-from core.llm.openapi_client import OpenAI
+from core.llm.openapi_client import OpenAIClient
 
 source_file = os.path.join("./", "data/source_data.json")
 data_source = pd.read_json(source_file)
-openai = OpenAI(OPENAI_API_KEY_GPT3)
+openai = OpenAIClient(OPENAI_API_KEY_GPT3)
 
 
 def _generate_text_vectors_local_model(data_df):
@@ -64,7 +64,7 @@ def _get_openai_embeddings(text_list: list[dict]):
         texts.append(row["text"])
         item_ids.append(row["item_id"])
 
-    data = openai.create_openai_embeddings(texts)
+    data = openai.create_embeddings(texts)
     for index, _ in enumerate(text_list):
         text_list[index]["text_embedding"] = data[index]
         text_vectors[item_ids[index]] = data[index]

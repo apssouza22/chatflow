@@ -8,10 +8,12 @@ import requests
 from core.common.config import OPENAI_BACKOFF, OPENAI_MAX_RETRIES
 from core.common.http_retry import retry_with_exponential_backoff
 from core.common.utils import EnumEncoder
+from core.llm.llm_interface import LLMInterface
 from core.llm.openai_errors import OpenAIRateLimitError, OpenAIError
 
 
-class OpenAI:
+class OpenAIClient(LLMInterface):
+    """OpenAI API client."""
 
     def __init__(self, api_key, model="gpt-3"):
         self.model = model
@@ -27,7 +29,7 @@ class OpenAI:
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def get_chat_completions(self, messages: List[dict], max_tokens=1000, temperature=0.1):
+    def predict(self, messages: List[dict], max_tokens=1000, temperature=0.1):
         """
         Call chatGpt completions.
 
@@ -87,10 +89,10 @@ class OpenAI:
             {"role": "user", "content": args},
         ]
 
-        completions = self.get_chat_completions(messages)
+        completions = self.predict(messages)
         return completions["choices"][0]["message"]["content"]
 
-    def create_openai_embeddings(self, inputs: List[str]) -> List[list]:
+    def create_embeddings(self, inputs: List[str]) -> List[list]:
         data = {
             'input': inputs,
             'model': 'text-embedding-ada-002'
