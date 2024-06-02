@@ -11,7 +11,7 @@ from core.user.user_service import UserService
 redis_client = conn.get_redis_instance()
 pg_conn = conn.get_pg_instance()
 cost_service = cost_service_factory()
-llm_service = llm_service_factory(config.OPENAI_API_KEY_GPT3, config.OPENAI_API_KEY_GPT4)
+llm_service = llm_service_factory(config.OPENAI_API_KEY, config.OPENAI_API_MODEL_GPT3, config.OPENAI_API_MODEL_GPT4)
 doc_search_service = factory_doc_search_service(llm_service, cost_service)
 chat_history = factory_chat_history(pg_conn)
 agent = agent_factory(chat_history, cost_service, llm_service)

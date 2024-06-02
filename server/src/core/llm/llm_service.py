@@ -93,6 +93,7 @@ class LLMService:
 
     def embed_text(self, text: str) -> List[list]:
         return self.openai_api_gpt3.create_openai_embeddings([text])
+
     def audio_to_text(self, audio: str) -> str:
         return self.openai_api_gpt3.transcriptions(audio)
 
@@ -109,9 +110,9 @@ class LLMService:
         return self._gpt3([{"role": "user", "content": prompt}])
 
 
-def llm_service_factory(app_key_gpt3: str, app_key_gpt4: str) -> LLMService:
+def llm_service_factory(app_key: str, gpt3_model: str, gpt4_model: str) -> LLMService:
     return LLMService(
-        OpenAI(app_key_gpt3, "gpt-3.5-turbo-0613"),
-        OpenAI(app_key_gpt4, "gpt-4o"),
-        OpenAIStream(app_key_gpt4),
+        OpenAI(app_key, gpt3_model),
+        OpenAI(app_key, gpt4_model),
+        OpenAIStream(app_key),
     )
