@@ -1,9 +1,8 @@
 import json
 import time
 import typing
-from dataclasses import dataclass
-from enum import Enum
-from typing import TypedDict, List
+from typing import List
+from core.llm.dtos import MessageDict, MessageRole, MessageCompletion
 
 from core.app.app_dao import App
 
@@ -73,32 +72,6 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'"function": {{"name": "<function_name>", "code": "<function_code>", "param": "<json_param>"}} \\ The javascript function details\n' \
                                f'}}\n ```' \
                                f'Notice: All the options will be along with the ``` thoughts:{{ }}```'
-
-
-class MessageRole(Enum):
-    SYSTEM = "system"
-    USER = "user"
-    ASSISTANT = "assistant"
-
-    def __str__(self):
-        return self.value
-
-
-class MessageDict(TypedDict):
-    role: MessageRole
-    content: str
-    def __str__(self):
-        return {
-            "role": self.role.value,
-            "content": self.content
-        }
-
-@dataclass
-class MessageCompletion:
-    role: MessageRole
-    context: str = ""
-    query: str = ""
-    response: str = ""
 
 
 def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
