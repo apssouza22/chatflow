@@ -2,7 +2,9 @@ from typing import List
 
 from pydantic import BaseModel
 
+from core.llm.dtos import MessageCompletion
 from core.llm.openapi_client import OpenAIClient
+from core.llm.prompt_handler import prompt_pick_content, build_prompt_command
 
 
 class Usage(BaseModel):
@@ -47,6 +49,14 @@ class LLMService:
             return self._use_cheap(prompts, temperature)
         else:
             return self._use_expensive(prompts, temperature)
+
+    def get_task_command(self, history: List[MessageCompletion]) -> LLMResponse:
+        prompts = build_prompt_command(history)
+        return self._use_cheap(prompts)
+
+    def pick_best_doc(self, contents, user_input: str) -> LLMResponse:
+        pick_content_prompt = prompt_pick_content(contents, user_input)
+        return self._use_cheap(pick_content_prompt)
 
 
 def llm_service_factory(app_key: str, gpt3_model: str, gpt4_model: str) -> LLMService:
