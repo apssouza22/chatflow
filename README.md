@@ -14,7 +14,7 @@ Watch [this video](https://youtu.be/S_-6Oi1Zq1o?si=7TwD9pZq47uFMf1) to learn mor
 
 Join our Discord to know what's going on in development and to ask questions to the maintainers about the project and how to contribute: https://discord.gg/fJ5ecMmsSf
 
-<img src="declarative-imperative.png" width="500">
+<img src="assets/declarative-imperative.png" width="500">
 
 ## RAG architecture
 <img src="assets/rag-flow.png" width="800">
