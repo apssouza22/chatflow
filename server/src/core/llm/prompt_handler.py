@@ -74,8 +74,7 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'Notice: All the options will be along with the ``` thoughts:{{ }}```'
 
 
-def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
-    # TODO: Improve this function to not include system messages. This is a temporary solution
+def _get_main_command_prompt(doc_context: str, sanitized_query: str) -> List[MessageDict]:
     return [
         MessageDict(
             role=MessageRole.SYSTEM,
@@ -117,11 +116,13 @@ def get_msg_cycle(doc_context: str, sanitized_query: str) -> List[MessageDict]:
 
 def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
     prompts = []
+
     for message in history:
         if message.role == MessageRole.ASSISTANT:
             prompts.append(MessageDict(role=MessageRole.ASSISTANT, content=message.response))
             continue
-        # empty context means that the user is refining the command based on the assistant's response
+
+        # Empty context means that the user is refining the command based on the assistant's response
         if message.role == MessageRole.USER and message.context == "":
             prompts.append(MessageDict(
                 role=MessageRole.USER,
@@ -129,15 +130,17 @@ def build_prompt_command(history: List[MessageCompletion]) -> List[MessageDict]:
                         f'{message.query}'
             ))
             continue
+
+        # Reset prompts every time we get a new user command with context
+        # this is to prevent reach the max tokens limit
         if message.role == MessageRole.USER and message.context != "":
-            # reset prompts every time we get a new user command with context
-            # this is to prevent reach the max tokens limit
             prompts.clear()
-            prompts.extend(get_msg_cycle(message.context, message.query))
+            prompts.extend(_get_main_command_prompt(message.context, message.query))
+
     return prompts
 
 
-def prompt_text_form(input: str) -> typing.List[MessageDict]:
+def is_text_or_form_prompt(input: str) -> typing.List[MessageDict]:
     system_msg = """You are an AI responsible for identifying users intent.  Your goal is to analyze the user input and determine if the user requires either text or form as the response \n
 If the user input is understood as a question automatically, the response should be a "text". Example: explain me how to add a new address;  tell me what to do; how much does it cost? \n
 If the user input is understood as a greeting, the response should be "text".   Example:  How are you; Hi; Oi; Como você está? \n
@@ -151,12 +154,12 @@ VERY IMPORTANT: Respond with either "text" or "form".
     return prompts
 
 
-def prepare_prompt_history(history: List[MessageCompletion]) -> List[MessageCompletion]:
+def _prepare_prompt_history(history: List[MessageCompletion]) -> List[MessageCompletion]:
     local_history = []
     count = 0
 
     for message in reversed(history):
-        # if message.role == "user" and message.context and message.context != "":
+        # if message.role == "user" and message.context != "":
         if message.role == MessageRole.USER:
             count += 1
         local_history.append(message)
@@ -167,6 +170,7 @@ def prepare_prompt_history(history: List[MessageCompletion]) -> List[MessageComp
     for message in local_history[1:]:
         if last_message.context == message.context:
             message.context = ""
+
     local_history.reverse()
     return local_history
 
@@ -232,7 +236,7 @@ def build_prompt_answer_questions(app: App, contexts, msgs) -> List[MessageDict]
 
 
 def get_prompt_objs_from_history(history: List[MessageCompletion]) -> typing.Tuple[List[str], List[str]]:
-    prepared_history = prepare_prompt_history(history)
+    prepared_history = _prepare_prompt_history(history)
     msgs = []
     contexts = []
     for message in prepared_history:

@@ -5,7 +5,7 @@ from core.common.utils import filter_content
 from core.llm.dtos import LLMResponse, Usage
 from core.llm.openai_stream import OpenAIStream
 from core.llm.openapi_client import OpenAIClient
-from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, prompt_text_form, get_prompt_objs_from_history, prompt_pick_content
+from core.llm.prompt_handler import build_prompt_answer_questions, build_prompt_command, MessageCompletion, is_text_or_form_prompt, get_prompt_objs_from_history, prompt_pick_content
 
 
 class LLMService:
@@ -70,7 +70,7 @@ class LLMService:
         return self._use_cheap(pick_content_prompt)
 
     def get_text_or_form(self, text: str):
-        prompt = prompt_text_form(text)
+        prompt = is_text_or_form_prompt(text)
         return self._use_expensive(prompt)
 
     def call_ai_function(self, function, args, description) -> str:
