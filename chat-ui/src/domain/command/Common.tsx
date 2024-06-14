@@ -95,16 +95,17 @@ function replaceImageLinksWithImgTags(text: string): string {
     const pattern = /(https?:\/\/[^\s]+?\.(?:jpg|jpeg|png|gif))/g;
 
     // Replace the URL with an HTML <img> tag
-    return text.replace(pattern, (match) => `<img src="${match}" alt="image" />`);
+    return text.replace(pattern, (match) => `<a href="${match}" class="nsbbox" data-lightbox="image-${match}"><img src="${match}" alt="image" /></a>`);
 }
 
 function replaceVideoLinksWithIframeTags(text: string): string {
     // YouTube URL to iframe
-    text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s]+)/g, '<iframe width="560" height="315" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>');
+    text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([^\s.]+)/g,
+        '<a href="https://www.youtube.com/embed/$1" class="nsbbox" data-lightbox="video-$1"><img style="max-width:400px" src="http://img.youtube.com/vi/$1/maxresdefault.jpg" alt="YouTube video"></a>');
 
     // Vimeo URL to iframe
     text = text.replace(/(?:https?:\/\/)?(?:www\.)?(?:player\.)?vimeo\.com\/([^\s]+)/g,
-        '<iframe width="560" height="315" src="https://player.vimeo.com/$1" frameborder="0" allowfullscreen></iframe>');
+        '<a href="https://player.vimeo.com/$1" class="nsbbox" data-lightbox="video-$1"><img style="max-width:400px" src="https://vumbnail.com/$1.jpg" alt="Vimeo video"></a>');
     return text;
 }
 
@@ -135,8 +136,8 @@ function markdownToHtmlSpan(str: string) {
 export function convertText(text: string) {
     return markdownToHtmlSpan(
         markdownToHtmlBold(
-            createImgTag(
-                replaceVideoLinksWithIframeTags(
+            replaceVideoLinksWithIframeTags(
+                createImgTag(
                     markdownToHtmlLink(
                         text
                     )
@@ -159,7 +160,7 @@ function toReact(text: string): string | JSX.Element {
                 if (attribs.href.endsWith('.')) {
                     attribs.href = attribs.href.slice(0, -1);
                 }
-                return <Link to={attribs.href} target={"_blank"} style={{
+                return <Link to={attribs.href} rel={attribs.rel} className={attribs.class === 'nsbbox' ? 'nsbbox' : undefined} data-lightbox={attribs['data-lightbox']} target={"_blank"} style={{
                     "color": "blue",
                 }}>{domToReact(children)}</Link>;
             }
