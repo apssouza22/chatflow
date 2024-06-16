@@ -4,14 +4,14 @@ import os
 import numpy as np
 import pandas as pd
 
-from core.common.config import OPENAI_API_KEY_GPT3
+from core.common.config import OPENAI_API_KEY
 # from sentence_transformers import SentenceTransformer  # for creating semantic (text-based) vector embeddings
 
 from core.llm.openapi_client import OpenAIClient
 
 source_file = os.path.join("./", "data/source_data.json")
 data_source = pd.read_json(source_file)
-openai = OpenAIClient(OPENAI_API_KEY_GPT3)
+openai = OpenAIClient(OPENAI_API_KEY)
 
 
 def _generate_text_vectors_local_model(data_df):

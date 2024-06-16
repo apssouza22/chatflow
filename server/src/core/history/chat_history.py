@@ -8,7 +8,7 @@ from core.history.history_dao import HistoryDao
 from core.llm.prompt_handler import MessageCompletion, MessageRole
 
 
-class AddMessageDto(BaseModel):
+class AddHistoryDto(BaseModel):
     user_email: str
     app_key: str
     session_id: str
@@ -20,7 +20,7 @@ class ChatHistoryService:
         self.dao = dao
         self.history = CacheMemory(30)
 
-    def add_message(self, req: AddMessageDto):
+    def add_message(self, req: AddHistoryDto):
         user_email = req.user_email
         app_key = req.app_key
         session_id = req.session_id
