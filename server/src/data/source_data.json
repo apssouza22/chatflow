@@ -1,13 +1,13 @@
 [
 	{
-		"item_id": 300391,
+		"item_id": 1,
 		"title": "User register",
 		"article_type": "api",
 		"application": "chat",
 		"text": "To create a new Admin user you need to call the register endpoint with the admin user data. The response will be the user data created. \n Params: \n -name \n -password \n -email  \n  Curl command  ```curl --location --request POST 'http://localhost:8880/api/v1/user/register' --header 'Content-Type: application/json' --form 'name=\"name\"' --form 'password=\"pass\"' --form 'email=\"email@cc.com\"' ``` \n\n Request render: ` request_render:{'password':{'field_type': 'password'},'email':{'field_type': 'email'}}` \n\n #action"
 	},
 	{
-		"item_id": 30039,
+		"item_id": 2,
 		"title": "User login",
 		"article_type": "api",
 		"application": "chat",
@@ -15,7 +15,7 @@
 
 	},
 	{
-		"item_id": 3003911,
+		"item_id": 3,
 		"title": "User session update",
 		"article_type": "api",
 		"application": "chat",
@@ -23,7 +23,7 @@
 
 	},
 	{
-		"item_id": 9204,
+		"item_id": 4,
 		"title": "Create application",
 		"article_type": "api",
 		"application": "chat",
@@ -31,63 +31,63 @@
 
 	},
 	{
-		"item_id": 9214,
+		"item_id": 5,
 		"title": "List applications",
 		"article_type": "api",
 		"application": "chat",
 		"text": "You can list all applications for your account by calling the list endpoint. Example:  `curl --location --request GET 'http://localhost:8880/api/v1/applications' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
 	},
 	{
-		"item_id": 90214,
+		"item_id": 6,
 		"title": "Delete applications",
 		"article_type": "api",
 		"application": "chat",
 		"text": "You can delete an application by providing the key in the uri when calling delete endpoint. Example: `curl --location --request DELETE 'http://localhost:8880/api/v1/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN>'` \n\n #action"
 	},
 	{
-		"item_id": 90215,
+		"item_id": 7,
 		"title": "Edit applications",
 		"article_type": "api",
 		"application": "chat",
 		"text": "You can edit an application by calling the edit endpoint. \nRequired params: app_name, app_description, app_model \nExample: `curl --location --request PUT 'http://localhost:8880/api/v1/applications/app_key' --header 'Content-Type: application/json' --header 'Authorization: Bearer <YOUR-TOKEN> --data-raw '{\n    \"app_name\": \"app 1\",  \"app_description\":\"description\",  \"app_model\":\"model\", \"app_temperature\":\"temperature\"}'` \n\nRequest render: ` request_render:{'app_name':{ 'field_type':'input'}, {'app_description':{ 'field_type':'textarea' },'app_temperature':{ 'field_type':'input'}, {'app_model':{ 'field_type':'select', 'field_options': ['gpt3', 'gpt4'] }]` \n\n #action"
 	},
 	{
-		"item_id": 48123,
+		"item_id": 8,
 		"title": "Add doc",
 		"article_type": "api",
 		"application": "chat",
 		"text": "To add a new documentation a given application you can use the following request. \n Params: - title \n - text \n- app_key \n Example: `curl -L  -X POST  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs  -d '{\"title\":\"my doc title\", \"text\":\"my doc text\", \"app_key\":\"application key\"}'` \n\n Request render: ` request_render:{'text':{'field_type': 'textarea'}}` \n\n #action"
 	},
 	{
-		"item_id": 4812344,
+		"item_id": 9,
 		"title": "List docs",
 		"article_type": "api",
 		"application": "chat",
 		"text": "To list all docs for a given application you can use the following request. \n Example: `curl -L  -X GET  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs?app={app_key}` \n\n #action"
 	},
 	{
-		"item_id": 481,
+		"item_id": 10,
 		"title": "Delete docs",
 		"article_type": "api",
 		"application": "chat",
 		"text": "To delete docs for a given application you can use the following request. \n Example: `curl -L  -X DELETE  -H \"Accept: application/json\"  -H \"Authorization: Bearer <YOUR-TOKEN>\"  http://localhost:8880/api/v1/docs/{pk}` \n\n #action"
 	},
 	{
-		"item_id": 1481,
+		"item_id": 11,
 		"title": "Js",
 		"article_type": "api",
 		"application": "chat",
 		"text": "To open the chatbot on the page you need to run the following javascript code. \n `function openChatbot(){ let script = document.createElement('script');\n script.src = \"https://apps.newaisolutions.com/assets/demos/new-bot.js\";\n    document.head.appendChild(script);}`\n This should be used the js_func command  \n\n #action"
 	},
 	{
-		"item_id": 904,
+		"item_id": 12,
 		"title": "Add address",
 		"article_type": "browse_website",
 		"application": "demo",
 		"text": "You can add a new address in the Address section of your account. This is the link to add a new address https://www.amazon.co.uk/a/addresses/add . Curl Example:  ```  curl https://www.amazon.co.uk/a/addresses/add?countryCode=code&stateCode=code&postalCode=code&city=city&addressLine1=address&addressLine2=address&isDefault=true&name=name&phoneNumber=phone``` \n\n #action"
 	},
 	{
-		"item_id": 905,
+		"item_id": 13,
 		"title": "List repo",
 		"article_type": "api",
 		"application": "demo",
@@ -95,14 +95,14 @@
 	}
 	,
 	{
-		"item_id": 90512,
+		"item_id": 14,
 		"title": "Kids",
 		"article_type": "browse_website",
 		"application": "demo",
 		"text": "Welcome to your first BJJ class, there is no experience or skills required. Just bring comfortable clothes and water and complete this form prior to the class. \nClasses start at 7am. \n\nTo book a class for an adult visit https://calendly.com/info-jsbjj/jsbjj-free-class/<yyyy-mm-ddThh:00:00+01:00>?month=<yyyy-mm>&date=<yyyy-mm-dd>&email=<email>&name=<name>\n name and email are required \n\nFor kid's class trials please email info@jsbjj.ie \n\nThis should use the browse_website \n\n #action"
 	},
 	{
-		"item_id": 90,
+		"item_id": 15,
 		"title": "Multi media",
 		"article_type": "text",
 		"application": "demo",

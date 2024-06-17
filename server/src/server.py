@@ -6,11 +6,9 @@ from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
-from api.apps import apps_router
-from api.common import common_router
 from api.docs import docs_router
 from api.predict import predict_router
-from api.user import user_router
+
 from core.common import config
 
 app = FastAPI(
@@ -35,32 +33,17 @@ app.include_router(
 )
 
 app.include_router(
-    user_router,
-    prefix=config.API_V1_STR,
-    tags=["user"]
-)
-
-app.include_router(
     docs_router,
     prefix=config.API_V1_STR,
     tags=["docs"]
 )
-app.include_router(
-    apps_router,
-    prefix=config.API_V1_STR,
-    tags=["apps"]
-)
+
 root_router = r = APIRouter()
 
 app.include_router(
     root_router,
     prefix="",
     tags=["hello"]
-)
-app.include_router(
-    common_router,
-    prefix=config.API_V1_STR,
-    tags=["common"]
 )
 
 frontend_dir = "/app/frontend"  # inside docker

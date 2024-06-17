@@ -47,33 +47,12 @@ Before running the app, please install Docker first
   
 - Start the backend service locally
     ```bash
-  # Load the initial data
-   python load_data.py
   # Start the server
    python server.py
     ```
   
-- Log into the app http://localhost:3000/assets#/login with the following credentials
-    ```bash
-    username: admin@gmail.com
-    password: 123
-    ```
 - Visit http://localhost:8880/api/docs to see the API docs
 - Access the Redis Vector DB UI on http://localhost:8001/redis-stack/browser
 
-
-## Github demo
-- Go to Github and create a new classic token https://github.com/settings/tokens
-- Set the Github Token in the local storage of the browser
-```
-localStorage.setItem("external-token", "github-token")
-localStorage.setItem("external-url", "github.com")
-```
-- Prompt the Github related actions. Ex List Github repositories and display as a chart with the fields: full_name and forks_count
-
-
-
-## Backlog
-Please look at the issues for the backlog
 
 ## Leave a star if you like the project

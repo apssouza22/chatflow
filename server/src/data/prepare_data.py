@@ -1,36 +1,14 @@
 import json
 import os
 
-import numpy as np
 import pandas as pd
 
-from core.common.config import OPENAI_API_KEY_GPT3
-# from sentence_transformers import SentenceTransformer  # for creating semantic (text-based) vector embeddings
-
+from core.common.config import OPENAI_API_KEY
 from core.llm.openapi_client import OpenAIClient
 
 source_file = os.path.join("./", "data/source_data.json")
 data_source = pd.read_json(source_file)
-openai = OpenAIClient(OPENAI_API_KEY_GPT3)
-
-
-def _generate_text_vectors_local_model(data_df):
-    """Generate text vectors using a local model."""
-    # bert variant to create text embeddings
-    # Both all-mpnet-base-v2 and all-distilroberta-v1 models are suitable for generating sentence embeddings and can be used for various NLP tasks such as semantic similarity, clustering, or classification. The choice between the two models depends on your specific requirements:
-    # If you need a more efficient model with lower computational requirements, you might prefer the all-distilroberta-v1 model.
-    # If you prioritize performance and accuracy over computational efficiency, you might choose the all-mpnet-base-v2 model.
-
-    # model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
-    # model = SentenceTransformer('sentence-transformers/all-distilroberta-v1')
-
-    text_vectors = {}
-    for index, row in data_df.iterrows():
-        if index % 1000 == 0:
-            print(f"Creating text vectors. Page: {str(index)}")
-        # text_vectors[row["item_id"]] = model.encode(row["text"]).astype(np.float32)
-
-    return text_vectors
+openai = OpenAIClient(OPENAI_API_KEY)
 
 
 def _generate_openai_text_vectors(data_df):
@@ -73,16 +51,14 @@ def _get_openai_embeddings(text_list: list[dict]):
     return text_vectors
 
 
-def _combine_vector_dicts(items, openai_txt_vectors=None, local_txt_vectors=None):
+def _combine_vector_dicts(items, openai_txt_vectors=None):
     """Combine text vectors from local and openai models."""
     data_vectors = []
     for _, row in items.iterrows():
         try:
             _id = row["item_id"]
             openai_vector = openai_txt_vectors[_id]
-            # text_vector = local_txt_vectors[_id].tolist()
             vector_dict = {
-                # "text_vector": text_vector,
                 "text_vector": [],
                 "item_id": _id,
                 "openai_text_vector": openai_vector,
@@ -123,9 +99,8 @@ def _create_metadata(data_df):
 
 def prepare_data():
     """Prepare data to be imported into the database."""
-    local_txt_vectors = _generate_text_vectors_local_model(data_source)
     openai_text_vectors = _generate_openai_text_vectors(data_source)
-    vector_dict = _combine_vector_dicts(data_source, openai_text_vectors, local_txt_vectors)
+    vector_dict = _combine_vector_dicts(data_source, openai_text_vectors)
     _write_vectors_json(vector_dict)
     _create_metadata(data_source)
 
