@@ -1,22 +1,22 @@
 import typing as t
+from random import randint
 
-from fastapi import APIRouter
-from pydantic import BaseModel
+import numpy as np
+from fastapi import Depends, Request, HTTPException, APIRouter
+from fastapi.responses import JSONResponse
 
-from core.common import conn
-
-redis_client = conn.get_redis_instance()
+from api.factory import doc_search_service, redis_client, llm_service
+from core.docs_search.dtos import AddDocRequest
+from core.docs_search.dtos import (
+    SearchRequest
+)
 
 docs_router = r = APIRouter()
 
 
-class SearchRequest(BaseModel):
-    text: str
-    tags: str = ""
-
-
 @r.post("/docs/search", response_model=t.Dict)
-async def find_docs(search_req: SearchRequest) -> t.Dict:
+async def find_docs(search_req: SearchRequest, request: Request) -> t.Dict:
     tags = "demo|chat|"
     search_req.tags = tags
-    return {"message": "Hello World"}
+    return await doc_search_service.full_search(search_req)
+
