@@ -25,7 +25,5 @@ if REDIS_PASSWORD and REDIS_PASSWORD != "":
 else:
     REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 
-os.environ["REDIS_DATA_URL"] = REDIS_URL
-os.environ["REDIS_OM_URL"] = REDIS_URL
 API_V1_STR = "/api/v1"
 DATA_LOCATION = os.environ.get("DATA_LOCATION", "data")
