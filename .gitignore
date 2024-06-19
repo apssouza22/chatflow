@@ -9,8 +9,6 @@ out
 .idea
 .vscode
 *.log
-/server/src/data/data_vectors.json
-/server/src/data/data_metadata.json
 /redis-data/dump.rdb
 .env
 **/node_modules/
@@ -22,3 +20,5 @@ file_db/
 /.mypy_cache/
 /postgres-data/
 /server/src/uploads/
+/server/src/data/metadata.json
+/server/src/data/vectors.json
