@@ -4,7 +4,7 @@ from decouple import config
 PROJECT_NAME = "chatux_app"
 API_DOCS = "/api/docs"
 OPENAPI_DOCS = "/api/openapi.json"
-INDEX_NAME = "chat_docs"
+INDEX_NAME = "chatflow_docs"
 INDEX_TYPE = os.environ.get("VECSIM_INDEX_TYPE", "HNSW")
 
 OPENAI_BACKOFF = os.environ.get("OPENAI_BACKOFF", 0.5)

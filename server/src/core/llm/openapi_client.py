@@ -56,7 +56,7 @@ class OpenAIClient(LLMClientInterface):
 
         return response.json()
 
-    def get_embeddings(self, input_param: str) -> List[list]:
+    def get_embeddings(self, input_param: List[str]) -> List[list]:
         endpoint = "/embeddings"
         data = {
             "input": input_param,
