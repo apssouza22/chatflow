@@ -1,4 +1,4 @@
-import redis.asyncio as redis
+import redis
 
 from core.common.config import REDIS_URL, REDIS_HOST
 

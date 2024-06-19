@@ -12,7 +12,7 @@ from redis.commands.search.indexDefinition import (
 
 from core.common import config
 from core.common.config import INDEX_NAME
-from prepare_data import prepare_data
+from core.docs_search.prepare_data import prepare_data
 
 redis_conn = redis.from_url(config.REDIS_URL)
 
