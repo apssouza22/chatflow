@@ -1,4 +1,16 @@
-from core.llm.llm_service import LLMService
+from typing import Any
+
+from core.llm.llm_service import LLMService, LLMResponse
+
+
+class Task:
+    def __init__(self, txt_input: str, context: Any = None):
+        self.input = txt_input
+        self.context = context
+        self.output = None
+
+    def set_output(self, output: LLMResponse):
+        self.output = output
 
 
 class AgentBase:
@@ -7,7 +19,7 @@ class AgentBase:
         self.name = name
         self.llm_service = llm_service
 
-    def infer(self, prompt: str):
+    def process(self, task: Task):
         raise NotImplementedError
 
 
@@ -28,16 +40,23 @@ class DefaultAgent(AgentBase):
                 "content": prompt
             })
 
-    def infer(self, prompt: str):
+    def process(self, task: Task):
         self.prompts.insert(0, {
             "role": "system",
             "content": self.system_prompt
         })
 
+        if task.context:
+            self.prompts.append({
+                "role": "user",
+                "content": f'Context to be used in the response.\n Context: {task.context}'
+            })
+
         self.prompts.append({
             "role": "user",
-            "content": prompt
+            "content": f'Input: {task.input}'
         })
 
-
-        return self.llm_service.infer(self.prompts)
+        infer = self.llm_service.infer(self.prompts)
+        task.set_output(infer)
+        return task
