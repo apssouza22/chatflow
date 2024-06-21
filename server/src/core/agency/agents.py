@@ -57,4 +57,6 @@ class DefaultAgent(AgentBase):
             "content": task.input
         })
 
-        return self.llm_service.infer(self.prompts)
+        infer = self.llm_service.infer(self.prompts)
+        task.set_output(infer)
+        return task

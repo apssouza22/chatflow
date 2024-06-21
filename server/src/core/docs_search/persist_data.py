@@ -1,5 +1,6 @@
 import json
 
+import numpy as np
 import redis
 from redis.commands.search.field import (
     VectorField,
@@ -25,6 +26,7 @@ def persist_data(vectors, metadata):
             "item_id": vector["item_id"],
             "title": item_metadata["title"],
             "text": item_metadata["text"],
+            "text_vector": np.array(vector["text_vector"], dtype=np.float32).tobytes(),
             "app": item_metadata["app"],
         }
         redis_conn.hset(key, mapping=mapping)
