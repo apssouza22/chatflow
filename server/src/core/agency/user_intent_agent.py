@@ -1,4 +1,4 @@
-from core.agency.agents import AgentBase, Task
+from core.agency.agents import AgentBase
 
 
 class UserIntentAgent(AgentBase):
@@ -6,7 +6,7 @@ class UserIntentAgent(AgentBase):
     def __init__(self, name, llm_service):
         super().__init__(name, llm_service)
 
-    def process(self, task: Task):
+    def infer(self, prompt: str):
         return self.llm_service.infer([
             {
                 "role": "system",
@@ -14,7 +14,7 @@ class UserIntentAgent(AgentBase):
             },
             {
                 "role": "user",
-                "content": task.input
+                "content": prompt
             }
         ])
 
@@ -23,7 +23,7 @@ class JSONFixerAgent(AgentBase):
     def __init__(self, name, llm_service):
         super().__init__(name, llm_service)
 
-    def process(self, task: Task):
+    def infer(self, json: str):
         return self.llm_service.infer([
             {
                 "role": "system",
@@ -31,6 +31,6 @@ class JSONFixerAgent(AgentBase):
             },
             {
                 "role": "user",
-                "content": "This is a JSON response: " + task.input
+                "content": "This is a JSON response: " + json
             }
         ])
