@@ -10,14 +10,16 @@ class DocPickerAgent(AgentBase):
         self.system_prompt = f"You are a DocPicker. You are a bot that helps users to pick the right document from a list of documents."
         f"Your job is to help users pick the right document from a list of documents. You will be given a list of documents and you will be asked to pick the right document based on the given prompt."
 
-    def process(self, task: Task):
+    def process(self, task: Task) -> Task:
         msg = self._build_message(task.input, task.context)
 
         infer = self.llm_service.infer([
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": msg}
         ])
-        return self._filter_doc(task.context, infer.message)
+        doc = self._filter_doc(task.context, infer.message)
+        task.set_output(doc)
+        return task
 
     @staticmethod
     def _build_message(txt_input, context: list[Doc]):

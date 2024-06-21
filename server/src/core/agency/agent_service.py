@@ -16,8 +16,11 @@ class AgentService:
         self.json_extractor_agent.set_system_prompt("You are a Json extractor, and your job is to extract valid JSON from a text.")
 
     def run_tasks(self, prompt: str) -> dict:
-        docs = self.doc_service.search_docs("chat", prompt)
-        return self.dock_picker_agent.process(Task(prompt, docs))
+        docs = self.doc_service.search_docs("chat|demo", prompt)
+        doc_task = self.dock_picker_agent.process(Task(prompt, docs))
+        task = self.user_intent_agent.process(Task(prompt))
+        return task.output
+
         # docs = self.user_intent_agent.process(Task(prompt))
         # content = docs["choices"][0]["message"]["content"].replace("}", "}}")
         # fixed_json = self.json_fixer_agent.infer(content)

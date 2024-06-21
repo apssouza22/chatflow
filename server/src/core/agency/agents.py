@@ -19,7 +19,7 @@ class AgentBase:
         self.name = name
         self.llm_service = llm_service
 
-    def process(self, task: Task):
+    def process(self, task: Task) -> Task:
         raise NotImplementedError
 
 
@@ -40,7 +40,7 @@ class DefaultAgent(AgentBase):
                 "content": prompt
             })
 
-    def process(self, task: Task):
+    def process(self, task: Task) -> Task:
         self.prompts.insert(0, {
             "role": "system",
             "content": self.system_prompt
