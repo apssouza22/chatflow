@@ -14,7 +14,7 @@ VERY IMPORTANT: Respond with either "text" or "form".
 """
 
     def process(self, task: Task) -> Task:
-        resp = self.llm_service.infer([
+        resp = self.llm_service.infer_using_pro([
             {
                 "role": "system",
                 "content": self.system_prompt
@@ -33,7 +33,7 @@ class JSONFixerAgent(AgentBase):
         super().__init__(name, llm_service)
 
     def process(self, task: Task):
-        return self.llm_service.infer([
+        return self.llm_service.infer_using_basic([
             {
                 "role": "system",
                 "content": "You are a JSONFixer. You are a bot that helps users fix their JSON responses."

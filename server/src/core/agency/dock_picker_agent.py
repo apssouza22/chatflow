@@ -13,7 +13,7 @@ class DocPickerAgent(AgentBase):
     def process(self, task: Task) -> Task:
         msg = self._build_message(task.input, task.context)
 
-        infer = self.llm_service.infer([
+        infer = self.llm_service.infer_using_pro([
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": msg}
         ])
