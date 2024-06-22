@@ -1,11 +1,11 @@
 from core.agency.agents import DefaultAgent, Task
 from core.agency.command_agent import CommandAgent
 from core.agency.dock_picker_agent import DocPickerAgent
+from core.agency.json_extractor_agent import JSONExtractorAgent
 from core.agency.question_answer_agent import QuestionAnswerAgent
-from core.agency.user_intent_agent import UserIntentAgent, JSONFixerAgent
+from core.agency.user_intent_agent import UserIntentAgent
 from core.docs_search.doc_service import DocService
 from core.llm.llm_service import LLMService
-
 
 
 class AgentService:
@@ -16,9 +16,7 @@ class AgentService:
         self.llm = llm
         self.dock_picker_agent = DocPickerAgent("dock-picker", llm)
         self.user_intent_agent = UserIntentAgent("user-intent", llm)
-        self.json_fixer_agent = JSONFixerAgent("json-fixer", llm)
-        self.json_extractor_agent = DefaultAgent("json-extractor", llm)
-        self.json_extractor_agent.set_system_prompt("You are a Json extractor, and your job is to extract valid JSON from a text.")
+        self.json_extractor_agent = JSONExtractorAgent("json-extractor", llm)
 
     def run_tasks(self, prompt: str) -> dict:
         docs = self.doc_service.search_docs("chat|demo", prompt)
@@ -27,15 +25,11 @@ class AgentService:
         task = self.user_intent_agent.process(Task(prompt))
         if self.user_intent_agent.is_action(task):
             resp = self.command_agent.process(Task(prompt, doc.text))
-        else:
-            resp = self.question_answer_agent.process(Task(prompt, doc.text))
-        return resp.output
+            json_data = self.json_extractor_agent.process(Task(resp.output.message))
+            return json_data.output.message
 
-        # docs = self.user_intent_agent.process(Task(prompt))
-        # content = docs["choices"][0]["message"]["content"].replace("}", "}}")
-        # fixed_json = self.json_fixer_agent.infer(content)
-        # text_with_json = fixed_json["choices"][0]["message"]["content"]
-        # return self.json_extractor_agent.infer("This is a text with JSON, ensure you return only JSON object" + text_with_json)
+        resp = self.question_answer_agent.process(Task(prompt, doc.text))
+        return resp.output.message
 
 
 def agent_service_factory(llm: LLMService, doc_service: DocService) -> AgentService:

@@ -30,20 +30,3 @@ VERY IMPORTANT: Respond with either "text" or "form".
     @staticmethod
     def is_action(task: Task) -> bool:
         return task.output.message.lower() == "form"
-
-
-class JSONFixerAgent(AgentBase):
-    def __init__(self, name, llm_service):
-        super().__init__(name, llm_service)
-
-    def process(self, task: Task):
-        return self.llm_service.infer_using_basic([
-            {
-                "role": "system",
-                "content": "You are a JSONFixer. You are a bot that helps users fix their JSON responses."
-            },
-            {
-                "role": "user",
-                "content": "This is a JSON response: " + task.input
-            }
-        ])

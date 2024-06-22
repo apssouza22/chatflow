@@ -9,7 +9,7 @@ class Task:
         self.input = txt_input
         self.output: LLMResponse = None
 
-    def set_output(self, output):
+    def set_output(self, output: LLMResponse):
         self.output = output
 
 

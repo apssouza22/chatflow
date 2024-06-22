@@ -1,4 +1,5 @@
 import json
+import time
 
 from core.agency.agents import AgentBase, Task
 
@@ -6,21 +7,61 @@ from core.agency.agents import AgentBase, Task
 class CommandAgent(AgentBase):
     def __init__(self, name, llm_service):
         super().__init__(name, llm_service)
-        self.system_prompt = "You are a CommandAgent. You are a bot that helps users to execute commands. Your job is to help users execute commands. You will be given a command and you will be asked to execute the command based on the given prompt."
+        self.system_prompt = f"You are a bot helping the user to execute tasks. \n\n"
+        f"If you are unsure and the answer is not explicitly written in the documentation, say "
+        f"\"Sorry, I don't know how to help with that.\"\n\n"
+        f"Given the following information from the documentation "
+        f"provide for the user's task using only this information\n\n "
 
     def process(self, task: Task) -> Task:
+        prompt = self._get_main_command_prompt(task.context, task.input)
+        infer = self.llm_service.infer_using_basic(prompt)
+        task.set_output(infer)
         return task
 
+    def _get_main_command_prompt(self, doc_context: str, sanitized_query: str) -> list[dict]:
+        return [
+            {
+                "role": "system",
+                "content": f'{self.system_prompt}'
+                           f"DOCUMENTATION\n----------------------------\n\n"
+                           f"{doc_context}\n\n"
+            },
+            {
+                "role": "system",
+                "content": f"The current time and date is {time.strftime('%c')}"
+            },
+            {
+                "role": "user",
+                "content": f"Execute the task using only the provided documentation above."
+            },
+            {
+                "role": "user",
+                "content": response_format_instructions
+            },
+            {
+                "role": "user",
+                "content": 'Determine which command to use, and respond using the format specified above'
+            },
+            {
+                "role": "user",
+                "content": f"Under no circumstances should your response deviate from the following JSON FORMAT:  \n{formatted_response_format} \n"
+            },
+            {
+                "role": "user",
+                "content": f'Here is the user\'s input (remember to respond with a markdown code snippet of a json blob with a single action, and NOTHING else):\n\n'
+                           f'User input: {sanitized_query}'
+            },
+        ]
 
 
 response_format = {
     "thoughts": {
         "reasoning": "reasoning. Use future tense e.g. 'I will do this'",
         "speak": "Friendly thoughts summary to say to user. Use future tense e.g. 'I will do this'. Important: Make sure to always translate your reply to the user's language.",
-        "criticism": "constructive self-criticism"
     },
     "command": {
-        "name": "api_call|browse_website|send_email|chat_question",
+        "name": "api_call|browse_website|js_func",
         "args": {"arg name": "value"},
         "request_render": {
             "field_name_1": {
@@ -40,7 +81,7 @@ response_format = {
 }
 formatted_response_format = json.dumps(response_format, indent=4)
 response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n----------------------------\n\n" \
-                               f"When responding to me, please output a response in one of five formats:\n\n" \
+                               f"When responding to me, please output a response in one of three formats:\n\n" \
                                f"**Option 1:**\n" \
                                f"Use this if the command is a API call\n" \
                                f'Markdown code snippet formatted in the following schema:\n\n' \
@@ -59,7 +100,7 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'"request_render": "field_type": "<input|checkbox|select|password>", field_options: "<array string>" \\ Instruction of how to render the request fields\n' \
                                f'}}\n```' \
                                f'\n\n**Option 3:**\n' \
-                               f'Use this if the command is a javascript function\n' \
+                               f'Use this if the command is a Javascript function\n' \
                                f'Markdown code snippet formatted in the following schema:\n\n' \
                                f'```json\n command:{{\n   ' \
                                f'"name": "js_func" \\ The command will be a Javascript function\n' \
