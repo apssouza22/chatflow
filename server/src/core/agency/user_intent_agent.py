@@ -27,6 +27,10 @@ VERY IMPORTANT: Respond with either "text" or "form".
         task.set_output(resp)
         return task
 
+    @staticmethod
+    def is_action(task: Task) -> bool:
+        return task.output.message.lower() == "form"
+
 
 class JSONFixerAgent(AgentBase):
     def __init__(self, name, llm_service):

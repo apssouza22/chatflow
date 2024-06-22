@@ -1,13 +1,13 @@
 from typing import Any
 
-from core.llm.llm_service import LLMService
+from core.llm.llm_service import LLMService, LLMResponse
 
 
 class Task:
     def __init__(self, txt_input: str, context: Any = None):
         self.context = context
         self.input = txt_input
-        self.output = None
+        self.output: LLMResponse = None
 
     def set_output(self, output):
         self.output = output

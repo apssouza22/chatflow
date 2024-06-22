@@ -13,12 +13,11 @@ class DocPickerAgent(AgentBase):
     def process(self, task: Task) -> Task:
         msg = self._build_message(task.input, task.context)
 
-        infer = self.llm_service.infer_using_pro([
+        resp = self.llm_service.infer_using_pro([
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": msg}
         ])
-        doc = self._filter_doc(task.context, infer.message)
-        task.set_output(doc)
+        task.set_output(resp)
         return task
 
     @staticmethod
@@ -39,7 +38,7 @@ class DocPickerAgent(AgentBase):
         return msg
 
     @staticmethod
-    def _filter_doc(docs: list[Doc], text):
+    def filter_doc(docs: list[Doc], text):
         match = re.findall(r'\d+', text)
         if len(match) == 0:
             return docs[0]
