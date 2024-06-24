@@ -7,11 +7,12 @@ from core.agency.agents import AgentBase, Task
 class CommandAgent(AgentBase):
     def __init__(self, name, llm_service):
         super().__init__(name, llm_service)
-        self.system_prompt = f"You are a bot helping the user to execute tasks. \n\n"
-        f"If you are unsure and the answer is not explicitly written in the documentation, say "
-        f"\"Sorry, I don't know how to help with that.\"\n\n"
-        f"Given the following information from the documentation "
-        f"provide for the user's task using only this information\n\n "
+        self.system_prompt = """You are a bot helping the user to execute tasks. \n\n"
+        If you are unsure and the answer is not explicitly written in the documentation, say 
+        "Sorry, I don't know how to help with that." \n\n
+        Given the following information from the documentation 
+        provide for the user's task using only this information\n\n 
+        """
 
     def process(self, task: Task) -> Task:
         prompt = self._get_main_command_prompt(task.context, task.input)
@@ -104,6 +105,6 @@ response_format_instructions = f"RESPONSE FORMAT INSTRUCTIONS\n-----------------
                                f'Markdown code snippet formatted in the following schema:\n\n' \
                                f'```json\n command:{{\n   ' \
                                f'"name": "js_func" \\ The command will be a Javascript function\n' \
-                               f'"function": {{"name": "<function_name>", "code": "<function_code>", "param": "<json_param>"}} \\ The javascript function details\n' \
+                               f'"args": {{"func_name": "<function_name>", "func_code": "<function_code>", "func_params": "<object_params>"}} \\ The javascript function details\n' \
                                f'}}\n ```' \
                                f'Notice: All the options will be along with the ``` thoughts:{{ }}```'

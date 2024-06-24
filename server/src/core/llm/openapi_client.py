@@ -31,7 +31,7 @@ class OpenAIClient(LLMClientInterface):
         max_retries=OPENAI_MAX_RETRIES,
         errors=(OpenAIRateLimitError, OpenAIError),
     )
-    def predict(self, messages: List[dict], max_tokens=1000, temperature=0.1):
+    def predict(self, messages: List[dict], functions=None, max_tokens=1000, temperature=0.1):
         endpoint = "/chat/completions"
         data = {
             "model": self.model,
@@ -39,6 +39,10 @@ class OpenAIClient(LLMClientInterface):
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
+        if functions:
+            data["tools"] = functions
+            data["tool_choice"] = "required"
+
         response = requests.post(
             self.base_url + endpoint,
             headers=self.headers,
