@@ -7,7 +7,7 @@ from core.agency.agents import AgentBase, Task
 class CommandAgent(AgentBase):
     def __init__(self, name, llm_service):
         super().__init__(name, llm_service)
-        self.system_prompt = """You are a bot helping the user to execute tasks. \n\n"
+        self.system_prompt = """You are a bot helping the user to execute tasks. \n\n
         If you are unsure and the answer is not explicitly written in the documentation, say 
         "Sorry, I don't know how to help with that." \n\n
         Given the following information from the documentation 
