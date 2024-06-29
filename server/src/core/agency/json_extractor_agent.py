@@ -35,14 +35,14 @@ class JSONExtractorAgent(AgentBase):
 
     @staticmethod
     def _parse_json(txt_input):
-        json_str = extract_longest_curly_braces_content(txt_input)
+        json_str = _extract_longest_curly_braces_content(txt_input)
         try:
             return json.loads(json_str)
         except json.JSONDecodeError:
             return None
 
 
-def extract_longest_curly_braces_content(s):
+def _extract_longest_curly_braces_content(s):
     """Extract the longest content between valid curly braces in a string."""
     stack = []
     start = -1

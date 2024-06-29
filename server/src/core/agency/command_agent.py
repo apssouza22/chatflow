@@ -20,6 +20,9 @@ class CommandAgent(AgentBase):
         task.set_output(infer)
         return task
 
+    def handle_response(self, task: Task) -> dict:
+        pass
+
     def _get_main_command_prompt(self, doc_context: str, sanitized_query: str) -> list[dict]:
         return [
             {
