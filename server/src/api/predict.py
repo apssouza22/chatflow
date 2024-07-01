@@ -7,12 +7,14 @@ from core.agency.agent_service import agent_service_factory
 from core.common import conn
 from core.docs_search.doc_service import doc_service_factory
 from core.llm.llm_service import llm_service_factory
+from core.memory.chat_memory_service import factory_chat_memory
 
 predict_router = r = APIRouter()
 
 llm_service = llm_service_factory()
 doc_service = doc_service_factory(llm_service, conn.get_redis_instance())
-agent_service = agent_service_factory(llm_service, doc_service)
+chat_memory = factory_chat_memory()
+agent_service = agent_service_factory(llm_service, doc_service, chat_memory)
 
 
 class UserInput(BaseModel):
