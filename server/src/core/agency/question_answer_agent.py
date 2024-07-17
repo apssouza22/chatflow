@@ -29,7 +29,8 @@ def _build_msg_context(history):
         if msg["role"] == "user":
             msgs.append("User: " + msg["message"])
             contexts.append(msg.get("context", ""))
-        else:
+            continue
+        if msg["role"] == "assistant":
             msgs.append("Assistant: " + msg["message"])
     return msgs, contexts
 
