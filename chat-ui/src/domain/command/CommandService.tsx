@@ -74,10 +74,10 @@ export class CommandService {
             return
         }
 
-        if (!isAction(docResp.textMessage, res.value)) {
-            await this.handleAnswerStream(res.value, docResp.textMessage)
-            return
-        }
+        // if (!isAction(docResp.textMessage, res.value)) {
+        //     await this.handleAnswerStream(res.value, docResp.textMessage)
+        //     return
+        // }
         const commandResp = await this.commandFinder.getCommand(res.value, docResp.textMessage);
 
         console.log("task", commandResp)

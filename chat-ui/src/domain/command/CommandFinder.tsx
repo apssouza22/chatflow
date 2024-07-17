@@ -89,7 +89,7 @@ export class CommandFinder {
 
 
         const resp = await this.httpClient.post<Command>(
-            "/chat/completions",
+            "/chat/llm",
             data,
             this.getHeaders()
         )
