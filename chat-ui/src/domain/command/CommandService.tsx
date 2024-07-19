@@ -113,6 +113,10 @@ export class CommandService {
             await this.chatCtl.addMessage({...defaultMsgObj, content: "You have exceeded the free allowance for this app."});
             return
         }
+        if (task.errorCode == 200){
+            await this.chatCtl.addMessage({...defaultMsgObj, content: task.errorMessage});
+            return
+        }
         await this.chatCtl.addMessage({...defaultMsgObj, content: "Something went wrong. Please try again later."});
     }
 }

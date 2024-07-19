@@ -41,11 +41,16 @@ class OpenAIResponseHandler:
             assistant_reply_json = json.loads(assistant_reply)
         except json.JSONDecodeError as e:
             logger.error("Error: Invalid JSON returned from GPT trying to fix it\n", assistant_reply)
-            assistant_reply_json = self.fix_and_parse_json(assistant_reply)
+            if b'{' in assistant_reply:
+                assistant_reply_json = self.fix_and_parse_json(assistant_reply)
+            else:
+                assistant_reply_json = {"thoughts": {"speak": assistant_reply}}
         return assistant_reply_json
 
     def fix_and_parse_json(self, json_str: str) -> Union[str, Dict[Any, Any]]:
         """Fix and parse JSON string"""
+        if not json_str:
+            return {}
         json_str = json_str.replace("\t", "")
         for sanitize in self.sanitizers:
             json_str = sanitize(json_str)
@@ -55,8 +60,6 @@ class OpenAIResponseHandler:
                 pass
         ai_fixed_json = self.fix_json_using_gpt(json_str, JSON_SCHEMA)
         return json.loads(ai_fixed_json)
-
-
 
     def fix_json_using_gpt(self, json_str: str, schema: str) -> str:
         """Fix the given JSON string to make it parseable and fully compliant with the provided schema."""
@@ -87,7 +90,6 @@ class OpenAIResponseHandler:
             return result_string
         except:  # noqa: E722
             return "failed"
-
 
 
 def add_quotes_to_property_names(json_string: str) -> str:

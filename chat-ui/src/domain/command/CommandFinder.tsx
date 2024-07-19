@@ -101,6 +101,13 @@ export class CommandFinder {
                 errorMessage: resp.error
             }
         }
+        // check if resp.data.command exists
+        if (resp.data.command == null) {
+            return {
+                errorCode: resp.status,
+                errorMessage: resp.data.thoughts.speak
+            }
+        }
 
         let taskCommand = parseCommandResponse(resp, input);
         taskCommand.dataUpdate = prepareDataUpdate(taskCommand.command, taskCommand.dataUpdate)
@@ -115,7 +122,7 @@ export class CommandFinder {
 function parseCommandResponse(resp: any, chat: string): TaskCommand {
     let command = resp.data.command as Command;
 
-    if (command.args?.url?.indexOf(LOCALHOST_URL) > -1) {
+    if (command?.args?.url?.indexOf(LOCALHOST_URL) > -1) {
         command.args.url = command.args.url.replace(LOCALHOST_URL, process.env.REACT_APP_SERVER_URL)
     }
     let speak = resp.data?.thoughts?.speak as string;
