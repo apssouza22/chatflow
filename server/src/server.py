@@ -8,6 +8,7 @@ from starlette.staticfiles import StaticFiles
 
 from api.docs import docs_router
 from api.predict import predict_router
+from api.common import user_router
 
 from core.common import config
 
@@ -36,6 +37,11 @@ app.include_router(
     docs_router,
     prefix=config.API_V1_STR,
     tags=["docs"]
+)
+app.include_router(
+    user_router,
+    prefix=config.API_V1_STR,
+    tags=["users"]
 )
 
 root_router = r = APIRouter()

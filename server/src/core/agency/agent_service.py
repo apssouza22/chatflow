@@ -62,7 +62,12 @@ class TaskPipeline:
     def build_ui_resp(self):
         if not self.is_action:
             resp = self.agent_service.question_answer_agent.process(Task(self.prompt, self.username))
-            self.user_resp = resp.output.message
+            self.user_resp = {
+                "type": "question",
+                "thoughts": {
+                    "answer":  resp.output.message,
+                }
+            }
             self.assistant_msg = resp.output.message
             return
 

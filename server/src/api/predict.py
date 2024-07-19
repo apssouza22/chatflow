@@ -18,13 +18,11 @@ agent_service = agent_service_factory(llm_service, doc_service, chat_memory)
 
 
 class UserInput(BaseModel):
-    input: str
+    question: str
+    context: str
 
 
 @r.post("/chat/llm", response_model=t.Dict)
 async def think(user_input: UserInput) -> t.Dict:
-    response = agent_service.run_tasks(user_input.input)
-    # response = llm_service.infer("Hello World chatGPT, how are you?")
-    return {
-        "response": response
-    }
+    response = agent_service.run_tasks(user_input.question)
+    return response

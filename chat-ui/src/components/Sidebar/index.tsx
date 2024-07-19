@@ -23,9 +23,8 @@ const adminPrompts = [
     "Help me to book a free class for tomorrow",
     "Open the chatbot  window",
     "create a new private repository name=test repo and allow squash merge",
-    "List Github repositories",
-    "++ sort by created asc",
-    "++ display as a chart with the fields: full_name and forks_count",
+    "List Github repositories sort by created asc",
+    "List Github repositories and display as a chart with the fields: full_name and forks_count",
 ]
 export default function Sidebar({chatController, isHome}: PropsWithChildren<MuiChatParams>) {
     const {dispatch} = useChatContext()

@@ -54,5 +54,9 @@ Before running the app, please install Docker first
 - Visit http://localhost:8880/api/docs to see the API docs
 - Access the Redis Vector DB UI on http://localhost:8001/redis-stack/browser
 
-
+### React UI
+- `cd chat-ui`
+- `npm install`
+- `npm start`
+- Visit http://localhost:3000 to see the UI
 ## Leave a star if you like the project
