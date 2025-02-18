@@ -46,19 +46,10 @@ app.include_router(
     tags=["hello"]
 )
 
-frontend_dir = "/app/frontend"  # inside docker
-if os.path.exists("../../chat-ui/build/index.html"):
-    frontend_dir = "../../chat-ui/build"
-
-app.mount("/assets", StaticFiles(directory=frontend_dir), name="assets")
 
 @app.get("/")
 async def read_index():
     print("index.html")
-    if os.path.exists(frontend_dir + "/index.html"):
-        return FileResponse(frontend_dir + "/index.html")
-    else:
-        raise HTTPException(status_code=404, detail="Index.html not found")
 
 
 if __name__ == "__main__":
