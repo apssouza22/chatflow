@@ -63,11 +63,12 @@ app.include_router(
     tags=["common"]
 )
 
-frontend_dir = "/app/frontend"  # inside docker
-generated_dir = "/app/uploads"
-if os.path.exists("../../chat-ui/build/index.html"):
-    frontend_dir = "../../chat-ui/build"
-    generated_dir = "./uploads"
+frontend_dir = "../../chat-ui/build"
+generated_dir = "./uploads"
+
+# if os.path.exists("/app/frontend"):
+#     frontend_dir = "/app/frontend"  # inside docker
+#     generated_dir = "/app/uploads"
 
 if not os.path.exists(generated_dir):
     os.makedirs(generated_dir)

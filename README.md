@@ -37,15 +37,16 @@ Before running the app, please install Docker first
     ```bash
     pip install -r requirements-dev.txt
     ```
+- Create a .env file and set all required variables
+  ```bash
+  cp server/src/.env.template server/src/.env
+  ```
+  
 - Navigate to the backend src cod 
     ```bash
     cd server/src
     ```
-  
-- Create a .env file and set all required variables
-    ```bash
-    cp server/src/.env.template server/src/.env
-    ```
+
 - Replace the OpenAI API key with your own key in the .env file
   
 - Start the backend service locally
