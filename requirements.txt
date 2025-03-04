@@ -13,3 +13,4 @@ python-decouple==3.8
 sseclient-py==1.8.0
 openai==1.45.0
 python-multipart==0.0.6
+uvicorn
